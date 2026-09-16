@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, PromoCode, HeroSlide
+from .models import Category, Product, PromoCode, HeroSlide, MenuItem, SiteContent
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -16,6 +16,16 @@ class ProductAdmin(admin.ModelAdmin):
 class HeroSlideAdmin(admin.ModelAdmin):
     list_display = ('title', 'kicker', 'order')
     list_editable = ('order',)
+
+@admin.register(MenuItem)
+class MenuItemAdmin(admin.ModelAdmin):
+    list_display = ('title', 'url', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
+
+@admin.register(SiteContent)
+class SiteContentAdmin(admin.ModelAdmin):
+    list_display = ('section_key', 'title')
+    search_fields = ('section_key', 'title', 'body_text')
 
 @admin.register(PromoCode)
 class PromoCodeAdmin(admin.ModelAdmin):
