@@ -33,11 +33,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory_stock = models.PositiveIntegerField(default=10)
     is_bestseller = models.BooleanField(default=False)
-    image_placeholder_tag = models.CharField(
-        max_length=50, 
-        choices=IMAGE_CHOICES, 
-        default='khlii'
-    )
+    image_placeholder_tag = models.CharField(max_length=50, choices=IMAGE_CHOICES, default='khlii')
 
     def __str__(self):
         return f"{self.name} (AED {self.price})"
@@ -64,9 +60,9 @@ class HeroSlide(models.Model):
         return f"Slide: {self.title}"
 
 class MenuItem(models.Model):
-    title = models.CharField(max_length=100, help_text="Menu link name e.g. About Us")
-    url = models.CharField(max_length=200, help_text="Link destination e.g. #about or /about/")
-    order = models.PositiveIntegerField(default=0, help_text="Display sequence order")
+    title = models.CharField(max_length=100)
+    url = models.CharField(max_length=200)
+    order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -76,12 +72,13 @@ class MenuItem(models.Model):
         return self.title
 
 class SiteContent(models.Model):
-    section_key = models.CharField(max_length=100, unique=True, help_text="Unique identifier e.g. about_us_text")
-    title = models.CharField(max_length=200, blank=True, null=True)
-    body_text = models.TextField(help_text="Edit content text here")
+    section_key = models.CharField(max_length=100, unique=True, help_text="Type 'about_us' here")
+    title = models.CharField(max_length=200, blank=True, null=True, help_text="Section Heading e.g. About Chef Sara")
+    body_text = models.TextField(help_text="Write your description, story, or details here")
+    image = models.ImageField(upload_to='site_images/', blank=True, null=True, help_text="Upload an image for this section")
 
     def __str__(self):
-        return f"Content Block: {self.section_key}"
+        return f"Content: {self.section_key}"
 
 class PromoCode(models.Model):
     code = models.CharField(max_length=50, unique=True)
