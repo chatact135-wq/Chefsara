@@ -40,7 +40,7 @@
         .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .product-card { background-color: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
         .badge-bestseller { position: absolute; top: 16px; right: 16px; background-color: var(--mustard); color: var(--ink); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 3px; text-transform: uppercase; }
-        .product-img-placeholder { height: 180px; background-color: var(--stucco); border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: var(--wood); font-size: 0.9rem; }
+        .product-img-placeholder { height: 180px; background-color: var(--stucco); border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
         .product-info h3 { font-size: 1.35rem; font-weight: 600; margin-bottom: 4px; }
         .product-subtitle { font-style: italic; color: var(--wood); font-size: 0.9rem; margin-bottom: 10px; }
         .product-desc { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 20px; }
@@ -74,17 +74,42 @@
 
         <div class="product-grid">
             {% for product in products %}
-            <div class="product-card" data-name="{{ product.name }}" data-price="{{ product.price }}">
+            <div class="product-card">
                 {% if product.is_bestseller %}
                 <span class="badge-bestseller">Best Seller</span>
                 {% endif %}
-        <div class="product-img-placeholder">
-    <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="var(--wood)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M10 2h4v2h-4z"></path>
-        <path d="M5 6h14a1 1 0 0 1 1 1v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a1 1 0 0 1 1-1z"></path>
-        <path d="M6 11h12"></path>
-    </svg>
-</div>
+                
+                <div class="product-img-placeholder">
+                    {% if product.image_placeholder_tag == 'khlii' %}
+                    <!-- Khlii Jar SVG -->
+                    <svg width="110" height="130" viewBox="0 0 100 120">
+                        <rect x="35" y="10" width="30" height="12" rx="3" fill="#8B6343"/>
+                        <rect x="25" y="20" width="50" height="10" rx="4" fill="#A47551"/>
+                        <rect x="22" y="28" width="56" height="8" rx="2" fill="#704A2B"/>
+                        <rect x="25" y="34" width="50" height="75" rx="8" fill="#7A2E2A"/>
+                        <ellipse cx="50" cy="70" rx="16" ry="10" fill="#4A1815"/>
+                    </svg>
+                    {% elif product.image_placeholder_tag == 'smen' %}
+                    <!-- Smen Jar SVG -->
+                    <svg width="110" height="130" viewBox="0 0 100 120">
+                        <rect x="38" y="12" width="24" height="10" rx="3" fill="#6B4F36"/>
+                        <rect x="30" y="20" width="40" height="10" rx="4" fill="#8B6846"/>
+                        <path d="M 28 35 Q 15 65 35 95 L 65 95 Q 85 65 72 35 Z" fill="#D9BE85"/>
+                        <ellipse cx="50" cy="65" rx="14" ry="12" fill="#C4A47C" stroke="#A48057" stroke-width="2"/>
+                    </svg>
+                    {% else %}
+                    <!-- Preserved Lemon Jar SVG -->
+                    <svg width="110" height="130" viewBox="0 0 100 120">
+                        <rect x="32" y="15" width="36" height="12" rx="3" fill="#8B6846"/>
+                        <rect x="26" y="25" width="48" height="85" rx="6" fill="#C08A2E" fill-opacity="0.6"/>
+                        <rect x="26" y="25" width="48" height="85" rx="6" fill="none" stroke="#8B6846" stroke-width="2"/>
+                        <circle cx="45" cy="50" r="10" fill="#E1C488"/>
+                        <circle cx="62" cy="75" r="8" fill="#E1C488"/>
+                        <circle cx="40" cy="85" r="7" fill="#E1C488"/>
+                    </svg>
+                    {% endif %}
+                </div>
+
                 <div class="product-info">
                     <h3>{{ product.name }}</h3>
                     <div class="product-subtitle">{{ product.subtitle }}</div>
