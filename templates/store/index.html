@@ -91,6 +91,11 @@
         .payment-option input { margin-top: 3px; }
         .payment-details { font-size: 0.8rem; color: var(--wood); margin-top: 4px; }
         
+        .promo-input-row { display: flex; gap: 8px; margin-bottom: 15px; }
+        .apply-btn { background-color: var(--ink); color: #fff; border: none; padding: 0 16px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+        .apply-btn:hover { background-color: var(--burgundy); }
+        .promo-msg { font-size: 0.78rem; margin-top: 4px; }
+
         .summary-box { background: var(--stucco); border: 1px solid var(--line); border-radius: 4px; padding: 15px; margin-bottom: 20px; }
         .summary-line { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; }
         .summary-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
@@ -305,6 +310,14 @@
                     </div>
                 </label>
 
+                <!-- Promo Code Section -->
+                <div class="form-section-title" style="margin-top: 20px;">Discount Code</div>
+                <div class="promo-input-row">
+                    <input type="text" id="promoCodeInput" class="form-control" placeholder="Enter code">
+                    <button type="button" class="apply-btn" onclick="applyPromoCode()">Apply</button>
+                </div>
+                <div class="promo-msg" id="promoMsg"></div>
+
                 <div class="form-section-title" style="margin-top: 20px;">Order Summary</div>
                 <div class="summary-box" id="checkoutSummaryBox"></div>
 
@@ -325,6 +338,11 @@
     </footer>
 
     <script>
+        // Active promo codes from Django Database
+        const activePromos = {{ promo_dict|safe }};
+        let appliedDiscount = 0; // Percentage e.g. 10 for 10%
+        let appliedPromoName = "";
+
         let cart = [];
 
         function decreaseQty(btn) {
@@ -426,10 +444,38 @@
             document.getElementById('cartCheckoutBtn').disabled = !agreed;
         }
 
+        function applyPromoCode() {
+            let codeInput = document.getElementById('promoCodeInput').value.trim().toUpperCase();
+            let msgBox = document.getElementById('promoMsg');
+
+            if (activePromos[codeInput] !== undefined) {
+                appliedDiscount = activePromos[codeInput];
+                appliedPromoName = codeInput;
+                msgBox.style.color = 'var(--green)';
+                msgBox.textContent = `Success! ${appliedDiscount}% discount applied.`;
+                renderCheckoutSummary();
+            } else {
+                appliedDiscount = 0;
+                appliedPromoName = "";
+                msgBox.style.color = 'var(--burgundy)';
+                msgBox.textContent = 'Invalid or inactive promo code.';
+                renderCheckoutSummary();
+            }
+        }
+
         function openCheckoutModal() {
             if (cart.length === 0) return;
             toggleCart();
+            appliedDiscount = 0;
+            appliedPromoName = "";
+            document.getElementById('promoCodeInput').value = '';
+            document.getElementById('promoMsg').textContent = '';
             
+            renderCheckoutSummary();
+            document.getElementById('checkoutModalOverlay').style.display = 'flex';
+        }
+
+        function renderCheckoutSummary() {
             let summaryBox = document.getElementById('checkoutSummaryBox');
             let subtotal = 0;
             let html = '';
@@ -440,15 +486,22 @@
                 html += `<div class="summary-line"><span>${item.name} &times; ${item.quantity}</span><span>AED ${itemTotal.toFixed(2)}</span></div>`;
             });
 
-            let deliveryFee = subtotal >= 650 ? 0 : 25;
-            let grandTotal = subtotal + deliveryFee;
-
             html += `<div class="summary-line" style="margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 8px;"><span>Subtotal</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
+
+            let discountAmount = 0;
+            if (appliedDiscount > 0) {
+                discountAmount = (subtotal * appliedDiscount) / 100;
+                html += `<div class="summary-line" style="color: var(--burgundy);"><span>Discount (${appliedPromoName} - ${appliedDiscount}%)</span><span>-AED ${discountAmount.toFixed(2)}</span></div>`;
+            }
+
+            let discountedSubtotal = subtotal - discountAmount;
+            let deliveryFee = discountedSubtotal >= 650 ? 0 : 25;
+            let grandTotal = discountedSubtotal + deliveryFee;
+
             html += `<div class="summary-line"><span>Delivery</span><span>${deliveryFee === 0 ? 'Free' : 'AED ' + deliveryFee.toFixed(2)}</span></div>`;
             html += `<div class="summary-total"><span>Total</span><span>AED ${grandTotal.toFixed(2)}</span></div>`;
 
             summaryBox.innerHTML = html;
-            document.getElementById('checkoutModalOverlay').style.display = 'flex';
         }
 
         function closeCheckoutModal() {
@@ -467,8 +520,10 @@
             }
 
             let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            let deliveryFee = subtotal >= 650 ? 0 : 25;
-            let grandTotal = subtotal + deliveryFee;
+            let discountAmount = appliedDiscount > 0 ? (subtotal * appliedDiscount) / 100 : 0;
+            let discountedSubtotal = subtotal - discountAmount;
+            let deliveryFee = discountedSubtotal >= 650 ? 0 : 25;
+            let grandTotal = discountedSubtotal + deliveryFee;
 
             let message = `*New Order from BY CHEF SARA Website*\n\n`;
             message += `*Customer Name:* ${name}\n`;
@@ -482,6 +537,9 @@
             });
 
             message += `\n*Subtotal:* AED ${subtotal.toFixed(2)}`;
+            if (appliedDiscount > 0) {
+                message += `\n*Promo Code (${appliedPromoName}):* -${appliedDiscount}% (-AED ${discountAmount.toFixed(2)})`;
+            }
             message += `\n*Delivery:* ${deliveryFee === 0 ? 'Free' : 'AED ' + deliveryFee.toFixed(2)}`;
             message += `\n*Total:* AED ${grandTotal.toFixed(2)}`;
 
