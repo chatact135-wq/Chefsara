@@ -338,12 +338,21 @@
     </footer>
 
     <script>
-        // Active promo codes from Django Database
         const activePromos = {{ promo_dict|safe }};
-        let appliedDiscount = 0; // Percentage e.g. 10 for 10%
+        let appliedDiscount = 0;
         let appliedPromoName = "";
 
-        let cart = [];
+        // Load cart from localStorage on page startup
+        let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
+        
+        // Update UI immediately when page loads
+        document.addEventListener("DOMContentLoaded", function() {
+            updateCartUI();
+        });
+
+        function saveCart() {
+            localStorage.setItem('chef_sara_cart', JSON.stringify(cart));
+        }
 
         function decreaseQty(btn) {
             let span = btn.nextElementSibling;
@@ -389,12 +398,14 @@
                 cart.push({ name: name, price: price, quantity: quantity, maxStock: maxStock });
             }
 
+            saveCart();
             updateCartUI();
             toggleCart();
         }
 
         function removeFromCart(name) {
             cart = cart.filter(item => item.name !== name);
+            saveCart();
             updateCartUI();
         }
 
@@ -546,6 +557,12 @@
             let encodedMessage = encodeURIComponent(message);
             let whatsappUrl = `https://wa.me/971500000000?text=${encodedMessage}`;
             
+            // Clear cart after placing order successfully
+            cart = [];
+            saveCart();
+            updateCartUI();
+            closeCheckoutModal();
+
             window.open(whatsappUrl, '_blank');
         }
     </script>
