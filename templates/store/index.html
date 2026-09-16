@@ -32,6 +32,7 @@
         .logo-text span { color: var(--burgundy); }
         .cart-btn { background: none; border: 1px solid var(--brass); color: var(--ink); padding: 8px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .cart-badge { background-color: var(--burgundy); color: #fff; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem; }
+        
         section { padding: 80px 8%; }
         .section-header { text-align: center; max-width: 700px; margin: 0 auto 50px auto; }
         .section-kicker { color: var(--burgundy); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px; }
@@ -50,6 +51,29 @@
         .add-to-order-btn { background-color: var(--ink); color: var(--stucco); border: none; padding: 10px 14px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-weight: 500; }
         .add-to-order-btn:hover { background-color: var(--burgundy); }
         .bottom-action-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+
+        /* Slide-out Cart Drawer Overlay */
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
+        .cart-drawer { position: fixed; top: 0; right: -420px; width: 400px; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
+        .cart-drawer.open { right: 0; }
+        .cart-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+        .cart-header h3 { font-size: 1.4rem; font-weight: 600; }
+        .close-drawer { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ink); }
+        .cart-body { padding: 20px 24px; flex-grow: 1; overflow-y: auto; }
+        .cart-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+        .cart-item-details div:first-child { font-weight: 600; }
+        .cart-item-details div:last-child { color: var(--wood); font-size: 0.8rem; margin-top: 2px; }
+        .cart-item-right { text-align: right; }
+        .cart-item-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--burgundy); }
+        .remove-item { background: none; border: none; color: var(--burgundy); font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 4px; }
+        
+        .cart-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: var(--stucco); }
+        .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; margin-bottom: 15px; }
+        .terms-box { font-size: 0.75rem; color: var(--ink-soft); background: rgba(255,255,255,0.5); padding: 10px; border-radius: 4px; border: 1px solid var(--line); max-height: 80px; overflow-y: auto; margin-bottom: 12px; }
+        .terms-checkbox { display: flex; align-items: flex-start; gap: 8px; font-size: 0.78rem; margin-bottom: 15px; }
+        .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; }
+        .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; }
+
         footer { background-color: var(--ink); color: var(--stucco-deep); padding: 40px 8%; text-align: center; font-size: 0.85rem; }
     </style>
 </head>
@@ -61,7 +85,7 @@
             <div class="logo-emblem"></div>
             <div class="logo-text">BY CHEF <span>SARA</span></div>
         </div>
-        <button class="cart-btn" onclick="cartClicked()">
+        <button class="cart-btn" onclick="toggleCart()">
             <span>Cart</span>
             <span class="cart-badge" id="cart-count">0</span>
         </button>
@@ -171,11 +195,11 @@
                     <div class="product-price">AED {{ product.price }}</div>
                     <div class="bottom-action-row">
                         <div class="quantity-control">
-                            <button type="button" class="qty-btn" onclick="let span = this.nextElementSibling; span.textContent = Math.max(1, parseInt(span.textContent) - 1)">-</button>
+                            <button type="button" class="qty-btn" onclick="let s = this.nextElementSibling; s.textContent = Math.max(1, parseInt(s.textContent) - 1)">-</button>
                             <span class="qty-num">1</span>
-                            <button type="button" class="qty-btn" onclick="let span = this.previousElementSibling; span.textContent = parseInt(span.textContent) + 1">+</button>
+                            <button type="button" class="qty-btn" onclick="let s = this.previousElementSibling; s.textContent = parseInt(s.textContent) + 1">+</button>
                         </div>
-                        <button type="button" class="add-to-order-btn" onclick="addToCart('{{ product.name }}', this)">Add to order</button>
+                        <button type="button" class="add-to-order-btn" onclick="addToCart('{{ product.name }}', {{ product.price }}, this)">Add to order</button>
                     </div>
                 </div>
             </div>
@@ -185,27 +209,115 @@
         </div>
     </section>
 
+    <!-- Slide-out Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3>Your Order</h3>
+            <button class="close-drawer" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-body" id="cartItemsContainer">
+            <p style="color: var(--wood); text-align: center; margin-top: 40px;">Your cart is empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div id="deliveryNotice" style="font-size: 0.8rem; color: var(--wood); margin-bottom: 10px;">Add AED 650 more for free delivery</div>
+            <div class="subtotal-row">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">AED 0</span>
+            </div>
+            <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Terms & Conditions</div>
+            <div class="terms-box">
+                <strong>1. General</strong><br>
+                By placing an order with BY CHEF SARA ("we", "us", "our brand"), you confirm that you have read, understood, and agree to be bound by these Terms & Conditions in full. If you do not agree, please do not place an order.<br><br>
+                <strong>2. Policy</strong><br>
+                No Return / No Refund policy and Cash on Delivery deposit terms.
+            </div>
+            <label class="terms-checkbox">
+                <input type="checkbox" id="termsAgree" onchange="toggleCheckoutButton()">
+                <span>I have read and agree to the Terms & Conditions, including the No Return / No Refund policy and Cash on Delivery deposit terms.</span>
+            </label>
+            <button type="button" class="checkout-btn" id="checkoutBtn" disabled onclick="alert('Proceeding to checkout successfully!')">Proceed to Checkout</button>
+        </div>
+    </div>
+
     <footer>
         &copy; 2026 BY CHEF SARA &middot; Managed Dynamically via Django Admin
     </footer>
 
     <script>
-        let cartTotal = 0;
-        function cartClicked() {
-            if (cartTotal === 0) {
-                alert('Your cart is currently empty. Add some handcrafted products to get started!');
+        let cart = [];
+
+        function toggleCart() {
+            document.getElementById('cartDrawer').classList.toggle('open');
+            document.getElementById('cartOverlay').style.display = document.getElementById('cartDrawer').classList.contains('open') ? 'block' : 'none';
+        }
+
+        function addToCart(name, price, btn) {
+            let qtySpan = btn.closest('.product-card').querySelector('.qty-num');
+            let quantity = parseInt(qtySpan.textContent);
+            price = parseFloat(price);
+
+            let existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity += quantity;
             } else {
-                alert('You have ' + cartTotal + ' item(s) in your order.');
+                cart.push({ name: name, price: price, quantity: quantity });
+            }
+
+            updateCartUI();
+            toggleCart();
+        }
+
+        function removeFromCart(name) {
+            cart = cart.filter(item => item.name !== name);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            let container = document.getElementById('cartItemsContainer');
+            let totalCount = 0;
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="color: var(--wood); text-align: center; margin-top: 40px;">Your cart is empty.</p>';
+            } else {
+                container.innerHTML = '';
+                cart.forEach(item => {
+                    totalCount += item.quantity;
+                    let itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-details">
+                                <div>${item.name}</div>
+                                <div>Qty ${item.quantity} / AED ${item.price} each</div>
+                            </div>
+                            <div class="cart-item-right">
+                                <div class="cart-item-price">AED ${itemTotal.toFixed(2)}</div>
+                                <button type="button" class="remove-item" onclick="removeFromCart('${item.name}')">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('cart-count').textContent = totalCount;
+            document.getElementById('cartSubtotal').textContent = 'AED ' + subtotal.toFixed(2);
+
+            let notice = document.getElementById('deliveryNotice');
+            if (subtotal >= 650) {
+                notice.textContent = '🎉 You qualify for free delivery!';
+            } else {
+                let diff = (650 - subtotal).toFixed(2);
+                notice.textContent = `Add AED ${diff} more for free delivery`;
             }
         }
 
-        function addToCart(productName, btn) {
-            let qtySpan = btn.closest('.product-card').querySelector('.qty-num');
-            let quantity = parseInt(qtySpan.textContent);
-            
-            cartTotal += quantity;
-            document.getElementById('cart-count').textContent = cartTotal;
-            alert('Added ' + quantity + ' of ' + productName + ' to your order!');
+        function toggleCheckoutButton() {
+            let agreed = document.getElementById('termsAgree').checked;
+            let btn = document.getElementById('checkoutBtn');
+            btn.disabled = !agreed;
         }
     </script>
 </body>
