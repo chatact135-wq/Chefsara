@@ -60,9 +60,9 @@ class HeroSlide(models.Model):
         return f"Slide: {self.title}"
 
 class MenuItem(models.Model):
-    title = models.CharField(max_length=100)
-    url = models.CharField(max_length=200)
-    order = models.PositiveIntegerField(default=0)
+    title = models.CharField(max_length=100, help_text="Navigation name e.g. Home, About Us")
+    url = models.CharField(max_length=200, help_text="Destination link e.g. #products-section or #about-section")
+    order = models.PositiveIntegerField(default=0, help_text="Sequence order")
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -72,13 +72,13 @@ class MenuItem(models.Model):
         return self.title
 
 class SiteContent(models.Model):
-    section_key = models.CharField(max_length=100, unique=True, help_text="Type 'about_us' here")
-    title = models.CharField(max_length=200, blank=True, null=True, help_text="Section Heading e.g. About Chef Sara")
-    body_text = models.TextField(help_text="Write your description, story, or details here")
-    image = models.ImageField(upload_to='site_images/', blank=True, null=True, help_text="Upload an image for this section")
+    section_key = models.CharField(max_length=100, unique=True, help_text="Type exact key like: about_us")
+    title = models.CharField(max_length=200, blank=True, null=True, help_text="Section Title")
+    body_text = models.TextField(help_text="Write your description, story, or content here")
+    image = models.ImageField(upload_to='site_images/', blank=True, null=True, help_text="Upload optional image")
 
     def __str__(self):
-        return f"Content: {self.section_key}"
+        return f"Content Block: {self.section_key}"
 
 class PromoCode(models.Model):
     code = models.CharField(max_length=50, unique=True)
