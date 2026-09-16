@@ -52,7 +52,7 @@
         .add-to-order-btn:hover { background-color: var(--burgundy); }
         .bottom-action-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
 
-        /* Slide-out Cart Drawer Overlay */
+        /* Slide-out Cart Drawer */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
         .cart-drawer { position: fixed; top: 0; right: -420px; width: 400px; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
         .cart-drawer.open { right: 0; }
@@ -69,10 +69,33 @@
         
         .cart-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: var(--stucco); }
         .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; margin-bottom: 15px; }
-        .terms-box { font-size: 0.75rem; color: var(--ink-soft); background: rgba(255,255,255,0.5); padding: 10px; border-radius: 4px; border: 1px solid var(--line); max-height: 80px; overflow-y: auto; margin-bottom: 12px; }
+        .terms-box { font-size: 0.75rem; color: var(--ink-soft); background: rgba(255,255,255,0.5); padding: 10px; border-radius: 4px; border: 1px solid var(--line); max-height: 70px; overflow-y: auto; margin-bottom: 10px; }
         .terms-checkbox { display: flex; align-items: flex-start; gap: 8px; font-size: 0.78rem; margin-bottom: 15px; }
         .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; }
-        .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; }
+
+        /* Checkout Modal Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
+        .checkout-modal { background: var(--panel); width: 520px; max-width: 90%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--stucco); }
+        .modal-header h3 { font-size: 1.5rem; font-weight: 500; letter-spacing: 0.05em; }
+        .modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; }
+        .form-section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wood); margin-bottom: 12px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 5px; }
+        .form-control { width: 100%; padding: 10px 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-family: 'Jost', sans-serif; font-size: 0.9rem; color: var(--ink); }
+        textarea.form-control { resize: vertical; height: 75px; }
+        
+        .payment-option { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+        .payment-option input { margin-top: 3px; }
+        .payment-details { font-size: 0.8rem; color: var(--wood); margin-top: 4px; }
+        
+        .summary-box { background: var(--stucco); border: 1px solid var(--line); border-radius: 4px; padding: 15px; margin-bottom: 20px; }
+        .summary-line { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; }
+        .summary-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
+        
+        .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
+        .whatsapp-subtext { font-size: 0.72rem; color: var(--wood); text-align: center; margin-top: 8px; }
 
         footer { background-color: var(--ink); color: var(--stucco-deep); padding: 40px 8%; text-align: center; font-size: 0.85rem; }
     </style>
@@ -233,10 +256,67 @@
                 No Return / No Refund policy and Cash on Delivery deposit terms.
             </div>
             <label class="terms-checkbox">
-                <input type="checkbox" id="termsAgree" onchange="toggleCheckoutButton()">
+                <input type="checkbox" id="termsAgree" onchange="toggleCartCheckoutButton()">
                 <span>I have read and agree to the Terms & Conditions, including the No Return / No Refund policy and Cash on Delivery deposit terms.</span>
             </label>
-            <button type="button" class="checkout-btn" id="checkoutBtn" disabled onclick="alert('Proceeding to checkout successfully!')">Proceed to Checkout</button>
+            <button type="button" class="checkout-btn" id="cartCheckoutBtn" disabled onclick="openCheckoutModal()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal Pop-up -->
+    <div class="modal-overlay" id="checkoutModalOverlay">
+        <div class="checkout-modal">
+            <div class="modal-header">
+                <h3>Checkout</h3>
+                <button class="close-drawer" onclick="closeCheckoutModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-section-title">Contact & Delivery Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full name</label>
+                        <input type="text" id="custName" class="form-control" placeholder="Your full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone / WhatsApp</label>
+                        <input type="text" id="custPhone" class="form-control" placeholder="+971 XX XXX XXXX">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Delivery address</label>
+                    <textarea id="custAddress" class="form-control" placeholder="Building, street, area, emirate"></textarea>
+                </div>
+
+                <div class="form-section-title" style="margin-top: 20px;">Payment Method</div>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="Cash on Delivery" checked>
+                    <div>
+                        <strong>Cash on Delivery</strong>
+                        <div class="payment-details">A non-refundable deposit is required to confirm COD orders &mdash; details will be confirmed with you directly.</div>
+                    </div>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="Bank Transfer">
+                    <div>
+                        <strong>Bank Transfer</strong>
+                        <div class="payment-details">Bank details will be sent to you to complete payment before dispatch.</div>
+                    </div>
+                </label>
+
+                <div class="form-section-title" style="margin-top: 20px;">Order Summary</div>
+                <div class="summary-box" id="checkoutSummaryBox">
+                    <!-- Dynamic summary rows inserted via JS -->
+                </div>
+
+                <div class="form-section-title" style="margin-top: 20px;">Terms & Conditions</div>
+                <label class="terms-checkbox">
+                    <input type="checkbox" id="modalTermsAgree" checked disabled>
+                    <span>You agreed to our Terms & Conditions in your cart, including the No Return / No Refund policy and Cash on Delivery deposit terms.</span>
+                </label>
+
+                <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">Place Order via WhatsApp</button>
+                <div class="whatsapp-subtext">Your order details will be sent to Chef Sara's team on WhatsApp for confirmation. Placing an order does not guarantee acceptance &mdash; see Terms & Conditions.</div>
+            </div>
         </div>
     </div>
 
@@ -248,8 +328,10 @@
         let cart = [];
 
         function toggleCart() {
-            document.getElementById('cartDrawer').classList.toggle('open');
-            document.getElementById('cartOverlay').style.display = document.getElementById('cartDrawer').classList.contains('open') ? 'block' : 'none';
+            let drawer = document.getElementById('cartDrawer');
+            let overlay = document.getElementById('cartOverlay');
+            drawer.classList.toggle('open');
+            overlay.style.display = drawer.classList.contains('open') ? 'block' : 'none';
         }
 
         function addToCart(name, price, btn) {
@@ -314,10 +396,76 @@
             }
         }
 
-        function toggleCheckoutButton() {
+        function toggleCartCheckoutButton() {
             let agreed = document.getElementById('termsAgree').checked;
-            let btn = document.getElementById('checkoutBtn');
-            btn.disabled = !agreed;
+            document.getElementById('cartCheckoutBtn').disabled = !agreed;
+        }
+
+        function openCheckoutModal() {
+            if (cart.length === 0) return;
+            toggleCart(); // Close drawer
+            
+            // Build checkout modal summary
+            let summaryBox = document.getElementById('checkoutSummaryBox');
+            let subtotal = 0;
+            let html = '';
+
+            cart.forEach(item => {
+                let itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                html += `<div class="summary-line"><span>${item.name} &times; ${item.quantity}</span><span>AED ${itemTotal.toFixed(2)}</span></div>`;
+            });
+
+            let deliveryFee = subtotal >= 650 ? 0 : 25;
+            let grandTotal = subtotal + deliveryFee;
+
+            html += `<div class="summary-line" style="margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 8px;"><span>Subtotal</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
+            html += `<div class="summary-line"><span>Delivery</span><span>${deliveryFee === 0 ? 'Free' : 'AED ' + deliveryFee.toFixed(2)}</span></div>`;
+            html += `<div class="summary-total"><span>Total</span><span>AED ${grandTotal.toFixed(2)}</span></div>`;
+
+            summaryBox.innerHTML = html;
+            document.getElementById('checkoutModalOverlay').style.display = 'flex';
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModalOverlay').style.display = 'none';
+        }
+
+        function placeWhatsAppOrder() {
+            let name = document.getElementById('custName').value.trim();
+            let phone = document.getElementById('custPhone').value.trim();
+            let address = document.getElementById('custAddress').value.trim();
+            let payment = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+            if (!name || !phone || !address) {
+                alert('Please fill in your name, phone number, and delivery address.');
+                return;
+            }
+
+            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let deliveryFee = subtotal >= 650 ? 0 : 25;
+            let grandTotal = subtotal + deliveryFee;
+
+            let message = `*New Order from BY CHEF SARA Website*\n\n`;
+            message += `*Customer Name:* ${name}\n`;
+            message += `*Phone:* ${phone}\n`;
+            message += `*Delivery Address:* ${address}\n`;
+            message += `*Payment Method:* ${payment}\n\n`;
+            message += `*Order Items:* \n`;
+            
+            cart.forEach(item => {
+                message += `- ${item.name} x ${item.quantity} (AED ${item.price * item.quantity})\n`;
+            });
+
+            message += `\n*Subtotal:* AED ${subtotal.toFixed(2)}`;
+            message += `\n*Delivery:* ${deliveryFee === 0 ? 'Free' : 'AED ' + deliveryFee.toFixed(2)}`;
+            message += `\n*Total:* AED ${grandTotal.toFixed(2)}`;
+
+            let encodedMessage = encodeURIComponent(message);
+            // Replace with your actual WhatsApp business number format (e.g. 971500000000)
+            let whatsappUrl = `https://wa.me/971500000000?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
         }
     </script>
 </body>
