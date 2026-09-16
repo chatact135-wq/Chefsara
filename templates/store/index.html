@@ -61,7 +61,7 @@
             <div class="logo-emblem"></div>
             <div class="logo-text">BY CHEF <span>SARA</span></div>
         </div>
-        <button class="cart-btn" onclick="alert('Cart system active')">
+        <button class="cart-btn" onclick="cartClicked()">
             <span>Cart</span>
             <span class="cart-badge" id="cart-count">0</span>
         </button>
@@ -83,7 +83,6 @@
                 
                 <div class="product-img-placeholder">
                     {% if product.image_placeholder_tag == 'khlii' %}
-                    <!-- Khlii Jar -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="35" y="10" width="30" height="12" rx="3" fill="#8B6343"/>
                         <rect x="25" y="20" width="50" height="10" rx="4" fill="#A47551"/>
@@ -92,7 +91,6 @@
                         <ellipse cx="50" cy="72" rx="16" ry="10" fill="#4A1815"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'smen' %}
-                    <!-- Smen Pot -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="38" y="10" width="24" height="10" rx="3" fill="#6B4F36"/>
                         <rect x="30" y="18" width="40" height="10" rx="4" fill="#8B6846"/>
@@ -100,7 +98,6 @@
                         <ellipse cx="50" cy="65" rx="15" ry="13" fill="#C4A47C" stroke="#A48057" stroke-width="2"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'lemon' %}
-                    <!-- Preserved Lemon Jar -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="32" y="12" width="36" height="12" rx="3" fill="#8B6846"/>
                         <rect x="26" y="22" width="48" height="88" rx="6" fill="#C08A2E" fill-opacity="0.55"/>
@@ -110,7 +107,6 @@
                         <circle cx="40" cy="88" r="8" fill="#E1C488"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'orange_jam' %}
-                    <!-- Orange Jam -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="38" y="10" width="24" height="10" rx="3" fill="#6B4F36"/>
                         <rect x="30" y="18" width="40" height="10" rx="4" fill="#8B6846"/>
@@ -118,7 +114,6 @@
                         <ellipse cx="50" cy="65" rx="16" ry="14" fill="#D27E13" stroke="#B0650A" stroke-width="2"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'lemon_jam' %}
-                    <!-- Lemon Jam -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="38" y="10" width="24" height="10" rx="3" fill="#6B4F36"/>
                         <rect x="30" y="18" width="40" height="10" rx="4" fill="#8B6846"/>
@@ -126,45 +121,38 @@
                         <ellipse cx="50" cy="65" rx="16" ry="14" fill="#D9BE85" stroke="#A48057" stroke-width="2"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'spice_ras' %}
-                    <!-- Ras el Hanout Spice Jar -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="34" y="20" width="32" height="12" rx="3" fill="#8B6846"/>
                         <rect x="28" y="32" width="44" height="70" rx="4" fill="#7A2E2A"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'spice_tagine' %}
-                    <!-- Tagine Spice Jar -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="34" y="20" width="32" height="12" rx="3" fill="#8B6846"/>
                         <rect x="28" y="32" width="44" height="70" rx="4" fill="#2F5D4E"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'spice_chermoula' %}
-                    <!-- Chermoula Spice Jar -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="34" y="20" width="32" height="12" rx="3" fill="#8B6846"/>
                         <rect x="28" y="32" width="44" height="70" rx="4" fill="#C08A2E"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'spice_couscous' %}
-                    <!-- Couscous Spice Jar -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="34" y="20" width="32" height="12" rx="3" fill="#8B6846"/>
                         <rect x="28" y="32" width="44" height="70" rx="4" fill="#8B5A2B"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'amlou_orig' %}
-                    <!-- Amlou Original -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="35" y="16" width="30" height="10" rx="3" fill="#8B6846"/>
                         <rect x="28" y="26" width="44" height="10" rx="4" fill="#A48057"/>
                         <circle cx="50" cy="70" r="22" fill="#C08A2E" stroke="#8B6846" stroke-width="2"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'amlou_dxb' %}
-                    <!-- Amlou DXB Style -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="35" y="16" width="30" height="10" rx="3" fill="#8B6846"/>
                         <rect x="28" y="26" width="44" height="10" rx="4" fill="#A48057"/>
                         <circle cx="50" cy="70" r="22" fill="#7A2E2A" stroke="#4A1815" stroke-width="2"/>
                     </svg>
                     {% else %}
-                    <!-- Amlou Dates & Nuts -->
                     <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="35" y="16" width="30" height="10" rx="3" fill="#8B6846"/>
                         <rect x="28" y="26" width="44" height="10" rx="4" fill="#A48057"/>
@@ -183,11 +171,11 @@
                     <div class="product-price">AED {{ product.price }}</div>
                     <div class="bottom-action-row">
                         <div class="quantity-control">
-                            <button class="qty-btn" onclick="this.nextElementSibling.textContent = Math.max(1, parseInt(this.nextElementSibling.textContent) - 1)">-</button>
-                            <span>1</span>
-                            <button class="qty-btn" onclick="this.previousElementSibling.textContent = parseInt(this.previousElementSibling.textContent) + 1">+</button>
+                            <button type="button" class="qty-btn" onclick="let span = this.nextElementSibling; span.textContent = Math.max(1, parseInt(span.textContent) - 1)">-</button>
+                            <span class="qty-num">1</span>
+                            <button type="button" class="qty-btn" onclick="let span = this.previousElementSibling; span.textContent = parseInt(span.textContent) + 1">+</button>
                         </div>
-                        <button class="add-to-order-btn" onclick="alert('Added {{ product.name }} to order!')">Add to order</button>
+                        <button type="button" class="add-to-order-btn" onclick="addToCart('{{ product.name }}', this)">Add to order</button>
                     </div>
                 </div>
             </div>
@@ -200,5 +188,25 @@
     <footer>
         &copy; 2026 BY CHEF SARA &middot; Managed Dynamically via Django Admin
     </footer>
+
+    <script>
+        let cartTotal = 0;
+        function cartClicked() {
+            if (cartTotal === 0) {
+                alert('Your cart is currently empty. Add some handcrafted products to get started!');
+            } else {
+                alert('You have ' + cartTotal + ' item(s) in your order.');
+            }
+        }
+
+        function addToCart(productName, btn) {
+            let qtySpan = btn.closest('.product-card').querySelector('.qty-num');
+            let quantity = parseInt(qtySpan.textContent);
+            
+            cartTotal += quantity;
+            document.getElementById('cart-count').textContent = cartTotal;
+            alert('Added ' + quantity + ' of ' + productName + ' to your order!');
+        }
+    </script>
 </body>
 </html>
