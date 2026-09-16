@@ -49,13 +49,13 @@ class HeroSlide(models.Model):
         ('pot_gold', 'Gold Pot (Amlou)'),
         ('jar_green', 'Green Jar (Tagine Spice)'),
     ]
-    kicker = models.CharField(max_length=100, help_text="Small text above title e.g. Build Your Spice Rack")
-    title = models.CharField(max_length=200, help_text="Main heading title")
-    description = models.TextField(help_text="Paragraph description text")
+    kicker = models.CharField(max_length=100)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
     button_text = models.CharField(max_length=50, default="Shop Now")
     button_link = models.CharField(max_length=200, default="#products-section")
     graphic_type = models.CharField(max_length=50, choices=SLIDE_GRAPHICS, default='star')
-    order = models.PositiveIntegerField(default=0, help_text="Display order sequence")
+    order = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ['order']
@@ -63,9 +63,29 @@ class HeroSlide(models.Model):
     def __str__(self):
         return f"Slide: {self.title}"
 
+class MenuItem(models.Model):
+    title = models.CharField(max_length=100, help_text="Menu link name e.g. About Us")
+    url = models.CharField(max_length=200, help_text="Link destination e.g. #about or /about/")
+    order = models.PositiveIntegerField(default=0, help_text="Display sequence order")
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+class SiteContent(models.Model):
+    section_key = models.CharField(max_length=100, unique=True, help_text="Unique identifier e.g. about_us_text")
+    title = models.CharField(max_length=200, blank=True, null=True)
+    body_text = models.TextField(help_text="Edit content text here")
+
+    def __str__(self):
+        return f"Content Block: {self.section_key}"
+
 class PromoCode(models.Model):
     code = models.CharField(max_length=50, unique=True)
-    discount_percentage = models.PositiveIntegerField(help_text="Enter discount percentage e.g. 10 for 10%")
+    discount_percentage = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
