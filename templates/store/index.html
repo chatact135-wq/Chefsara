@@ -147,6 +147,7 @@
             {% empty %}
             <a href="#" class="nav-link">Home</a>
             <a href="#products-section" class="nav-link">Menu Products</a>
+            <a href="#about-section" class="nav-link">About Us</a>
             {% endfor %}
         </nav>
         <button class="cart-btn" onclick="toggleCart()">
@@ -332,6 +333,22 @@
             {% empty %}
             <p style="grid-column: span 3; text-align:center;">No products found. Log into <a href="/admin/" style="color:var(--burgundy); text-decoration:underline;">/admin/</a> to add your items!</p>
             {% endfor %}
+        </div>
+    </section>
+
+    <!-- About Us Dynamic Section -->
+    <section id="about-section" style="background-color: var(--stucco-deep); padding: 80px 8%; border-top: 1px solid var(--line);">
+        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div class="section-kicker">Our Heritage</div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">{{ site_contents.about_us.title|default:"About By Chef Sara" }}</h2>
+            {% if site_contents.about_us.image %}
+            <div style="margin-bottom: 25px;">
+                <img src="{{ site_contents.about_us.image.url }}" alt="About Us" style="max-width: 100%; height: auto; border-radius: 6px; border: 1px solid var(--line);">
+            </div>
+            {% endif %}
+            <div style="font-size: 1.05rem; color: var(--ink-soft); line-height: 1.8; white-space: pre-line;">
+                {{ site_contents.about_us.body_text|default:"Add your About Us story and details inside the Site contents section of your Django admin dashboard." }}
+            </div>
         </div>
     </section>
 
