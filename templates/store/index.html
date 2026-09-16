@@ -78,7 +78,13 @@
                 {% if product.is_bestseller %}
                 <span class="badge-bestseller">Best Seller</span>
                 {% endif %}
-                <div class="product-img-placeholder">{{ product.image_placeholder_tag }}</div>
+        <div class="product-img-placeholder">
+    <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="var(--wood)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 2h4v2h-4z"></path>
+        <path d="M5 6h14a1 1 0 0 1 1 1v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a1 1 0 0 1 1-1z"></path>
+        <path d="M6 11h12"></path>
+    </svg>
+</div>
                 <div class="product-info">
                     <h3>{{ product.name }}</h3>
                     <div class="product-subtitle">{{ product.subtitle }}</div>
