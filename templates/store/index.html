@@ -15,7 +15,6 @@
             --stucco:       #ECE0C4;
             --stucco-deep:  #E1D0A4;
             --panel:        #F6EFDC;
-            --green:        #2F5D4E;
             --burgundy:     #7A2E2A;
             --mustard:      #C08A2E;
             --line:         rgba(43,29,18,0.16);
@@ -39,15 +38,18 @@
         .section-header h2 { font-size: 2.75rem; font-weight: 500; }
         .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .product-card { background-color: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-        .badge-bestseller { position: absolute; top: 16px; right: 16px; background-color: var(--mustard); color: var(--ink); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 3px; text-transform: uppercase; }
-        .product-img-placeholder { height: 180px; background-color: var(--stucco); border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .badge-bestseller { position: absolute; top: 16px; right: 16px; background-color: var(--mustard); color: var(--ink); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 3px; text-transform: uppercase; z-index: 10; }
+        .product-img-placeholder { height: 210px; background-color: rgba(0,0,0,0.03); border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
         .product-info h3 { font-size: 1.35rem; font-weight: 600; margin-bottom: 4px; }
         .product-subtitle { font-style: italic; color: var(--wood); font-size: 0.9rem; margin-bottom: 10px; }
         .product-desc { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 20px; }
         .product-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 16px; }
-        .product-price { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--burgundy); }
-        .add-to-order-btn { background-color: var(--ink); color: var(--stucco); border: none; padding: 10px 16px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; }
+        .product-price { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--burgundy); }
+        .quantity-control { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 4px 8px; gap: 8px; font-size: 0.85rem; }
+        .qty-btn { background: none; border: none; cursor: pointer; color: var(--wood); font-weight: 600; }
+        .add-to-order-btn { background-color: var(--ink); color: var(--stucco); border: none; padding: 10px 14px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-weight: 500; }
         .add-to-order-btn:hover { background-color: var(--burgundy); }
+        .bottom-action-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
         footer { background-color: var(--ink); color: var(--stucco-deep); padding: 40px 8%; text-align: center; font-size: 0.85rem; }
     </style>
 </head>
@@ -81,31 +83,92 @@
                 
                 <div class="product-img-placeholder">
                     {% if product.image_placeholder_tag == 'khlii' %}
-                    <!-- Khlii Jar SVG -->
-                    <svg width="110" height="130" viewBox="0 0 100 120">
+                    <!-- Khlii Jar -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
                         <rect x="35" y="10" width="30" height="12" rx="3" fill="#8B6343"/>
                         <rect x="25" y="20" width="50" height="10" rx="4" fill="#A47551"/>
                         <rect x="22" y="28" width="56" height="8" rx="2" fill="#704A2B"/>
-                        <rect x="25" y="34" width="50" height="75" rx="8" fill="#7A2E2A"/>
-                        <ellipse cx="50" cy="70" rx="16" ry="10" fill="#4A1815"/>
+                        <rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/>
+                        <ellipse cx="50" cy="72" rx="16" ry="10" fill="#4A1815"/>
                     </svg>
                     {% elif product.image_placeholder_tag == 'smen' %}
-                    <!-- Smen Jar SVG -->
-                    <svg width="110" height="130" viewBox="0 0 100 120">
-                        <rect x="38" y="12" width="24" height="10" rx="3" fill="#6B4F36"/>
-                        <rect x="30" y="20" width="40" height="10" rx="4" fill="#8B6846"/>
-                        <path d="M 28 35 Q 15 65 35 95 L 65 95 Q 85 65 72 35 Z" fill="#D9BE85"/>
-                        <ellipse cx="50" cy="65" rx="14" ry="12" fill="#C4A47C" stroke="#A48057" stroke-width="2"/>
+                    <!-- Smen Pot -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="38" y="10" width="24" height="10" rx="3" fill="#6B4F36"/>
+                        <rect x="30" y="18" width="40" height="10" rx="4" fill="#8B6846"/>
+                        <path d="M 28 32 Q 12 65 32 98 L 68 98 Q 88 65 72 32 Z" fill="#D9BE85"/>
+                        <ellipse cx="50" cy="65" rx="15" ry="13" fill="#C4A47C" stroke="#A48057" stroke-width="2"/>
+                    </svg>
+                    {% elif product.image_placeholder_tag == 'lemon' %}
+                    <!-- Preserved Lemon Jar -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="32" y="12" width="36" height="12" rx="3" fill="#8B6846"/>
+                        <rect x="26" y="22" width="48" height="88" rx="6" fill="#C08A2E" fill-opacity="0.55"/>
+                        <rect x="26" y="22" width="48" height="88" rx="6" fill="none" stroke="#8B6846" stroke-width="2"/>
+                        <circle cx="45" cy="50" r="11" fill="#E1C488"/>
+                        <circle cx="62" cy="78" r="9" fill="#E1C488"/>
+                        <circle cx="40" cy="88" r="8" fill="#E1C488"/>
+                    </svg>
+                    {% elif product.image_placeholder_tag == 'orange_jam' %}
+                    <!-- Orange Jam -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="38" y="10" width="24" height="10" rx="3" fill="#6B4F36"/>
+                        <rect x="30" y="18" width="40" height="10" rx="4" fill="#8B6846"/>
+                        <path d="M 28 32 Q 12 65 32 98 L 68 98 Q 88 65 72 32 Z" fill="#E59422"/>
+                        <ellipse cx="50" cy="65" rx="16" ry="14" fill="#D27E13" stroke="#B0650A" stroke-width="2"/>
+                    </svg>
+                    {% elif product.image_placeholder_tag == 'lemon_jam' %}
+                    <!-- Lemon Jam -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="38" y="10" width="24" height="10" rx="3" fill="#6B4F36"/>
+                        <rect x="30" y="18" width="40" height="10" rx="4" fill="#8B6846"/>
+                        <path d="M 28 32 Q 12 65 32 98 L 68 98 Q 88 65 72 32 Z" fill="#E8D192"/>
+                        <ellipse cx="50" cy="65" rx="16" ry="14" fill="#D9BE85" stroke="#A48057" stroke-width="2"/>
+                    </svg>
+                    {% elif product.image_placeholder_tag == 'spice_ras' %}
+                    <!-- Ras el Hanout Spice Jar -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="34" y="20" width="32" height="12" rx="3" fill="#8B6846"/>
+                        <rect x="28" y="32" width="44" height="70" rx="4" fill="#7A2E2A"/>
+                    </svg>
+                    {% elif product.image_placeholder_tag == 'spice_tagine' %}
+                    <!-- Tagine Spice Jar -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="34" y="20" width="32" height="12" rx="3" fill="#8B6846"/>
+                        <rect x="28" y="32" width="44" height="70" rx="4" fill="#2F5D4E"/>
+                    </svg>
+                    {% elif product.image_placeholder_tag == 'spice_chermoula' %}
+                    <!-- Chermoula Spice Jar -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="34" y="20" width="32" height="12" rx="3" fill="#8B6846"/>
+                        <rect x="28" y="32" width="44" height="70" rx="4" fill="#C08A2E"/>
+                    </svg>
+                    {% elif product.image_placeholder_tag == 'spice_couscous' %}
+                    <!-- Couscous Spice Jar -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="34" y="20" width="32" height="12" rx="3" fill="#8B6846"/>
+                        <rect x="28" y="32" width="44" height="70" rx="4" fill="#8B5A2B"/>
+                    </svg>
+                    {% elif product.image_placeholder_tag == 'amlou_orig' %}
+                    <!-- Amlou Original -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="35" y="16" width="30" height="10" rx="3" fill="#8B6846"/>
+                        <rect x="28" y="26" width="44" height="10" rx="4" fill="#A48057"/>
+                        <circle cx="50" cy="70" r="22" fill="#C08A2E" stroke="#8B6846" stroke-width="2"/>
+                    </svg>
+                    {% elif product.image_placeholder_tag == 'amlou_dxb' %}
+                    <!-- Amlou DXB Style -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="35" y="16" width="30" height="10" rx="3" fill="#8B6846"/>
+                        <rect x="28" y="26" width="44" height="10" rx="4" fill="#A48057"/>
+                        <circle cx="50" cy="70" r="22" fill="#7A2E2A" stroke="#4A1815" stroke-width="2"/>
                     </svg>
                     {% else %}
-                    <!-- Preserved Lemon Jar SVG -->
-                    <svg width="110" height="130" viewBox="0 0 100 120">
-                        <rect x="32" y="15" width="36" height="12" rx="3" fill="#8B6846"/>
-                        <rect x="26" y="25" width="48" height="85" rx="6" fill="#C08A2E" fill-opacity="0.6"/>
-                        <rect x="26" y="25" width="48" height="85" rx="6" fill="none" stroke="#8B6846" stroke-width="2"/>
-                        <circle cx="45" cy="50" r="10" fill="#E1C488"/>
-                        <circle cx="62" cy="75" r="8" fill="#E1C488"/>
-                        <circle cx="40" cy="85" r="7" fill="#E1C488"/>
+                    <!-- Amlou Dates & Nuts -->
+                    <svg width="120" height="150" viewBox="0 0 100 120">
+                        <rect x="35" y="16" width="30" height="10" rx="3" fill="#8B6846"/>
+                        <rect x="28" y="26" width="44" height="10" rx="4" fill="#A48057"/>
+                        <circle cx="50" cy="70" r="22" fill="#9C3A33" stroke="#652420" stroke-width="2"/>
                     </svg>
                     {% endif %}
                 </div>
@@ -114,11 +177,18 @@
                     <h3>{{ product.name }}</h3>
                     <div class="product-subtitle">{{ product.subtitle }}</div>
                     <p class="product-desc">{{ product.description }}</p>
-                    <p style="font-size:0.75rem; color:var(--wood);">Stock available: {{ product.inventory_stock }} units</p>
                 </div>
+
                 <div class="product-footer">
                     <div class="product-price">AED {{ product.price }}</div>
-                    <button class="add-to-order-btn" onclick="alert('Added {{ product.name }} to order!')">Add to Order</button>
+                    <div class="bottom-action-row">
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="this.nextElementSibling.textContent = Math.max(1, parseInt(this.nextElementSibling.textContent) - 1)">-</button>
+                            <span>1</span>
+                            <button class="qty-btn" onclick="this.previousElementSibling.textContent = parseInt(this.previousElementSibling.textContent) + 1">+</button>
+                        </div>
+                        <button class="add-to-order-btn" onclick="alert('Added {{ product.name }} to order!')">Add to order</button>
+                    </div>
                 </div>
             </div>
             {% empty %}
