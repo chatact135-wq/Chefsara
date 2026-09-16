@@ -12,9 +12,18 @@ class Category(models.Model):
 
 class Product(models.Model):
     IMAGE_CHOICES = [
-        ('khlii', 'Moroccan Khlii Jar'),
-        ('smen', 'Moroccan Smen Jar'),
-        ('lemon', 'Preserved Lemon Jar'),
+        ('khlii', 'Moroccan Khlii Jar (Maroon Confit)'),
+        ('smen', 'Moroccan Smen Pot (Cultured Butter)'),
+        ('lemon', 'Preserved Lemon Jar (Salt-Cured)'),
+        ('orange_jam', 'Moroccan Orange Jam (Bright Orange)'),
+        ('lemon_jam', 'Moroccan Lemon Jam (Light Citrus)'),
+        ('spice_ras', 'Ras el Hanout Spice Jar (Deep Red)'),
+        ('spice_tagine', 'Tagine Spice Blend Jar (Deep Green)'),
+        ('spice_chermoula', 'Chermoula Spice Jar (Golden Mustard)'),
+        ('spice_couscous', 'Couscous Spice Jar (Warm Brown)'),
+        ('amlou_orig', 'Amlou Original Pot (Amber Honey)'),
+        ('amlou_dxb', 'Amlou DXB Style Pot (Rich Cocoa)'),
+        ('amlou_dates', 'Amlou Dates & Nuts Pot (Deep Rust)'),
     ]
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
