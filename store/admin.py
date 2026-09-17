@@ -4,7 +4,8 @@ from .models import Category, Product, PromoCode, HeroSlide, MenuItem, SiteConte
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
-    list_display = ('name', 'slug')
+    list_display = ('name', 'slug', 'order')
+    list_editable = ('order',)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
