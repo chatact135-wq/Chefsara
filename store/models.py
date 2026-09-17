@@ -6,11 +6,11 @@ class Category(models.Model):
     slug = models.SlugField(unique=True)
     subtitle = models.CharField(max_length=200, blank=True, null=True)
     image = models.ImageField(upload_to='category_images/', blank=True, null=True)
-    order = models.PositiveIntegerField(default=0)
+    sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name_plural = "Categories"
-        ordering = ['order']
+        ordering = ['sort_order']
 
     def __str__(self):
         return self.name
