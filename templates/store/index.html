@@ -43,7 +43,6 @@
         .header-actions { display: flex; align-items: center; gap: 12px; }
         .cart-btn { background: none; border: 1px solid var(--brass); color: var(--ink); padding: 7px 14px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
         .cart-badge { background-color: var(--burgundy); color: #fff; border-radius: 50%; padding: 1px 5px; font-size: 0.7rem; }
-        
         .menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--ink); }
 
         /* Mobile Drawer */
@@ -70,11 +69,13 @@
         .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; }
         .dot.active { background: var(--brass-light); }
 
-        /* Category Grid Boxes */
+        /* Dynamic Category Grid Boxes */
         .category-grid-section { padding: 60px 8%; background-color: var(--dark-bg); border-top: 1px solid rgba(176,141,79,0.2); }
         .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .cat-box { background-color: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .cat-box h3 { font-size: 1.4rem; font-weight: 600; margin: 10px 0 6px 0; color: var(--ink); }
+        .cat-box { background-color: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s, background-color 0.2s; }
+        .cat-box:hover { transform: translateY(-3px); background-color: #FAF4E6; }
+        .cat-img-preview { width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px; border-radius: 4px; }
+        .cat-box h3 { font-size: 1.4rem; font-weight: 600; margin: 6px 0; color: var(--ink); }
         .cat-box p { font-size: 0.85rem; color: var(--wood); }
 
         /* Products Section */
@@ -135,41 +136,24 @@
         
         .cart-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: var(--stucco); }
         .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; margin-bottom: 15px; }
-        .terms-box { font-size: 0.75rem; color: var(--ink-soft); background: rgba(255,255,255,0.5); padding: 10px; border-radius: 4px; border: 1px solid var(--line); max-height: 70px; overflow-y: auto; margin-bottom: 10px; }
-        .terms-checkbox { display: flex; align-items: flex-start; gap: 8px; font-size: 0.78rem; margin-bottom: 15px; }
         .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; }
-        .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: var(--panel); width: 520px; max-width: 90%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
         .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--stucco); }
         .modal-header h3 { font-size: 1.5rem; font-weight: 500; }
         .modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; }
-        .form-section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--wood); margin-bottom: 12px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 5px; }
         .form-control { width: 100%; padding: 10px 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; color: var(--ink); }
         textarea.form-control { resize: vertical; height: 75px; }
-        
-        .payment-option { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
-        .payment-option input { margin-top: 3px; }
-        .payment-details { font-size: 0.8rem; color: var(--wood); margin-top: 4px; }
-        
-        .promo-input-row { display: flex; gap: 8px; margin-bottom: 15px; }
-        .apply-btn { background-color: var(--ink); color: #fff; border: none; padding: 0 16px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
-        .apply-btn:hover { background-color: var(--burgundy); }
-        .promo-msg { font-size: 0.78rem; margin-top: 4px; }
-
         .summary-box { background: var(--stucco); border: 1px solid var(--line); border-radius: 4px; padding: 15px; margin-bottom: 20px; }
         .summary-line { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; }
         .summary-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
-        
         .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
         
         footer { background-color: var(--ink); color: var(--stucco-deep); padding: 40px 8%; text-align: center; font-size: 0.85rem; }
 
-        /* Responsive Breakpoints */
         @media(max-width: 900px) {
             nav { display: none; }
             .menu-toggle { display: block; }
@@ -266,29 +250,25 @@
         <div class="slider-dots" id="sliderDots"></div>
     </div>
 
-    <!-- Category Grid Boxes -->
+    <!-- Dynamic Clickable Category Grid Boxes -->
     <div class="category-grid-section">
         <div class="cat-grid">
-            <div class="cat-box">
-                <svg width="40" height="40" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
-                <h3>Moroccan Hand Craft</h3>
-                <p>Khlii &middot; Smen &middot; Preserved Lemon</p>
+            {% for cat in categories %}
+            <div class="cat-box" onclick="location.href='#products-section'">
+                {% if cat.image %}
+                <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="cat-img-preview">
+                {% else %}
+                <svg width="30" height="30" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
+                {% endif %}
+                <h3>{{ cat.name }}</h3>
+                <p>{{ cat.subtitle|default:"" }}</p>
             </div>
-            <div class="cat-box">
-                <svg width="40" height="40" viewBox="0 0 100 120"><circle cx="50" cy="65" r="15" fill="#D9BE85"/></svg>
-                <h3>Breakfast Hand Crafted</h3>
-                <p>Orange Jam &middot; Lemon Jam</p>
-            </div>
-            <div class="cat-box">
-                <svg width="40" height="40" viewBox="0 0 100 120"><rect x="28" y="32" width="44" height="70" rx="4" fill="#C08A2E"/></svg>
-                <h3>Moroccan Spices Blend</h3>
-                <p>Ras el Hanout &amp; more</p>
-            </div>
-            <div class="cat-box">
-                <svg width="40" height="40" viewBox="0 0 100 120"><circle cx="50" cy="70" r="22" fill="#C08A2E"/></svg>
-                <h3>Amlou</h3>
-                <p>Original &middot; DXB &middot; Dates &amp; Nuts</p>
-            </div>
+            {% empty %}
+            <div class="cat-box"><h3>Moroccan Hand Craft</h3><p>Khlii &middot; Smen &middot; Preserved Lemon</p></div>
+            <div class="cat-box"><h3>Breakfast Hand Crafted</h3><p>Orange Jam &middot; Lemon Jam</p></div>
+            <div class="cat-box"><h3>Moroccan Spices Blend</h3><p>Ras el Hanout &amp; more</p></div>
+            <div class="cat-box"><h3>Amlou</h3><p>Original &middot; DXB &middot; Dates &amp; Nuts</p></div>
+            {% endfor %}
         </div>
     </div>
 
@@ -370,9 +350,9 @@
             <div class="catering-form">
                 <form method="POST" id="cateringForm" onsubmit="handleCateringSubmit(event)">
                     {% csrf_token %}
-                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Name</label><input type="text" name="name" id="catName" class="form-control-dark" required placeholder="Your full name"></div>
-                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Phone / WhatsApp</label><input type="text" name="phone" id="catPhone" class="form-control-dark" required placeholder="+971 XX XXX XXXX"></div>
-                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Event date</label><input type="text" name="event_date" id="catDate" class="form-control-dark" placeholder="Approximate date"></div>
+                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Name</label><input type="text" name="name" class="form-control-dark" required placeholder="Your full name"></div>
+                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Phone / WhatsApp</label><input type="text" name="phone" class="form-control-dark" required placeholder="+971 XX XXX XXXX"></div>
+                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Event date</label><input type="text" name="event_date" class="form-control-dark" placeholder="Approximate date"></div>
                     <button type="submit" name="catering_submit" class="submit-btn">Send Catering Inquiry</button>
                 </form>
                 <div id="cateringSuccessMsg" style="display: none; text-align: center; padding: 30px; color: #FAF3E0;">
@@ -395,9 +375,9 @@
             <div class="contact-card">
                 <form method="POST" id="contactForm" onsubmit="handleContactSubmit(event)">
                     {% csrf_token %}
-                    <div class="form-group"><label>Your Name</label><input type="text" name="name" id="conName" class="form-control" required></div>
-                    <div class="form-group"><label>Email Address</label><input type="email" name="email" id="conEmail" class="form-control" required></div>
-                    <div class="form-group"><label>Message / Inquiry</label><textarea name="message" id="conMsg" class="form-control" required></textarea></div>
+                    <div class="form-group"><label>Your Name</label><input type="text" name="name" class="form-control" required></div>
+                    <div class="form-group"><label>Email Address</label><input type="email" name="email" class="form-control" required></div>
+                    <div class="form-group"><label>Message / Inquiry</label><textarea name="message" class="form-control" required></textarea></div>
                     <button type="submit" name="contact_submit" class="submit-btn">Send Message to Admin</button>
                 </form>
                 <div id="contactSuccessMsg" style="display: none; text-align: center; padding: 30px; color: var(--ink);">
@@ -521,33 +501,22 @@
             cart = []; saveCart(); updateCartUI(); closeCheckoutModal();
         }
 
-        // AJAX Form Handlers to show success messages without reloading
         function handleCateringSubmit(event) {
             event.preventDefault();
             let formData = new FormData(document.getElementById('cateringForm'));
             formData.append('catering_submit', 'true');
-
             fetch(window.location.href, { method: 'POST', body: formData })
-            .then(response => {
-                if(response.ok) {
-                    document.getElementById('cateringForm').style.display = 'none';
-                    document.getElementById('cateringSuccessMsg').style.display = 'block';
-                }
-            }).catch(err => { document.getElementById('cateringForm').submit(); });
+            .then(res => { if(res.ok) { document.getElementById('cateringForm').style.display = 'none'; document.getElementById('cateringSuccessMsg').style.display = 'block'; } })
+            .catch(e => { document.getElementById('cateringForm').submit(); });
         }
 
         function handleContactSubmit(event) {
             event.preventDefault();
             let formData = new FormData(document.getElementById('contactForm'));
             formData.append('contact_submit', 'true');
-
             fetch(window.location.href, { method: 'POST', body: formData })
-            .then(response => {
-                if(response.ok) {
-                    document.getElementById('contactForm').style.display = 'none';
-                    document.getElementById('contactSuccessMsg').style.display = 'block';
-                }
-            }).catch(err => { document.getElementById('contactForm').submit(); });
+            .then(res => { if(res.ok) { document.getElementById('contactForm').style.display = 'none'; document.getElementById('contactSuccessMsg').style.display = 'block'; } })
+            .catch(e => { document.getElementById('contactForm').submit(); });
         }
     </script>
 </body>
