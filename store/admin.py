@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, PromoCode, HeroSlide, MenuItem, SiteContent
+from .models import Category, Product, PromoCode, HeroSlide, MenuItem, SiteContent, CateringInquiry, ContactInquiry
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -25,7 +25,19 @@ class MenuItemAdmin(admin.ModelAdmin):
 @admin.register(SiteContent)
 class SiteContentAdmin(admin.ModelAdmin):
     list_display = ('section_key', 'title')
-    search_fields = ('section_key', 'title', 'body_text')
+    search_fields = ('section_key', 'title')
+
+@admin.register(CateringInquiry)
+class CateringInquiryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'phone', 'event_date', 'created_at')
+    readonly_fields = ('created_at',)
+    search_fields = ('name', 'phone')
+
+@admin.register(ContactInquiry)
+class ContactInquiryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'created_at')
+    readonly_fields = ('created_at',)
+    search_fields = ('name', 'email', 'message')
 
 @admin.register(PromoCode)
 class PromoCodeAdmin(admin.ModelAdmin):
