@@ -62,7 +62,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
 ]
-
+INSTALLED_APPS = [
+    # ... your other apps ...
+    'store',
+    'ckeditor',
+]
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Dubai'
 USE_I18N = True
