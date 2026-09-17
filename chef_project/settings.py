@@ -9,13 +9,18 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = ['https://chefsara-production.up.railway.app']
 INSTALLED_APPS = [
+    # Required for Django Admin
     'django.contrib.admin',
+    
+    # These apps are also typically required by the admin site:
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'store',
+
+    # Your custom apps (e.g., loyalty, etc.)
+    # ...
 ]
 
 MIDDLEWARE = [
