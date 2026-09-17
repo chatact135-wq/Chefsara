@@ -4,9 +4,13 @@ from ckeditor.fields import RichTextField
 class Category(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
+    subtitle = models.CharField(max_length=200, blank=True, null=True, help_text="e.g. Khlii · Smen · Preserved Lemon")
+    image = models.ImageField(upload_to='category_images/', blank=True, null=True, help_text="Upload category display image")
+    order = models.PositiveIntegerField(default=0, help_text="Display sequence order")
 
     class Meta:
         verbose_name_plural = "Categories"
+        ordering = ['order']
 
     def __str__(self):
         return self.name
