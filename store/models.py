@@ -1,3 +1,10 @@
+from ckeditor.fields import RichTextField
+
+class SiteContent(models.Model):
+    section_key = models.CharField(max_length=100, unique=True)
+    title = models.CharField(max_length=200, blank=True, null=True)
+    body_text = RichTextField(help_text="Full rich text editor with formatting, tables, and images")
+    image = models.ImageField(upload_to='site_images/', blank=True, null=True)
 from django.db import models
 
 class Category(models.Model):
