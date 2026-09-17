@@ -1,11 +1,5 @@
-from ckeditor.fields import RichTextField
-
-class SiteContent(models.Model):
-    section_key = models.CharField(max_length=100, unique=True)
-    title = models.CharField(max_length=200, blank=True, null=True)
-    body_text = RichTextField(help_text="Full rich text editor with formatting, tables, and images")
-    image = models.ImageField(upload_to='site_images/', blank=True, null=True)
 from django.db import models
+from ckeditor.fields import RichTextField
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -67,9 +61,9 @@ class HeroSlide(models.Model):
         return f"Slide: {self.title}"
 
 class MenuItem(models.Model):
-    title = models.CharField(max_length=100, help_text="Navigation name e.g. Home, About Us")
-    url = models.CharField(max_length=200, help_text="Destination link e.g. #products-section or #about-section")
-    order = models.PositiveIntegerField(default=0, help_text="Sequence order")
+    title = models.CharField(max_length=100)
+    url = models.CharField(max_length=200)
+    order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -81,7 +75,7 @@ class MenuItem(models.Model):
 class SiteContent(models.Model):
     section_key = models.CharField(max_length=100, unique=True, help_text="Type exact key like: about_us")
     title = models.CharField(max_length=200, blank=True, null=True, help_text="Section Title")
-    body_text = models.TextField(help_text="Write your description, story, or content here")
+    body_text = RichTextField(help_text="Full rich text editor with formatting, tables, and images")
     image = models.ImageField(upload_to='site_images/', blank=True, null=True, help_text="Upload optional image")
 
     def __str__(self):
