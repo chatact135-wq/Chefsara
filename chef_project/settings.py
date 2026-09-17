@@ -68,9 +68,14 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
 ]
 INSTALLED_APPS = [
-    # ... your other apps ...
-    'store',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
     'ckeditor',
+    'store',
 ]
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Dubai'
