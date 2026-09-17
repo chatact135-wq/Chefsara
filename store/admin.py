@@ -32,12 +32,14 @@ class CateringInquiryAdmin(admin.ModelAdmin):
     list_display = ('name', 'phone', 'event_date', 'created_at')
     readonly_fields = ('created_at',)
     search_fields = ('name', 'phone')
+    ordering = ('-created_at',)
 
 @admin.register(ContactInquiry)
 class ContactInquiryAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'created_at')
     readonly_fields = ('created_at',)
     search_fields = ('name', 'email', 'message')
+    ordering = ('-created_at',)
 
 @admin.register(PromoCode)
 class PromoCodeAdmin(admin.ModelAdmin):
