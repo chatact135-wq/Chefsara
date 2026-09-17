@@ -74,12 +74,36 @@ class MenuItem(models.Model):
 
 class SiteContent(models.Model):
     section_key = models.CharField(max_length=100, unique=True, help_text="Type exact key like: about_us")
-    title = models.CharField(max_length=200, blank=True, null=True, help_text="Section Title")
-    body_text = RichTextField(help_text="Full rich text editor with formatting, tables, and images")
-    image = models.ImageField(upload_to='site_images/', blank=True, null=True, help_text="Upload optional image")
+    title = models.CharField(max_length=200, blank=True, null=True)
+    body_text = RichTextField(blank=True, null=True)
+    image = models.ImageField(upload_to='site_images/', blank=True, null=True)
 
     def __str__(self):
-        return f"Content Block: {self.section_key}"
+        return f"Content: {self.section_key}"
+
+class CateringInquiry(models.Model):
+    name = models.CharField(max_length=150)
+    phone = models.CharField(max_length=50)
+    event_date = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Catering Inquiries"
+
+    def __str__(self):
+        return f"Catering Inquiry from {self.name} ({self.phone})"
+
+class ContactInquiry(models.Model):
+    name = models.CharField(max_length=150)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Contact Inquiries"
+
+    def __str__(self):
+        return f"Message from {self.name} ({self.email})"
 
 class PromoCode(models.Model):
     code = models.CharField(max_length=50, unique=True)
