@@ -8,27 +8,28 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-change-me-in-p
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = ['https://chefsara-production.up.railway.app']
+
 INSTALLED_APPS = [
-    # Required for Django Admin
     'django.contrib.admin',
-    
-    # These apps are also typically required by the admin site:
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
-
-    # Your custom apps (e.g., loyalty, etc.)
-    # ...
+    'cloudinary',
+    'ckeditor',
+    'store',
 ]
-# Add your Cloudinary credentials (get these free from cloudinary.com)
+
+# Cloudinary Storage Configuration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'xm9jfa04',
-    'API_KEY': '541425459386261',
-    'API_SECRET': 'yPnjRdRZRbEpqEVJgTiBBHvKFGE',
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'xm9jfa04'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', '541425459386261'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'yPnjRdRZRbEpqEVJgTiBBHvKFGE'),
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -73,33 +74,20 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
 ]
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'ckeditor',
-    'store',
-    # ... your existing apps ...
-    'cloudinary_storage',
-    'django.contrib.staticfiles',
-    'cloudinary',
-]
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Dubai'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
