@@ -106,11 +106,10 @@
         .add-to-order-btn:hover { background-color: var(--burgundy); }
         .bottom-action-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
 
-        /* Meet the Chef Section with Mobile Order Fix */
+        /* Meet the Chef Section */
         .chef-section { background-color: var(--dark-bg); color: #F5EBE6; padding: 80px 8%; }
         .chef-grid { display: grid; grid-template-columns: 420px 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; }
-        .chef-img-box { border: 1px solid var(--brass); padding: 12px; background: rgba(176,141,79,0.05); grid-column: 1; }
-        .chef-content { grid-column: 2; }
+        .chef-img-box { border: 1px solid var(--brass); padding: 12px; background: rgba(176,141,79,0.05); }
         .chef-img-box img { width: 100%; height: 500px; object-fit: cover; display: block; }
         .chef-content h2 { font-size: 2.75rem; font-weight: 400; color: #FAF3E0; margin-bottom: 20px; }
         .chef-quote { font-style: italic; color: #D3C5B4; margin-bottom: 25px; font-size: 1.1rem; line-height: 1.6; }
@@ -214,8 +213,6 @@
             .product-grid { grid-template-columns: 1fr; }
             .cat-grid { grid-template-columns: 1fr; }
             .chef-grid { grid-template-columns: 1fr; gap: 30px; }
-            .chef-content { grid-row: 1; }
-            .chef-img-box { grid-row: 2; }
             .slide { flex-direction: column; text-align: center; padding: 40px 5%; }
             .slide-graphic { margin-top: 30px; width: 220px; height: 220px; }
             .form-row-grid { grid-template-columns: 1fr; }
@@ -384,9 +381,6 @@
     <!-- Updated Meet the Chef Section -->
     <section id="about-section" class="chef-section">
         <div class="chef-grid">
-            <div class="chef-img-box">
-                <img src="{% static 'images/chef-sara-photo.jpg' %}" alt="Chef Sara Akkar" onerror="this.src='https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1000&auto=format&fit=crop'">
-            </div>
             <div class="chef-content">
                 <div class="section-kicker" style="color:var(--brass-light); margin-bottom: 12px; letter-spacing: 0.15em;">— Meet the Chef</div>
                 <h2>Chef Sara Akkar</h2>
@@ -408,6 +402,9 @@
                         <div class="chef-stat-label">Based in Al Ain</div>
                     </div>
                 </div>
+            </div>
+            <div class="chef-img-box">
+                <img src="{% static 'images/chef-sara-photo.jpg' %}" alt="Chef Sara Akkar" onerror="this.src='https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1000&auto=format&fit=crop'">
             </div>
         </div>
     </section>
