@@ -1,39 +1,46 @@
-from django.shortcuts import render, redirect
-from .models import Category, Product, PromoCode, HeroSlide, MenuItem, SiteContent, CateringInquiry, ContactInquiry
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCode, CateringInquiry, ContactInquiry
 
 def home_view(request):
     if request.method == 'POST':
         if 'catering_submit' in request.POST:
-            name = request.POST.get('name')
-            phone = request.POST.get('phone')
-            event_date = request.POST.get('event_date')
-            if name and phone:
-                CateringInquiry.objects.create(name=name, phone=phone, event_date=event_date)
-            return redirect('/#catering-section')
-
+            CateringInquiry.objects.create(
+                name=request.POST.get('name'),
+                phone=request.POST.get('phone'),
+                event_date=request.POST.get('event_date')
+            )
+            return redirect('home')
         elif 'contact_submit' in request.POST:
-            name = request.POST.get('name')
-            email = request.POST.get('email')
-            message = request.POST.get('message')
-            if name and email:
-                ContactInquiry.objects.create(name=name, email=email, message=message)
-            return redirect('/#contact-section')
+            ContactInquiry.objects.create(
+                name=request.POST.get('name'),
+                email=request.POST.get('email'),
+                message=request.POST.get('message')
+            )
+            return redirect('home')
 
+    slides = HeroSlide.objects.all()
     categories = Category.objects.all()
     products = Product.objects.all()
-    slides = HeroSlide.objects.all()
-    menu_items = MenuItem.objects.filter(is_active=True)
-    site_contents = {sc.section_key: sc for sc in SiteContent.objects.all()}
-    promos = PromoCode.objects.filter(is_active=True)
-    
-    promo_dict = {p.code.upper(): p.discount_percentage for p in promos}
+    promo_codes = PromoCode.objects.filter(is_active=True)
+    promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
     context = {
+        'slides': slides,
         'categories': categories,
         'products': products,
-        'slides': slides,
-        'menu_items': menu_items,
-        'site_contents': site_contents,
         'promo_dict': promo_dict,
     }
     return render(request, 'store/index.html', context)
+
+def product_detail_view(request, product_slug):
+    product = get_object_or_404(Product, slug=product_slug)
+    categories = Category.objects.all()
+    promo_codes = PromoCode.objects.filter(is_active=True)
+    promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
+    
+    context = {
+        'product': product,
+        'categories': categories,
+        'promo_dict': promo_dict,
+    }
+    return render(request, 'store/product_detail.html', context)
