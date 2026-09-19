@@ -23,14 +23,14 @@
             --line:         rgba(43,29,18,0.16);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Jost', sans-serif; background-color: var(--stucco); color: var(--ink); line-height: 1.6; }
+        body { font-family: 'Jost', sans-serif; background-color: var(--stucco); color: var(--ink); line-height: 1.6; overflow-x: hidden; }
         h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; }
         a { text-decoration: none; color: inherit; }
 
         .announcement-bar { background-color: var(--dark-bg); color: var(--brass-light); text-align: center; font-size: 0.85rem; padding: 8px 16px; border-bottom: 1px solid rgba(176,141,79,0.2); }
         .announcement-bar strong { color: #fff; }
 
-        header { position: sticky; top: 0; z-index: 1000; background-color: rgba(236, 224, 196, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; padding: 14px 4%; }
+        header { position: sticky; top: 0; z-index: 1000; background-color: rgba(236, 224, 196, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; padding: 14px 4%; width: 100%; }
         .logo-area { display: flex; align-items: center; gap: 10px; }
         .logo-emblem { width: 34px; height: 34px; border: 1px solid var(--brass); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
         .logo-emblem::before { content: ""; width: 14px; height: 14px; background-color: var(--burgundy); transform: rotate(45deg); }
@@ -106,10 +106,11 @@
         .add-to-order-btn:hover { background-color: var(--burgundy); }
         .bottom-action-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
 
-        /* Meet the Chef Section */
+        /* Meet the Chef Section with Mobile Order Fix */
         .chef-section { background-color: var(--dark-bg); color: #F5EBE6; padding: 80px 8%; }
         .chef-grid { display: grid; grid-template-columns: 420px 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; }
-        .chef-img-box { border: 1px solid var(--brass); padding: 12px; background: rgba(176,141,79,0.05); }
+        .chef-img-box { border: 1px solid var(--brass); padding: 12px; background: rgba(176,141,79,0.05); grid-column: 1; }
+        .chef-content { grid-column: 2; }
         .chef-img-box img { width: 100%; height: 500px; object-fit: cover; display: block; }
         .chef-content h2 { font-size: 2.75rem; font-weight: 400; color: #FAF3E0; margin-bottom: 20px; }
         .chef-quote { font-style: italic; color: #D3C5B4; margin-bottom: 25px; font-size: 1.1rem; line-height: 1.6; }
@@ -138,14 +139,13 @@
 
         /* Cart & Terms Modal Styling */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
-        .cart-drawer { position: fixed; top: 0; right: -440px; width: 420px; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
+        .cart-drawer { position: fixed; top: 0; right: -440px; width: 420px; max-width: 100%; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
         .cart-drawer.open { right: 0; }
         .cart-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
         .cart-header h3 { font-size: 1.4rem; font-weight: 600; }
         .close-drawer { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ink); }
         .cart-body { padding: 20px 24px; flex-grow: 1; overflow-y: auto; }
         .cart-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
-        .cart-item-details div:first-child { font-weight: 600; }
         .cart-item-right { text-align: right; }
         .cart-item-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--burgundy); }
         .remove-item { background: none; border: none; color: var(--burgundy); font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 4px; }
@@ -154,9 +154,9 @@
         .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; margin-bottom: 15px; }
         
         .terms-title-header { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--burgundy); letter-spacing: 0.08em; margin-bottom: 6px; }
-        .terms-scrollbox { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); height: 95px; overflow-y: auto; margin-bottom: 12px; line-height: 1.4; }
+        .terms-scrollbox { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); height: 85px; overflow-y: auto; margin-bottom: 12px; line-height: 1.4; }
         .terms-scrollbox h4 { font-size: 0.8rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
-        .terms-checkbox-row { display: flex; align-items: flex-start; gap: 8px; font-size: 0.76rem; color: var(--ink); margin-bottom: 15px; }
+        .terms-checkbox-row { display: flex; align-items: flex-start; gap: 8px; font-size: 0.75rem; color: var(--ink); margin-bottom: 15px; }
         .terms-checkbox-row input { margin-top: 2px; cursor: pointer; }
         .terms-checkbox-row a { color: var(--burgundy); text-decoration: underline; }
 
@@ -214,6 +214,8 @@
             .product-grid { grid-template-columns: 1fr; }
             .cat-grid { grid-template-columns: 1fr; }
             .chef-grid { grid-template-columns: 1fr; gap: 30px; }
+            .chef-content { grid-row: 1; }
+            .chef-img-box { grid-row: 2; }
             .slide { flex-direction: column; text-align: center; padding: 40px 5%; }
             .slide-graphic { margin-top: 30px; width: 220px; height: 220px; }
             .form-row-grid { grid-template-columns: 1fr; }
