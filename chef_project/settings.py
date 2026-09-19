@@ -22,7 +22,13 @@ INSTALLED_APPS = [
     # Your custom apps (e.g., loyalty, etc.)
     # ...
 ]
-
+# Add your Cloudinary credentials (get these free from cloudinary.com)
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'xm9jfa04',
+    'API_KEY': '541425459386261',
+    'API_SECRET': 'yPnjRdRZRbEpqEVJgTiBBHvKFGE',
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -76,6 +82,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ckeditor',
     'store',
+    # ... your existing apps ...
+    'cloudinary_storage',
+    'django.contrib.staticfiles',
+    'cloudinary',
 ]
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Dubai'
