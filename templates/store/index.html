@@ -119,7 +119,7 @@
         .contact-container { max-width: 800px; margin: 0 auto; }
         .contact-card { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 30px; margin-top: 30px; }
 
-        /* Cart & Terms Modal Styling matching screenshot */
+        /* Cart & Terms Modal Styling */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
         .cart-drawer { position: fixed; top: 0; right: -440px; width: 420px; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
         .cart-drawer.open { right: 0; }
@@ -149,19 +149,43 @@
         .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; opacity: 0.7; }
         .checkout-warning { font-size: 0.72rem; color: var(--burgundy); text-align: center; margin-top: 6px; }
 
+        /* Checkout Modal Matching Second Screenshot */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
-        .checkout-modal { background: var(--panel); width: 520px; max-width: 90%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .checkout-modal { background: var(--panel); width: 620px; max-width: 95%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
         .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--stucco); }
-        .modal-header h3 { font-size: 1.5rem; font-weight: 500; }
+        .modal-header h3 { font-size: 1.5rem; font-weight: 500; font-family: 'Cormorant Garamond', serif; }
         .modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; }
+        
+        .modal-section-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--wood); letter-spacing: 0.1em; margin-bottom: 12px; margin-top: 6px; }
+        .form-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 4px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 5px; }
         .form-control { width: 100%; padding: 10px 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; color: var(--ink); }
-        textarea.form-control { resize: vertical; height: 75px; }
-        .summary-box { background: var(--stucco); border: 1px solid var(--line); border-radius: 4px; padding: 15px; margin-bottom: 20px; }
-        .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
+        textarea.form-control { resize: vertical; height: 65px; }
         
-        /* Authentic Footer Styling */
+        /* Payment Options */
+        .payment-option { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+        .payment-option input { margin-top: 3px; accent-color: var(--burgundy); }
+        .payment-details { font-size: 0.78rem; color: var(--wood); margin-top: 3px; line-height: 1.4; }
+        
+        /* Promo Code Box inside Modal */
+        .promo-input-row { display: flex; gap: 8px; margin-bottom: 15px; }
+        .apply-btn { background-color: var(--ink); color: #fff; border: none; padding: 0 18px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+        .apply-btn:hover { background-color: var(--burgundy); }
+        .promo-msg { font-size: 0.75rem; margin-top: 4px; }
+
+        /* Order Summary Box inside Modal */
+        .summary-box { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 15px; margin-bottom: 15px; }
+        .summary-item-row { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 8px; color: var(--ink); }
+        .summary-divider { border-bottom: 1px dashed var(--line); margin: 10px 0; }
+        .summary-line { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; color: var(--ink-soft); }
+        .summary-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 600; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 8px; }
+        
+        .modal-terms-note { background: var(--stucco); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); margin-bottom: 15px; line-height: 1.4; }
+        .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
+        .whatsapp-note { font-size: 0.72rem; color: var(--wood); text-align: center; margin-top: 8px; line-height: 1.4; }
+
+        /* Authentic Footer Section */
         footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); }
         .footer-pattern-bar { height: 16px; background: repeating-linear-gradient(45deg, #1A3029, #1A3029 10px, #B08D4F 10px, #B08D4F 20px, #7A2E2A 20px, #7A2E2A 30px); margin-bottom: 50px; border-radius: 2px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
@@ -180,7 +204,7 @@
             .chef-stats { grid-template-columns: 1fr; text-align: center; }
             .slide { flex-direction: column; text-align: center; padding: 40px 5%; }
             .slide-graphic { margin-top: 30px; width: 220px; height: 220px; }
-            .form-row { grid-template-columns: 1fr; }
+            .form-row-grid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; gap: 30px; }
             .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
         }
@@ -439,7 +463,7 @@
         </div>
     </div>
 
-    <!-- Checkout Modal -->
+    <!-- Checkout Modal Matching Screenshot 2 -->
     <div class="modal-overlay" id="checkoutModalOverlay">
         <div class="checkout-modal">
             <div class="modal-header">
@@ -447,11 +471,45 @@
                 <button class="close-drawer" onclick="closeCheckoutModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="form-group"><label>Full name</label><input type="text" id="custName" class="form-control" required></div>
-                <div class="form-group"><label>Phone / WhatsApp</label><input type="text" id="custPhone" class="form-control" required></div>
-                <div class="form-group"><label>Delivery address</label><textarea id="custAddress" class="form-control" required></textarea></div>
-                <div class="summary-box" id="checkoutSummaryBox"></div>
+                <div class="modal-section-title">Contact &amp; Delivery Details</div>
+                <div class="form-row-grid">
+                    <div class="form-group"><label>Full name</label><input type="text" id="custName" class="form-control" required placeholder="Your name"></div>
+                    <div class="form-group"><label>Phone / WhatsApp</label><input type="text" id="custPhone" class="form-control" required placeholder="+971 XX XXX XXXX"></div>
+                </div>
+                <div class="form-group"><label>Delivery address</label><textarea id="custAddress" class="form-control" required placeholder="Building, street, area, emirate"></textarea></div>
+
+                <div class="modal-section-title">Payment Method</div>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="Cash on Delivery" checked>
+                    <div>
+                        <strong>Cash on Delivery</strong>
+                        <div class="payment-details">A non-refundable deposit is required to confirm COD orders — details will be confirmed with you directly.</div>
+                    </div>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="Bank Transfer">
+                    <div>
+                        <strong>Bank Transfer</strong>
+                        <div class="payment-details">Bank details will be sent to you to complete payment before dispatch.</div>
+                    </div>
+                </label>
+
+                <div class="modal-section-title">Discount Code</div>
+                <div class="promo-input-row">
+                    <input type="text" id="modalPromoInput" class="form-control" placeholder="Enter code">
+                    <button type="button" class="apply-btn" onclick="applyPromoCode()">Apply</button>
+                </div>
+                <div class="promo-msg" id="promoMessage"></div>
+
+                <div class="modal-section-title">Order Summary</div>
+                <div class="summary-box" id="modalSummaryBox"></div>
+
+                <div class="modal-terms-note">
+                    ✓ You agreed to our <a href="#" onclick="alert('Terms & Conditions: Handcrafted items in Al Ain, UAE.'); return false;" style="color:var(--burgundy); text-decoration:underline;">Terms &amp; Conditions</a> in your cart, including the No Return / No Refund policy and Cash on Delivery deposit terms.
+                </div>
+
                 <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">Place Order via WhatsApp</button>
+                <div class="whatsapp-note">Your order details will be sent to Chef Sara's team on WhatsApp for confirmation. Placing an order does not guarantee acceptance — see Terms &amp; Conditions.</div>
             </div>
         </div>
     </div>
@@ -495,6 +553,8 @@
     <script>
         const activePromos = {{ promo_dict|safe }};
         let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
+        let appliedDiscountPercent = 0;
+        let appliedPromoName = '';
         
         document.addEventListener("DOMContentLoaded", function() {
             updateCartUI();
@@ -571,18 +631,74 @@
             }
         }
 
+        function applyPromoCode() {
+            let codeInput = document.getElementById('modalPromoInput').value.trim().toUpperCase();
+            let msgEl = document.getElementById('promoMessage');
+            if (activePromos.hasOwnProperty(codeInput)) {
+                appliedDiscountPercent = activePromos[codeInput];
+                appliedPromoName = codeInput;
+                msgEl.style.color = '#2E7D32';
+                msgEl.textContent = `Success! ${appliedDiscountPercent}% discount applied.`;
+                updateModalSummary();
+            } else {
+                appliedDiscountPercent = 0;
+                appliedPromoName = '';
+                msgEl.style.color = '#C62828';
+                msgEl.textContent = 'Invalid or inactive promo code.';
+                updateModalSummary();
+            }
+        }
+
         function openCheckoutModal() { 
             if (cart.length === 0) return; 
             if (!document.getElementById('termsAgreeCheckbox').checked) return;
             toggleCart(); 
+            updateModalSummary();
             document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
         }
+
+        function updateModalSummary() {
+            let box = document.getElementById('modalSummaryBox');
+            let subtotal = 0;
+            let html = '';
+            cart.forEach(i => {
+                subtotal += i.price * i.quantity;
+                html += `<div class="summary-item-row"><span>${i.name} x ${i.quantity}</span><span>AED ${(i.price * i.quantity).toFixed(2)}</span></div>`;
+            });
+            html += `<div class="summary-divider"></div>`;
+            html += `<div class="summary-line"><span>Subtotal</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
+
+            let discountAmount = 0;
+            if (appliedDiscountPercent > 0) {
+                discountAmount = (subtotal * appliedDiscountPercent) / 100;
+                html += `<div class="summary-line" style="color:#2E7D32;"><span>Discount (${appliedPromoName} - ${appliedDiscountPercent}%)</span><span>- AED ${discountAmount.toFixed(2)}</span></div>`;
+            }
+
+            let deliveryFee = subtotal >= 650 ? 0 : 25;
+            html += `<div class="summary-line"><span>Delivery</span><span>${deliveryFee === 0 ? 'Free' : 'AED 25.00'}</span></div>`;
+            
+            let total = (subtotal - discountAmount) + deliveryFee;
+            html += `<div class="summary-total"><span>Total</span><span>AED ${total.toFixed(2)}</span></div>`;
+            box.innerHTML = html;
+        }
+
         function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
+
         function placeWhatsAppOrder() {
             let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, addr = document.getElementById('custAddress').value;
-            if (!name || !phone || !addr) { alert('Please fill in details.'); return; }
-            let msg = `*New Order*\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n`;
-            cart.forEach(i => { msg += `- ${i.name} x ${i.quantity}\n`; });
+            if (!name || !phone || !addr) { alert('Please fill in your contact & delivery details.'); return; }
+            let paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            let subtotal = 0;
+            cart.forEach(i => subtotal += i.price * i.quantity);
+            let discountAmount = (subtotal * appliedDiscountPercent) / 100;
+            let deliveryFee = subtotal >= 650 ? 0 : 25;
+            let total = (subtotal - discountAmount) + deliveryFee;
+
+            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
+            cart.forEach(i => { msg += `- ${i.name} x ${i.quantity} (AED ${(i.price*i.quantity).toFixed(2)})\n`; });
+            if (appliedDiscountPercent > 0) msg += `Promo Applied: ${appliedPromoName} (-${appliedDiscountPercent}%)\n`;
+            msg += `Subtotal: AED ${subtotal.toFixed(2)}\nDelivery: AED ${deliveryFee.toFixed(2)}\nTotal: AED ${total.toFixed(2)}`;
+
             window.open(`https://wa.me/971500000000?text=${encodeURIComponent(msg)}`, '_blank');
             cart = []; saveCart(); updateCartUI(); closeCheckoutModal();
         }
@@ -602,7 +718,7 @@
             formData.append('contact_submit', 'true');
             fetch(window.location.href, { method: 'POST', body: formData })
             .then(res => { if(res.ok) { document.getElementById('contactForm').style.display = 'none'; document.getElementById('contactSuccessMsg').style.display = 'block'; } })
-            .catch(e => { document.getElementById('contactForm').submit(); });
+            .catch(e => { document.getElementById('contactForm'].submit(); });
         }
     </script>
 </body>
