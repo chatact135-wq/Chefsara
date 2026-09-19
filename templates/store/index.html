@@ -119,9 +119,9 @@
         .contact-container { max-width: 800px; margin: 0 auto; }
         .contact-card { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 30px; margin-top: 30px; }
 
-        /* Cart & Modal Styles */
+        /* Cart & Terms Modal Styling matching screenshot */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
-        .cart-drawer { position: fixed; top: 0; right: -420px; width: 400px; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
+        .cart-drawer { position: fixed; top: 0; right: -440px; width: 420px; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
         .cart-drawer.open { right: 0; }
         .cart-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
         .cart-header h3 { font-size: 1.4rem; font-weight: 600; }
@@ -136,7 +136,18 @@
         
         .cart-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: var(--stucco); }
         .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; margin-bottom: 15px; }
+        
+        /* Terms Scrollbox inside Cart Footer */
+        .terms-title-header { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--burgundy); letter-spacing: 0.08em; margin-bottom: 6px; }
+        .terms-scrollbox { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); height: 95px; overflow-y: auto; margin-bottom: 12px; line-height: 1.4; }
+        .terms-scrollbox h4 { font-size: 0.8rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+        .terms-checkbox-row { display: flex; align-items: flex-start; gap: 8px; font-size: 0.76rem; color: var(--ink); margin-bottom: 15px; }
+        .terms-checkbox-row input { margin-top: 2px; cursor: pointer; }
+        .terms-checkbox-row a { color: var(--burgundy); text-decoration: underline; }
+
         .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; }
+        .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; opacity: 0.7; }
+        .checkout-warning { font-size: 0.72rem; color: var(--burgundy); text-align: center; margin-top: 6px; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: var(--panel); width: 520px; max-width: 90%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
@@ -148,11 +159,18 @@
         .form-control { width: 100%; padding: 10px 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; color: var(--ink); }
         textarea.form-control { resize: vertical; height: 75px; }
         .summary-box { background: var(--stucco); border: 1px solid var(--line); border-radius: 4px; padding: 15px; margin-bottom: 20px; }
-        .summary-line { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; }
-        .summary-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
         .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
         
-        footer { background-color: var(--ink); color: var(--stucco-deep); padding: 40px 8%; text-align: center; font-size: 0.85rem; }
+        /* Authentic Footer Styling */
+        footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); }
+        .footer-pattern-bar { height: 16px; background: repeating-linear-gradient(45deg, #1A3029, #1A3029 10px, #B08D4F 10px, #B08D4F 20px, #7A2E2A 20px, #7A2E2A 30px); margin-bottom: 50px; border-radius: 2px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-brand-col p { font-size: 0.9rem; color: #D3C5B4; margin-top: 10px; line-height: 1.5; max-width: 280px; }
+        .footer-col h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #FAF3E0; margin-bottom: 16px; font-weight: 600; letter-spacing: 0.05em; }
+        .footer-links-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-links-list a { font-size: 0.88rem; color: #D3C5B4; transition: color 0.2s; }
+        .footer-links-list a:hover { color: var(--brass-light); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: #A89884; }
 
         @media(max-width: 900px) {
             nav { display: none; }
@@ -163,6 +181,8 @@
             .slide { flex-direction: column; text-align: center; padding: 40px 5%; }
             .slide-graphic { margin-top: 30px; width: 220px; height: 220px; }
             .form-row { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
 </head>
@@ -388,7 +408,7 @@
         </div>
     </section>
 
-    <!-- Cart Drawer & Modals -->
+    <!-- Cart Drawer with Terms & Conditions Checkbox -->
     <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
     <div class="cart-drawer" id="cartDrawer">
         <div class="cart-header">
@@ -401,7 +421,21 @@
         <div class="cart-footer">
             <div id="deliveryNotice" style="font-size: 0.8rem; color: var(--wood); margin-bottom: 10px;">Add AED 650 more for free delivery</div>
             <div class="subtotal-row"><span>Subtotal</span><span id="cartSubtotal">AED 0</span></div>
-            <button type="button" class="checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutModal()">Proceed to Checkout</button>
+            
+            <div class="terms-title-header">Terms &amp; Conditions</div>
+            <div class="terms-scrollbox">
+                <h4>1. General</h4>
+                <p>By placing an order with BY CHEF SARA (&quot;we&quot;, &quot;us&quot;, &quot;our brand&quot;), you confirm that you have read, understood, and agree to be bound by these Terms &amp; Conditions in full. If you do not agree, please do not place an order.</p>
+                <p style="margin-top:6px;">All artisanal items are handcrafted in small batches in Al Ain, UAE.</p>
+            </div>
+            
+            <div class="terms-checkbox-row">
+                <input type="checkbox" id="termsAgreeCheckbox" onchange="toggleCheckoutButton()">
+                <label for="termsAgreeCheckbox">I have read and agree to the <a href="#" onclick="alert('Terms & Conditions: All products are handcrafted in small batches in Al Ain, UAE.'); return false;">Terms &amp; Conditions</a>, including the No Return / No Refund policy and Cash on Delivery deposit terms.</label>
+            </div>
+
+            <button type="button" class="checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutModal()" disabled>Proceed to Checkout</button>
+            <div class="checkout-warning" id="checkoutWarningText">Please agree to the Terms &amp; Conditions above to continue.</div>
         </div>
     </div>
 
@@ -413,17 +447,49 @@
                 <button class="close-drawer" onclick="closeCheckoutModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="form-group"><label>Full name</label><input type="text" id="custName" class="form-control"></div>
-                <div class="form-group"><label>Phone / WhatsApp</label><input type="text" id="custPhone" class="form-control"></div>
-                <div class="form-group"><label>Delivery address</label><textarea id="custAddress" class="form-control"></textarea></div>
+                <div class="form-group"><label>Full name</label><input type="text" id="custName" class="form-control" required></div>
+                <div class="form-group"><label>Phone / WhatsApp</label><input type="text" id="custPhone" class="form-control" required></div>
+                <div class="form-group"><label>Delivery address</label><textarea id="custAddress" class="form-control" required></textarea></div>
                 <div class="summary-box" id="checkoutSummaryBox"></div>
                 <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">Place Order via WhatsApp</button>
             </div>
         </div>
     </div>
 
+    <!-- Authentic Footer Section -->
     <footer>
-        &copy; 2026 BY CHEF SARA &middot; Handcrafted in the UAE &middot; Al Ain, United Arab Emirates
+        <div class="footer-pattern-bar"></div>
+        <div class="footer-grid">
+            <div class="footer-brand-col">
+                <div class="logo-area" style="margin-bottom: 10px;">
+                    <div class="logo-emblem"></div>
+                    <div class="logo-text" style="color: #FAF3E0;">BY CHEF <span>SARA</span></div>
+                </div>
+                <p>Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <ul class="footer-links-list">
+                    <li><a href="#products-section">Moroccan Hand Craft</a></li>
+                    <li><a href="#products-section">Breakfast Hand Crafted</a></li>
+                    <li><a href="#products-section">Spices Blend</a></li>
+                    <li><a href="#products-section">Amlou</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company &amp; Policies</h4>
+                <ul class="footer-links-list">
+                    <li><a href="#about-section">Meet the Chef</a></li>
+                    <li><a href="#about-section">About Us</a></li>
+                    <li><a href="#catering-section">Catering Inquiries</a></li>
+                    <li><a href="#" onclick="alert('Terms & Conditions: All products are handcrafted in small batches in Al Ain, UAE.'); return false;">Terms &amp; Conditions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>&copy; 2026 By Chef Sara. Handcrafted in the UAE</div>
+            <div>Al Ain, United Arab Emirates</div>
+        </div>
     </footer>
 
     <script>
@@ -433,6 +499,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             updateCartUI();
             initSlider();
+            toggleCheckoutButton();
         });
 
         function saveCart() { localStorage.setItem('chef_sara_cart', JSON.stringify(cart)); }
@@ -490,7 +557,26 @@
             document.getElementById('cartSubtotal').textContent = 'AED ' + subtotal.toFixed(2);
             document.getElementById('deliveryNotice').textContent = subtotal >= 650 ? '🎉 You qualify for free delivery!' : `Add AED ${(650 - subtotal).toFixed(2)} more for free delivery`;
         }
-        function openCheckoutModal() { if (cart.length === 0) return; toggleCart(); document.getElementById('checkoutModalOverlay').style.display = 'flex'; }
+
+        function toggleCheckoutButton() {
+            let isChecked = document.getElementById('termsAgreeCheckbox').checked;
+            let btn = document.getElementById('cartCheckoutBtn');
+            let warning = document.getElementById('checkoutWarningText');
+            if (isChecked) {
+                btn.removeAttribute('disabled');
+                warning.style.display = 'none';
+            } else {
+                btn.setAttribute('disabled', 'true');
+                warning.style.display = 'block';
+            }
+        }
+
+        function openCheckoutModal() { 
+            if (cart.length === 0) return; 
+            if (!document.getElementById('termsAgreeCheckbox').checked) return;
+            toggleCart(); 
+            document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
+        }
         function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
         function placeWhatsAppOrder() {
             let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, addr = document.getElementById('custAddress').value;
