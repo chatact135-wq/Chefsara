@@ -16,71 +16,107 @@
         h1, h2, h3 { font-family: 'Cormorant Garamond', serif; }
         a { text-decoration: none; color: inherit; }
 
+        /* Full Header Matching Home Page */
         header { position: sticky; top: 0; z-index: 1000; background-color: rgba(236, 224, 196, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; padding: 14px 4%; }
         .logo-area { display: flex; align-items: center; gap: 10px; }
         .logo-emblem { width: 34px; height: 34px; border: 1px solid var(--brass); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
         .logo-emblem::before { content: ""; width: 14px; height: 14px; background-color: var(--burgundy); transform: rotate(45deg); }
         .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 0.12em; }
         .logo-text span { color: var(--burgundy); }
-        .back-home { font-size: 0.88rem; color: var(--wood); font-weight: 500; }
 
-        .product-detail-container { max-width: 1100px; margin: 60px auto; padding: 0 4%; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
+        nav { display: flex; align-items: center; gap: 24px; }
+        .nav-link { font-size: 0.88rem; font-weight: 500; color: var(--ink); transition: color 0.2s; }
+        .nav-link:hover { color: var(--burgundy); }
+
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .cart-btn { background: none; border: 1px solid var(--brass); color: var(--ink); padding: 7px 14px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+
+        /* Product Detail Layout with Animations */
+        .product-detail-container { max-width: 1100px; margin: 60px auto; padding: 0 4%; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .gallery-main-view { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; height: 460px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 8px 25px rgba(43,29,18,0.08); transition: transform 0.3s ease; }
+        .gallery-main-view:hover { transform: scale(1.01); }
+        .gallery-main-view img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s ease-in-out, transform 0.5s ease; }
+        .gallery-main-view img.fade { opacity: 0; transform: scale(1.03); }
         
-        .gallery-main-view { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; height: 440px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; }
-        .gallery-main-view img { width: 100%; height: 100%; object-fit: cover; }
-        .fallback-tag-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--wood); font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; }
-        .thumbnails-row { display: flex; gap: 12px; margin-top: 15px; overflow-x: auto; }
-        .thumbnail { width: 85px; height: 85px; border-radius: 6px; border: 2px solid transparent; cursor: pointer; object-fit: cover; }
-        .thumbnail.active { border-color: var(--burgundy); }
+        .fallback-tag-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--wood); font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; }
+        
+        .thumbnails-row { display: flex; gap: 12px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .thumbnail { width: 85px; height: 85px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; object-fit: cover; transition: all 0.2s; }
+        .thumbnail:hover { opacity: 0.85; transform: translateY(-2px); }
+        .thumbnail.active { border-color: var(--burgundy); box-shadow: 0 4px 12px rgba(122,46,42,0.25); }
 
-        .lightbox-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 5000; display: none; align-items: center; justify-content: center; }
-        .lightbox-content { position: relative; max-width: 85vw; max-height: 85vh; }
-        .lightbox-content img { max-width: 100%; max-height: 85vh; border-radius: 4px; display: block; }
-        .lightbox-close { position: absolute; top: -45px; right: 0; color: #fff; font-size: 2.2rem; cursor: pointer; background:none; border:none; }
-        .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); color: #fff; border: none; font-size: 1.8rem; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
-        .lightbox-prev { left: -60px; }
-        .lightbox-next { right: -60px; }
+        /* Lightbox Modal with Smooth Slideshow Animations */
+        .lightbox-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(35,23,15,0.9); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); animation: fadeIn 0.3s ease; }
+        .lightbox-content { position: relative; max-width: 85vw; max-height: 85vh; display: flex; align-items: center; justify-content: center; }
+        .lightbox-content img { max-width: 100%; max-height: 85vh; border-radius: 6px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); transition: opacity 0.3s ease; }
+        .lightbox-close { position: absolute; top: -50px; right: 0; color: #FAF3E0; font-size: 2.5rem; cursor: pointer; background:none; border:none; transition: color 0.2s; }
+        .lightbox-close:hover { color: var(--brass-light); }
+        .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); font-size: 1.8rem; padding: 12px 18px; cursor: pointer; border-radius: 50%; transition: background 0.2s; }
+        .lightbox-nav:hover { background: rgba(255,255,255,0.3); }
+        .lightbox-prev { left: -70px; }
+        .lightbox-next { right: -70px; }
 
-        .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 35px; }
-        .prod-title { font-size: 2.6rem; font-weight: 500; margin-bottom: 6px; }
-        .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.1rem; margin-bottom: 15px; }
-        .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2.1rem; font-weight: 600; color: var(--burgundy); margin-bottom: 20px; }
-        .prod-desc { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 25px; line-height: 1.7; }
+        /* Product Info Styling */
+        .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 40px; box-shadow: 0 8px 25px rgba(43,29,18,0.06); }
+        .prod-title { font-size: 2.75rem; font-weight: 500; margin-bottom: 6px; }
+        .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.15rem; margin-bottom: 15px; }
+        .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 600; color: var(--burgundy); margin-bottom: 20px; }
+        .prod-desc { font-size: 0.98rem; color: var(--ink-soft); margin-bottom: 25px; line-height: 1.8; }
         
         .purchase-row { display: flex; gap: 15px; align-items: center; border-top: 1px solid var(--line); padding-top: 25px; }
-        .qty-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 6px 12px; gap: 14px; }
+        .qty-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px; gap: 16px; }
         .qty-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--wood); font-weight: bold; }
-        .add-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 28px; border-radius: 4px; font-weight: 600; cursor: pointer; flex-grow: 1; font-size: 1rem; }
-        .add-btn:hover { background-color: #5c221f; }
+        .add-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 14px 28px; border-radius: 6px; font-weight: 600; cursor: pointer; flex-grow: 1; font-size: 1.05rem; transition: background-color 0.2s, transform 0.1s; }
+        .add-btn:hover { background-color: #5c221f; transform: translateY(-1px); }
 
-        footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 80px; }
+        footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 100px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
         .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; font-size: 0.82rem; }
 
         @media(max-width: 900px) {
+            nav { display: none; }
             .product-detail-container { grid-template-columns: 1fr; gap: 30px; }
+            .lightbox-prev { left: 10px; }
+            .lightbox-next { right: 10px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Full Header Matching Home Page -->
     <header>
-        <div class="logo-area">
+        <div class="logo-area" onclick="location.href='{% url 'home' %}'" style="cursor: pointer;">
             <div class="logo-emblem"></div>
             <div class="logo-text">BY CHEF <span>SARA</span></div>
         </div>
-        <a href="{% url 'home' %}" class="back-home">&larr; Back to Home</a>
+        <nav>
+            <a href="{% url 'home' %}" class="nav-link">Home</a>
+            <a href="{% url 'home' %}#products-section" class="nav-link">Moroccan Hand Craft</a>
+            <a href="{% url 'home' %}#products-section" class="nav-link">Breakfast</a>
+            <a href="{% url 'home' %}#products-section" class="nav-link">Spices Blend</a>
+            <a href="{% url 'home' %}#products-section" class="nav-link">Amlou</a>
+            <a href="{% url 'home' %}#about-section" class="nav-link">Meet the Chef</a>
+            <a href="{% url 'home' %}#catering-section" class="nav-link">Catering Inquiries</a>
+            <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
+        </nav>
+        <div class="header-actions">
+            <button class="cart-btn" onclick="location.href='{% url 'home' %}'">
+                <span>&larr; Back to Shop</span>
+            </button>
+        </div>
     </header>
 
     <div class="product-detail-container">
-        <!-- Gallery Column -->
+        <!-- Gallery Column with Animated Slideshow -->
         <div>
             <div class="gallery-main-view" id="mainView" onclick="openLightbox(currentIndex)">
                 {% if product.gallery_images.all %}
                     <img id="activeImage" src="{{ product.gallery_images.first.image.url }}" alt="{{ product.name }}">
                 {% else %}
                     <div class="fallback-tag-box">
-                        <svg width="60" height="70" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
+                        <svg width="70" height="85" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
                         <span>{{ product.get_image_placeholder_tag_display }}</span>
                     </div>
                 {% endif %}
@@ -101,7 +137,7 @@
             <div class="prod-subtitle">{{ product.subtitle }}</div>
             <div class="prod-price">AED {{ product.price }}</div>
             <div class="prod-desc">{{ product.description|safe }}</div>
-            <p style="font-size: 0.82rem; color: var(--wood); margin-bottom: 20px;">Stock available: {{ product.inventory_stock }} units</p>
+            <p style="font-size: 0.85rem; color: var(--wood); margin-bottom: 20px;">Stock available: {{ product.inventory_stock }} units</p>
 
             <div class="purchase-row">
                 <div class="qty-box">
@@ -114,7 +150,7 @@
         </div>
     </div>
 
-    <!-- Lightbox Modal -->
+    <!-- Lightbox Modal with Slideshow Animations -->
     <div class="lightbox-overlay" id="lightboxModal">
         <div class="lightbox-content">
             <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
@@ -124,6 +160,7 @@
         </div>
     </div>
 
+    <!-- Main Footer -->
     <footer>
         <div class="footer-grid">
             <div>
@@ -153,8 +190,15 @@
         let currentIndex = 0;
 
         function switchImage(url, index) {
+            if (galleryUrls.length === 0) return;
             currentIndex = index;
-            document.getElementById('activeImage').src = url;
+            let imgEl = document.getElementById('activeImage');
+            imgEl.classList.add('fade');
+            setTimeout(() => {
+                imgEl.src = url;
+                imgEl.classList.remove('fade');
+            }, 200);
+
             document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
                 thumb.classList.toggle('active', i === index);
             });
@@ -163,8 +207,11 @@
         function openLightbox(index) {
             if (galleryUrls.length === 0) return;
             currentIndex = index;
-            document.getElementById('lightboxImg').src = galleryUrls[currentIndex];
+            let lightImg = document.getElementById('lightboxImg');
+            lightImg.style.opacity = '0';
+            lightImg.src = galleryUrls[currentIndex];
             document.getElementById('lightboxModal').style.display = 'flex';
+            setTimeout(() => { lightImg.style.opacity = '1'; }, 50);
         }
 
         function closeLightbox() {
@@ -174,7 +221,12 @@
         function changeSlide(direction) {
             if (galleryUrls.length === 0) return;
             currentIndex = (currentIndex + direction + galleryUrls.length) % galleryUrls.length;
-            document.getElementById('lightboxImg').src = galleryUrls[currentIndex];
+            let lightImg = document.getElementById('lightboxImg');
+            lightImg.style.opacity = '0';
+            setTimeout(() => {
+                lightImg.src = galleryUrls[currentIndex];
+                lightImg.style.opacity = '1';
+            }, 200);
             switchImage(galleryUrls[currentIndex], currentIndex);
         }
 
