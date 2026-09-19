@@ -64,6 +64,10 @@ class HeroSlide(models.Model):
     description = models.TextField()
     button_text = models.CharField(max_length=50, default="Shop Now")
     button_link = models.CharField(max_length=200, default="#products-section")
+    
+    # Added Image Uploader Field for Hero Slides
+    image = models.ImageField(upload_to='hero_slides/', blank=True, null=True)
+    
     graphic_type = models.CharField(max_length=50, choices=SLIDE_GRAPHICS, default='star')
     order = models.PositiveIntegerField(default=0)
 
