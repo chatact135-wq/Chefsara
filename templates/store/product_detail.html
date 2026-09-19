@@ -243,8 +243,7 @@
             if ((existing ? existing.quantity : 0) + qty > maxStock) { alert('Stock limit reached.'); return; }
             if (existing) existing.quantity += qty; else cart.push({ name, price, quantity: qty });
             localStorage.setItem('chef_sara_cart', JSON.stringify(cart));
-            alert('Added to your order!');
-            window.location.href = "{% url 'home' %}";
+            alert('Added to your order successfully!');
         }
     </script>
 </body>
