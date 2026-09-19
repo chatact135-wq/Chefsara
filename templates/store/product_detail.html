@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --ink: #2B1D12; --wood: #8B5A2B; --brass: #B08D4F; --brass-light: #D9BE85;
+            --ink: #2B1D12; --ink-soft: #4A3620; --wood: #8B5A2B; --brass: #B08D4F; --brass-light: #D9BE85;
             --stucco: #ECE0C4; --panel: #F6EFDC; --burgundy: #7A2E2A; --dark-bg: #23170F; --line: rgba(43,29,18,0.16);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,7 +17,7 @@
         a { text-decoration: none; color: inherit; }
 
         /* Full Header Matching Home Page */
-        header { position: sticky; top: 0; z-index: 1000; background-color: rgba(236, 224, 196, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; padding: 14px 4%; }
+        header { position: sticky; top: 0; z-index: 1000; background-color: rgba(236, 224, 196, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; padding: 14px 4%; width: 100%; }
         .logo-area { display: flex; align-items: center; gap: 10px; }
         .logo-emblem { width: 34px; height: 34px; border: 1px solid var(--brass); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
         .logo-emblem::before { content: ""; width: 14px; height: 14px; background-color: var(--burgundy); transform: rotate(45deg); }
@@ -30,6 +30,7 @@
 
         .header-actions { display: flex; align-items: center; gap: 12px; }
         .cart-btn { background: none; border: 1px solid var(--brass); color: var(--ink); padding: 7px 14px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+        .cart-badge { background-color: var(--burgundy); color: #fff; border-radius: 50%; padding: 1px 5px; font-size: 0.7rem; }
         .menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--ink); }
 
         /* Mobile Drawer */
@@ -38,59 +39,122 @@
         .mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         .mobile-nav-link { font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); color: #F5EBE6; display: block; }
 
-        /* Product Detail Layout with Animations */
-        .product-detail-container { max-width: 1100px; margin: 60px auto; padding: 0 4%; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; animation: fadeIn 0.6s ease-out; }
+        /* Product Detail Layout with Strict Width Constraints */
+        .product-detail-container { max-width: 1100px; width: 100%; margin: 40px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; animation: fadeIn 0.6s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .gallery-main-view { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; width: 100%; height: 460px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 8px 25px rgba(43,29,18,0.08); transition: transform 0.3s ease; }
-        .gallery-main-view:hover { transform: scale(1.01); }
+        .gallery-wrapper { width: 100%; max-width: 100%; overflow: hidden; }
+        .gallery-main-view { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; width: 100%; max-width: 100%; height: 420px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 8px 25px rgba(43,29,18,0.08); }
         .gallery-main-view img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s ease-in-out, transform 0.5s ease; }
         .gallery-main-view img.fade { opacity: 0; transform: scale(1.03); }
         
         .fallback-tag-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--wood); font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; }
         
-        .thumbnails-row { display: flex; gap: 12px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px; max-width: 100%; }
-        .thumbnail { width: 85px; height: 85px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; object-fit: cover; flex-shrink: 0; transition: all 0.2s; }
+        .thumbnails-row { display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px; width: 100%; max-width: 100%; }
+        .thumbnail { width: 75px; height: 75px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; object-fit: cover; flex-shrink: 0; transition: all 0.2s; }
         .thumbnail:hover { opacity: 0.85; transform: translateY(-2px); }
         .thumbnail.active { border-color: var(--burgundy); box-shadow: 0 4px 12px rgba(122,46,42,0.25); }
 
-        /* Lightbox Modal with Smooth Slideshow Animations */
-        .lightbox-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(35,23,15,0.9); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); animation: fadeIn 0.3s ease; }
+        /* Lightbox Modal */
+        .lightbox-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(35,23,15,0.9); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .lightbox-content { position: relative; max-width: 85vw; max-height: 85vh; display: flex; align-items: center; justify-content: center; }
-        .lightbox-content img { max-width: 100%; max-height: 85vh; border-radius: 6px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); transition: opacity 0.3s ease; }
-        .lightbox-close { position: absolute; top: -50px; right: 0; color: #FAF3E0; font-size: 2.5rem; cursor: pointer; background:none; border:none; transition: color 0.2s; }
-        .lightbox-close:hover { color: var(--brass-light); }
-        .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); font-size: 1.8rem; padding: 12px 18px; cursor: pointer; border-radius: 50%; transition: background 0.2s; }
-        .lightbox-nav:hover { background: rgba(255,255,255,0.3); }
-        .lightbox-prev { left: -70px; }
-        .lightbox-next { right: -70px; }
+        .lightbox-content img { max-width: 100%; max-height: 85vh; border-radius: 6px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .lightbox-close { position: absolute; top: -45px; right: 0; color: #FAF3E0; font-size: 2.5rem; cursor: pointer; background:none; border:none; }
+        .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); font-size: 1.5rem; padding: 10px 14px; cursor: pointer; border-radius: 50%; }
+        .lightbox-prev { left: -50px; }
+        .lightbox-next { right: -50px; }
 
         /* Product Info Styling */
-        .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 40px; box-shadow: 0 8px 25px rgba(43,29,18,0.06); word-break: break-word; }
-        .prod-title { font-size: 2.75rem; font-weight: 500; margin-bottom: 6px; }
-        .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.15rem; margin-bottom: 15px; }
-        .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 600; color: var(--burgundy); margin-bottom: 20px; }
-        .prod-desc { font-size: 0.98rem; color: var(--ink-soft); margin-bottom: 25px; line-height: 1.8; }
+        .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 30px; box-shadow: 0 8px 25px rgba(43,29,18,0.06); word-break: break-word; width: 100%; max-width: 100%; }
+        .prod-title { font-size: 2.5rem; font-weight: 500; margin-bottom: 6px; }
+        .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.1rem; margin-bottom: 15px; }
+        .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--burgundy); margin-bottom: 20px; }
+        .prod-desc { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 25px; line-height: 1.8; }
         
         .purchase-row { display: flex; gap: 15px; align-items: center; border-top: 1px solid var(--line); padding-top: 25px; }
-        .qty-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px; gap: 16px; }
-        .qty-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--wood); font-weight: bold; }
-        .add-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 14px 28px; border-radius: 6px; font-weight: 600; cursor: pointer; flex-grow: 1; font-size: 1.05rem; transition: background-color 0.2s, transform 0.1s; }
-        .add-btn:hover { background-color: #5c221f; transform: translateY(-1px); }
+        .qty-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; gap: 14px; }
+        .qty-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--wood); font-weight: bold; }
+        .add-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; flex-grow: 1; font-size: 1rem; transition: background-color 0.2s; }
+        .add-btn:hover { background-color: #5c221f; }
 
-        footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 100px; }
+        /* Sticky Bottom-Right "Your Order" Widget */
+        .sticky-order-bar { position: fixed; bottom: 24px; right: 24px; background-color: var(--dark-bg); border: 1px solid var(--brass); color: #FAF3E0; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-size: 0.9rem; font-weight: 500; transition: transform 0.2s, background-color 0.2s; }
+        .sticky-order-bar:hover { background-color: #2F2118; transform: translateY(-2px); }
+
+        /* Cart Drawer & Modals */
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
+        .cart-drawer { position: fixed; top: 0; right: -440px; width: 420px; max-width: 100%; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
+        .cart-drawer.open { right: 0; }
+        .cart-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+        .cart-header h3 { font-size: 1.4rem; font-weight: 600; }
+        .close-drawer { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ink); }
+        .cart-body { padding: 20px 24px; flex-grow: 1; overflow-y: auto; }
+        .cart-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+        .cart-item-right { text-align: right; }
+        .cart-item-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--burgundy); }
+        .remove-item { background: none; border: none; color: var(--burgundy); font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 4px; }
+        
+        .cart-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: var(--stucco); }
+        .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; margin-bottom: 15px; }
+        
+        .terms-title-header { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--burgundy); letter-spacing: 0.08em; margin-bottom: 6px; }
+        .terms-scrollbox { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); height: 85px; overflow-y: auto; margin-bottom: 12px; line-height: 1.4; }
+        .terms-scrollbox h4 { font-size: 0.8rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+        .terms-checkbox-row { display: flex; align-items: flex-start; gap: 8px; font-size: 0.75rem; color: var(--ink); margin-bottom: 15px; }
+        .terms-checkbox-row input { margin-top: 2px; cursor: pointer; }
+        .terms-checkbox-row a { color: var(--burgundy); text-decoration: underline; }
+
+        .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; }
+        .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; opacity: 0.7; }
+        .checkout-warning { font-size: 0.72rem; color: var(--burgundy); text-align: center; margin-top: 6px; }
+
+        /* Checkout Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
+        .checkout-modal { background: var(--panel); width: 620px; max-width: 95%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--stucco); }
+        .modal-header h3 { font-size: 1.5rem; font-weight: 500; font-family: 'Cormorant Garamond', serif; }
+        .modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; }
+        
+        .modal-section-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--wood); letter-spacing: 0.1em; margin-bottom: 12px; margin-top: 6px; }
+        .form-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 4px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 5px; }
+        .form-control { width: 100%; padding: 10px 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; color: var(--ink); }
+        textarea.form-control { resize: vertical; height: 65px; }
+        
+        .payment-option { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+        .payment-option input { margin-top: 3px; accent-color: var(--burgundy); }
+        .payment-details { font-size: 0.78rem; color: var(--wood); margin-top: 3px; line-height: 1.4; }
+        
+        .promo-input-row { display: flex; gap: 8px; margin-bottom: 15px; }
+        .apply-btn { background-color: var(--ink); color: #fff; border: none; padding: 0 18px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+        .apply-btn:hover { background-color: var(--burgundy); }
+        .promo-msg { font-size: 0.75rem; margin-top: 4px; }
+
+        .summary-box { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 15px; margin-bottom: 15px; }
+        .summary-item-row { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 8px; color: var(--ink); }
+        .summary-divider { border-bottom: 1px dashed var(--line); margin: 10px 0; }
+        .summary-line { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; color: var(--ink-soft); }
+        .summary-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 600; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 8px; }
+        
+        .modal-terms-note { background: var(--stucco); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); margin-bottom: 15px; line-height: 1.4; }
+        .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
+        .whatsapp-note { font-size: 0.72rem; color: var(--wood); text-align: center; margin-top: 8px; line-height: 1.4; }
+
+        footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 80px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
         .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; font-size: 0.82rem; }
 
         @media(max-width: 900px) {
             nav { display: none; }
             .menu-toggle { display: block; }
-            .product-detail-container { grid-template-columns: 1fr; gap: 30px; padding: 0 16px; margin: 30px auto; }
-            .gallery-main-view { height: 320px; }
+            .product-detail-container { grid-template-columns: 1fr; gap: 20px; padding: 0 12px; margin: 20px auto; }
+            .gallery-main-view { height: 280px; }
             .prod-info-card { padding: 20px; }
-            .prod-title { font-size: 2.1rem; }
+            .prod-title { font-size: 2rem; }
             .lightbox-prev { left: 10px; }
             .lightbox-next { right: 10px; }
+            .form-row-grid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; gap: 30px; }
             .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
         }
@@ -115,8 +179,9 @@
             <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
         </nav>
         <div class="header-actions">
-            <button class="cart-btn" onclick="location.href='{% url 'home' %}'">
-                <span>&larr; Back to Shop</span>
+            <button class="cart-btn" onclick="toggleCart()">
+                <span>Cart</span>
+                <span class="cart-badge" id="cart-count">0</span>
             </button>
             <button class="menu-toggle" onclick="toggleMobileMenu()">&#9776;</button>
         </div>
@@ -139,8 +204,8 @@
     </div>
 
     <div class="product-detail-container">
-        <!-- Gallery Column with Animated Slideshow -->
-        <div>
+        <!-- Gallery Column with Strict Sizing -->
+        <div class="gallery-wrapper">
             <div class="gallery-main-view" id="mainView" onclick="openLightbox(currentIndex)">
                 {% if product.gallery_images.all %}
                     <img id="activeImage" src="{{ product.gallery_images.first.image.url }}" alt="{{ product.name }}">
@@ -180,7 +245,89 @@
         </div>
     </div>
 
-    <!-- Lightbox Modal with Slideshow Animations -->
+    <!-- Sticky Bottom-Right "Your Order" Widget -->
+    <div class="sticky-order-bar" onclick="toggleCart()">
+        🛒 Your Order (<span id="sticky-order-count">0</span>)
+    </div>
+
+    <!-- Cart Drawer with Terms & Conditions Checkbox -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3>Your Order</h3>
+            <button class="close-drawer" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-body" id="cartItemsContainer">
+            <p style="color: var(--wood); text-align: center; margin-top: 40px;">Your cart is empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div id="deliveryNotice" style="font-size: 0.8rem; color: var(--wood); margin-bottom: 10px;">Add AED 650 more for free delivery</div>
+            <div class="subtotal-row"><span>Subtotal</span><span id="cartSubtotal">AED 0</span></div>
+            
+            <div class="terms-title-header">Terms &amp; Conditions</div>
+            <div class="terms-scrollbox">
+                <h4>1. General</h4>
+                <p>By placing an order with BY CHEF SARA (&quot;we&quot;, &quot;us&quot;, &quot;our brand&quot;), you confirm that you have read, understood, and agree to be bound by these Terms &amp; Conditions in full.</p>
+                <p style="margin-top:6px;">All artisanal items are handcrafted in small batches in Al Ain, UAE.</p>
+            </div>
+            
+            <div class="terms-checkbox-row">
+                <input type="checkbox" id="termsAgreeCheckbox" onchange="toggleCheckoutButton()">
+                <label for="termsAgreeCheckbox">I have read and agree to the <a href="#" onclick="alert('Terms & Conditions: Handcrafted items in Al Ain, UAE.'); return false;">Terms &amp; Conditions</a>, including the No Return / No Refund policy and COD deposit terms.</label>
+            </div>
+
+            <button type="button" class="checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutModal()" disabled>Proceed to Checkout</button>
+            <div class="checkout-warning" id="checkoutWarningText">Please agree to the Terms &amp; Conditions above to continue.</div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkoutModalOverlay">
+        <div class="checkout-modal">
+            <div class="modal-header">
+                <h3>Checkout</h3>
+                <button class="close-drawer" onclick="closeCheckoutModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section-title">Contact &amp; Delivery Details</div>
+                <div class="form-row-grid">
+                    <div class="form-group"><label>Full name</label><input type="text" id="custName" class="form-control" required placeholder="Your name"></div>
+                    <div class="form-group"><label>Phone / WhatsApp</label><input type="text" id="custPhone" class="form-control" required placeholder="+971 XX XXX XXXX"></div>
+                </div>
+                <div class="form-group"><label>Delivery address</label><textarea id="custAddress" class="form-control" required placeholder="Building, street, area, emirate"></textarea></div>
+
+                <div class="modal-section-title">Payment Method</div>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="Cash on Delivery" checked>
+                    <div>
+                        <strong>Cash on Delivery</strong>
+                        <div class="payment-details">A non-refundable deposit is required to confirm COD orders.</div>
+                    </div>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="Bank Transfer">
+                    <div>
+                        <strong>Bank Transfer</strong>
+                        <div class="payment-details">Bank details will be sent to complete payment before dispatch.</div>
+                    </div>
+                </label>
+
+                <div class="modal-section-title">Discount Code</div>
+                <div class="promo-input-row">
+                    <input type="text" id="modalPromoInput" class="form-control" placeholder="Enter code">
+                    <button type="button" class="apply-btn" onclick="applyPromoCode()">Apply</button>
+                </div>
+                <div class="promo-msg" id="promoMessage"></div>
+
+                <div class="modal-section-title">Order Summary</div>
+                <div class="summary-box" id="modalSummaryBox"></div>
+
+                <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">Place Order via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
     <div class="lightbox-overlay" id="lightboxModal">
         <div class="lightbox-content">
             <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
@@ -218,8 +365,18 @@
     <script>
         const galleryUrls = [{% for img in product.gallery_images.all %}"{{ img.image.url }}"{% if not forloop.last %},{% endif %}{% endfor %}];
         let currentIndex = 0;
+        let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
+        let appliedDiscountPercent = 0;
+        let appliedPromoName = '';
 
+        document.addEventListener("DOMContentLoaded", function() {
+            updateCartUI();
+            toggleCheckoutButton();
+        });
+
+        function saveCart() { localStorage.setItem('chef_sara_cart', JSON.stringify(cart)); }
         function toggleMobileMenu() { document.getElementById('mobileDrawer').classList.toggle('open'); }
+        function toggleCart() { let drawer = document.getElementById('cartDrawer'); drawer.classList.toggle('open'); document.getElementById('cartOverlay').style.display = drawer.classList.contains('open') ? 'block' : 'none'; }
 
         function switchImage(url, index) {
             if (galleryUrls.length === 0) return;
@@ -240,10 +397,8 @@
             if (galleryUrls.length === 0) return;
             currentIndex = index;
             let lightImg = document.getElementById('lightboxImg');
-            lightImg.style.opacity = '0';
             lightImg.src = galleryUrls[currentIndex];
             document.getElementById('lightboxModal').style.display = 'flex';
-            setTimeout(() => { lightImg.style.opacity = '1'; }, 50);
         }
 
         function closeLightbox() {
@@ -254,11 +409,7 @@
             if (galleryUrls.length === 0) return;
             currentIndex = (currentIndex + direction + galleryUrls.length) % galleryUrls.length;
             let lightImg = document.getElementById('lightboxImg');
-            lightImg.style.opacity = '0';
-            setTimeout(() => {
-                lightImg.src = galleryUrls[currentIndex];
-                lightImg.style.opacity = '1';
-            }, 200);
+            lightImg.src = galleryUrls[currentIndex];
             switchImage(galleryUrls[currentIndex], currentIndex);
         }
 
@@ -270,12 +421,111 @@
 
         function addCurrentProductToCart(name, price, maxStock) {
             let qty = parseInt(document.getElementById('detailQty').textContent);
-            let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
             let existing = cart.find(i => i.name === name);
             if ((existing ? existing.quantity : 0) + qty > maxStock) { alert('Stock limit reached.'); return; }
             if (existing) existing.quantity += qty; else cart.push({ name, price, quantity: qty });
-            localStorage.setItem('chef_sara_cart', JSON.stringify(cart));
-            alert('Added to your order successfully!');
+            saveCart();
+            updateCartUI();
+            toggleCart();
+        }
+
+        function changeCartItemQty(name, delta) {
+            let item = cart.find(i => i.name === name);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) cart = cart.filter(i => i.name !== name);
+                saveCart();
+                updateCartUI();
+            }
+        }
+
+        function removeFromCart(name) { cart = cart.filter(i => i.name !== name); saveCart(); updateCartUI(); }
+
+        function updateCartUI() {
+            let container = document.getElementById('cartItemsContainer'), count = 0, subtotal = 0;
+            if (cart.length === 0) container.innerHTML = '<p style="color:var(--wood); text-align:center; margin-top:40px;">Your cart is empty.</p>';
+            else {
+                container.innerHTML = '';
+                cart.forEach(item => {
+                    count += item.quantity; subtotal += item.price * item.quantity;
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <div><b>${item.name}</b></div>
+                                <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                                    <button type="button" onclick="changeCartItemQty('${item.name}', -1)" style="width:18px; height:18px; cursor:pointer;">-</button>
+                                    <span>${item.quantity}</span>
+                                    <button type="button" onclick="changeCartItemQty('${item.name}', 1)" style="width:18px; height:18px; cursor:pointer;">+</button>
+                                    <span style="color:var(--wood); font-size:0.75rem;">/ AED ${item.price}</span>
+                                </div>
+                            </div>
+                            <div class="cart-item-right">
+                                <div class="cart-item-price">AED ${(item.price*item.quantity).toFixed(2)}</div>
+                                <button type="button" class="remove-item" onclick="removeFromCart('${item.name}')">Remove</button>
+                            </div>
+                        </div>`;
+                });
+            }
+            document.getElementById('cart-count').textContent = count;
+            document.getElementById('sticky-order-count').textContent = count;
+            document.getElementById('cartSubtotal').textContent = 'AED ' + subtotal.toFixed(2);
+            document.getElementById('deliveryNotice').textContent = subtotal >= 650 ? '🎉 You qualify for free delivery!' : `Add AED ${(650 - subtotal).toFixed(2)} more for free delivery`;
+        }
+
+        function toggleCheckoutButton() {
+            let isChecked = document.getElementById('termsAgreeCheckbox').checked;
+            let btn = document.getElementById('cartCheckoutBtn');
+            let warning = document.getElementById('checkoutWarningText');
+            if (isChecked) {
+                btn.removeAttribute('disabled');
+                warning.style.display = 'none';
+            } else {
+                btn.setAttribute('disabled', 'true');
+                warning.style.display = 'block';
+            }
+        }
+
+        function openCheckoutModal() { 
+            if (cart.length === 0) return; 
+            if (!document.getElementById('termsAgreeCheckbox').checked) return;
+            toggleCart(); 
+            updateModalSummary();
+            document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
+        }
+
+        function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
+
+        function updateModalSummary() {
+            let box = document.getElementById('modalSummaryBox');
+            let subtotal = 0, html = '';
+            cart.forEach(i => {
+                subtotal += i.price * i.quantity;
+                html += `<div class="summary-item-row"><span>${i.name} x ${i.quantity}</span><span>AED ${(i.price * i.quantity).toFixed(2)}</span></div>`;
+            });
+            html += `<div class="summary-divider"></div>`;
+            html += `<div class="summary-line"><span>Subtotal</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
+            let deliveryFee = subtotal >= 650 ? 0 : 25;
+            html += `<div class="summary-line"><span>Delivery</span><span>${deliveryFee === 0 ? 'Free' : 'AED 25.00'}</span></div>`;
+            let total = subtotal + deliveryFee;
+            html += `<div class="summary-total"><span>Total</span><span>AED ${total.toFixed(2)}</span></div>`;
+            box.innerHTML = html;
+        }
+
+        function placeWhatsAppOrder() {
+            let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, addr = document.getElementById('custAddress').value;
+            if (!name || !phone || !addr) { alert('Please fill in your contact & delivery details.'); return; }
+            let paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            let subtotal = 0;
+            cart.forEach(i => subtotal += i.price * i.quantity);
+            let deliveryFee = subtotal >= 650 ? 0 : 25;
+            let total = subtotal + deliveryFee;
+
+            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
+            cart.forEach(i => { msg += `- ${i.name} x ${i.quantity} (AED ${(i.price*i.quantity).toFixed(2)})\n`; });
+            msg += `Subtotal: AED ${subtotal.toFixed(2)}\nDelivery: AED ${deliveryFee.toFixed(2)}\nTotal: AED ${total.toFixed(2)}`;
+
+            window.open(`https://wa.me/971500000000?text=${encodeURIComponent(msg)}`, '_blank');
+            cart = []; saveCart(); updateCartUI(); closeCheckoutModal();
         }
     </script>
 </body>
