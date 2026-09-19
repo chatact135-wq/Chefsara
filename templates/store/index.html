@@ -70,14 +70,16 @@
         .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; }
         .dot.active { background: var(--brass-light); }
 
-        /* Dynamic Category Grid Boxes */
-        .category-grid-section { padding: 60px 8%; background-color: var(--dark-bg); border-top: 1px solid rgba(176,141,79,0.2); }
-        .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .cat-box { background-color: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s, background-color 0.2s; }
-        .cat-box:hover { transform: translateY(-3px); background-color: #FAF4E6; }
-        .cat-img-preview { width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px; border-radius: 4px; }
-        .cat-box h3 { font-size: 1.4rem; font-weight: 600; margin: 6px 0; color: var(--ink); }
-        .cat-box p { font-size: 0.85rem; color: var(--wood); }
+        /* Modern Web 2.0 Category Banners */
+        .category-grid-section { padding: 80px 8%; background-color: var(--dark-bg); border-top: 1px solid rgba(176,141,79,0.2); }
+        .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+        .cat-card-modern { position: relative; border-radius: 12px; overflow: hidden; height: 280px; cursor: pointer; border: 1px solid rgba(176,141,79,0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .cat-card-modern:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+        .cat-card-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.65); transition: transform 0.5s ease; }
+        .cat-card-modern:hover .cat-card-img { transform: scale(1.05); }
+        .cat-card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); }
+        .cat-card-overlay h3 { font-size: 2rem; font-family: 'Cormorant Garamond', serif; color: #FAF3E0; margin-bottom: 4px; }
+        .cat-card-overlay p { font-size: 0.9rem; color: var(--brass-light); }
 
         /* Products Section */
         section#products-section { padding: 80px 8%; }
@@ -85,10 +87,12 @@
         .section-kicker { color: var(--burgundy); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px; }
         .section-header h2 { font-size: 2.75rem; font-weight: 500; }
         .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        .product-card { background-color: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .product-card { background-color: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-3px); }
         .badge-bestseller { position: absolute; top: 16px; right: 16px; background-color: var(--mustard); color: var(--ink); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 3px; text-transform: uppercase; z-index: 10; }
-        .product-img-placeholder { height: 210px; background-color: rgba(0,0,0,0.03); border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-        .product-info h3 { font-size: 1.35rem; font-weight: 600; margin-bottom: 4px; }
+        .product-img-placeholder { height: 210px; background-color: rgba(0,0,0,0.03); border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; cursor: pointer; }
+        .product-info h3 a { color: var(--ink); transition: color 0.2s; }
+        .product-info h3 a:hover { color: var(--burgundy); }
         .product-subtitle { font-style: italic; color: var(--wood); font-size: 0.9rem; margin-bottom: 10px; }
         .product-desc { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 20px; }
         .product-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 16px; }
@@ -100,7 +104,7 @@
         .add-to-order-btn:hover { background-color: var(--burgundy); }
         .bottom-action-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
 
-        /* Meet the Chef Section (Matching User Reference Image) */
+        /* Meet the Chef Section */
         .chef-section { background-color: var(--dark-bg); color: #F5EBE6; padding: 80px 8%; }
         .chef-grid { display: grid; grid-template-columns: 420px 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; }
         .chef-img-box { border: 1px solid var(--brass); padding: 12px; background: rgba(176,141,79,0.05); }
@@ -300,29 +304,34 @@
         <div class="slider-dots" id="sliderDots"></div>
     </div>
 
-    <!-- Dynamic Clickable Category Grid Boxes -->
+    <!-- Modern Web 2.0 Category Banners -->
     <div class="category-grid-section">
+        <div style="text-align:center; margin-bottom: 40px;">
+            <div style="color:var(--brass-light); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.8rem; font-weight: 600;">Curated Collections</div>
+            <h2 style="font-size: 2.5rem; color: #FAF3E0; font-family: 'Cormorant Garamond', serif;">Explore Our Categories</h2>
+        </div>
         <div class="cat-grid">
             {% for cat in categories %}
-            <div class="cat-box" onclick="location.href='#products-section'">
+            <div class="cat-card-modern" onclick="location.href='#products-section'">
                 {% if cat.image %}
-                <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="cat-img-preview">
+                <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="cat-card-img">
                 {% else %}
-                <svg width="30" height="30" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #2B1D12, #4A3620); display: flex; align-items: center; justify-content: center;">
+                    <svg width="60" height="70" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#B08D4F"/></svg>
+                </div>
                 {% endif %}
-                <h3>{{ cat.name }}</h3>
-                <p>{{ cat.subtitle|default:"" }}</p>
+                <div class="cat-card-overlay">
+                    <h3>{{ cat.name }}</h3>
+                    <p>{{ cat.subtitle|default:"Handcrafted artisan selection" }} &rarr;</p>
+                </div>
             </div>
             {% empty %}
-            <div class="cat-box"><h3>Moroccan Hand Craft</h3><p>Khlii &middot; Smen &middot; Preserved Lemon</p></div>
-            <div class="cat-box"><h3>Breakfast Hand Crafted</h3><p>Orange Jam &middot; Lemon Jam</p></div>
-            <div class="cat-box"><h3>Moroccan Spices Blend</h3><p>Ras el Hanout &amp; more</p></div>
-            <div class="cat-box"><h3>Amlou</h3><p>Original &middot; DXB &middot; Dates &amp; Nuts</p></div>
+            <p style="color: #D3C5B4; text-align:center; grid-column:span 2;">No categories found.</p>
             {% endfor %}
         </div>
     </div>
 
-    <!-- Products Section -->
+    <!-- Products Section with Clickable Links -->
     <section id="products-section">
         <div class="section-header">
             <div class="section-kicker">Live Database Menu</div>
@@ -332,15 +341,22 @@
             {% for product in products %}
             <div class="product-card" data-stock="{{ product.inventory_stock }}">
                 {% if product.is_bestseller %}<span class="badge-bestseller">Best Seller</span>{% endif %}
-                <div class="product-img-placeholder">
-                    <svg width="100" height="120" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
+                
+                <div class="product-img-placeholder" onclick="location.href='{% url 'product_detail' product.slug %}'">
+                    {% if product.gallery_images.first %}
+                        <img src="{{ product.gallery_images.first.image.url }}" alt="{{ product.name }}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;">
+                    {% else %}
+                        <svg width="70" height="90" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
+                    {% endif %}
                 </div>
+
                 <div class="product-info">
-                    <h3>{{ product.name }}</h3>
+                    <h3><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></h3>
                     <div class="product-subtitle">{{ product.subtitle }}</div>
-                    <p class="product-desc">{{ product.description }}</p>
+                    <p class="product-desc">{{ product.description|striptags|truncatechars:90 }}</p>
                     <p style="font-size:0.75rem; color:var(--wood);">Stock available: {{ product.inventory_stock }} units</p>
                 </div>
+                
                 <div class="product-footer">
                     <div class="product-price">AED {{ product.price }}</div>
                     <div class="bottom-action-row">
@@ -359,12 +375,12 @@
         </div>
     </section>
 
-    <!-- Updated Meet the Chef Section with Exact Reference Image -->
+    <!-- Updated Meet the Chef Section -->
     <section id="about-section" class="chef-section">
         <div class="chef-grid">
-       <div class="chef-img-box">
-    <img src="{% static 'images/chef-sara-photo.jpg' %}" alt="Chef Sara Akkar">
-</div>
+            <div class="chef-img-box">
+                <img src="{% static 'images/chef-sara-photo.jpg' %}" alt="Chef Sara Akkar" onerror="this.src='https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1000&auto=format&fit=crop'">
+            </div>
             <div class="chef-content">
                 <div class="section-kicker" style="color:var(--brass-light); margin-bottom: 12px; letter-spacing: 0.15em;">— Meet the Chef</div>
                 <h2>Chef Sara Akkar</h2>
