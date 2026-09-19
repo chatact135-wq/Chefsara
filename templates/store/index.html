@@ -93,7 +93,8 @@
         .product-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 16px; }
         .product-price { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--burgundy); }
         .quantity-control { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 4px 8px; gap: 8px; font-size: 0.85rem; }
-        .qty-btn { background: none; border: none; cursor: pointer; color: var(--wood); font-weight: 600; }
+        .qty-btn { background: none; border: none; cursor: pointer; color: var(--wood); font-weight: 600; font-size: 1rem; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+        .qty-num { min-width: 20px; text-align: center; font-weight: 600; }
         .add-to-order-btn { background-color: var(--ink); color: var(--stucco); border: none; padding: 10px 14px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-weight: 500; }
         .add-to-order-btn:hover { background-color: var(--burgundy); }
         .bottom-action-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
@@ -149,7 +150,7 @@
         .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; opacity: 0.7; }
         .checkout-warning { font-size: 0.72rem; color: var(--burgundy); text-align: center; margin-top: 6px; }
 
-        /* Checkout Modal Matching Second Screenshot */
+        /* Checkout Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: var(--panel); width: 620px; max-width: 95%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
         .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--stucco); }
@@ -343,7 +344,7 @@
                             <span class="qty-num">1</span>
                             <button type="button" class="qty-btn" onclick="increaseQty(this, {{ product.inventory_stock }})">+</button>
                         </div>
-                        <button type="button" class="add-to-order-btn" onclick="addToCart('{{ product.name }}', {{ product.price }}, {{ product.inventory_stock }}, this)">Add to order</button>
+                        <button type="button" class="add-to-order-btn" onclick="addToCart('{{ product.name|escapejs }}', {{ product.price }}, {{ product.inventory_stock }}, this)">Add to order</button>
                     </div>
                 </div>
             </div>
@@ -377,7 +378,7 @@
         </div>
     </section>
 
-    <!-- Catering Inquiries Section -->
+    <!-- Catering Inquiries Section (With Calendar Date Picker) -->
     <section id="catering-section" class="catering-section">
         <div class="catering-container">
             <div class="section-kicker" style="color:var(--brass-light);">Catering Inquiries</div>
@@ -396,7 +397,7 @@
                     {% csrf_token %}
                     <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Name</label><input type="text" name="name" class="form-control-dark" required placeholder="Your full name"></div>
                     <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Phone / WhatsApp</label><input type="text" name="phone" class="form-control-dark" required placeholder="+971 XX XXX XXXX"></div>
-                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Event date</label><input type="text" name="event_date" class="form-control-dark" placeholder="Approximate date"></div>
+                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Event date</label><input type="date" name="event_date" class="form-control-dark" required></div>
                     <button type="submit" name="catering_submit" class="submit-btn">Send Catering Inquiry</button>
                 </form>
                 <div id="cateringSuccessMsg" style="display: none; text-align: center; padding: 30px; color: #FAF3E0;">
@@ -407,7 +408,7 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- Contact Section (With Phone instead of Email) -->
     <section id="contact-section" class="contact-section">
         <div class="contact-container">
             <div class="section-header" style="text-align: left; margin-bottom: 20px;">
@@ -419,9 +420,9 @@
             <div class="contact-card">
                 <form method="POST" id="contactForm" onsubmit="handleContactSubmit(event)">
                     {% csrf_token %}
-                    <div class="form-group"><label>Your Name</label><input type="text" name="name" class="form-control" required></div>
-                    <div class="form-group"><label>Email Address</label><input type="email" name="email" class="form-control" required></div>
-                    <div class="form-group"><label>Message / Inquiry</label><textarea name="message" class="form-control" required></textarea></div>
+                    <div class="form-group"><label>Your Name</label><input type="text" name="name" class="form-control" required placeholder="Your full name"></div>
+                    <div class="form-group"><label>Phone / WhatsApp</label><input type="text" name="email" class="form-control" required placeholder="+971 XX XXX XXXX"></div>
+                    <div class="form-group"><label>Message / Inquiry</label><textarea name="message" class="form-control" required placeholder="How can we help you?"></textarea></div>
                     <button type="submit" name="contact_submit" class="submit-btn">Send Message to Admin</button>
                 </form>
                 <div id="contactSuccessMsg" style="display: none; text-align: center; padding: 30px; color: var(--ink);">
@@ -463,7 +464,7 @@
         </div>
     </div>
 
-    <!-- Checkout Modal Matching Screenshot 2 -->
+    <!-- Checkout Modal -->
     <div class="modal-overlay" id="checkoutModalOverlay">
         <div class="checkout-modal">
             <div class="modal-header">
@@ -591,8 +592,16 @@
         function toggleMobileMenu() { document.getElementById('mobileDrawer').classList.toggle('open'); }
         function toggleCart() { let drawer = document.getElementById('cartDrawer'); drawer.classList.toggle('open'); document.getElementById('cartOverlay').style.display = drawer.classList.contains('open') ? 'block' : 'none'; }
         
-        function decreaseQty(btn) { let span = btn.nextElementSibling; if (parseInt(span.textContent) > 1) span.textContent = parseInt(span.textContent) - 1; }
-        function increaseQty(btn, max) { let span = btn.previousElementSibling; if (parseInt(span.textContent) < max) span.textContent = parseInt(span.textContent) + 1; }
+        function decreaseQty(btn) { 
+            let span = btn.parentElement.querySelector('.qty-num'); 
+            let val = parseInt(span.textContent);
+            if (val > 1) span.textContent = val - 1; 
+        }
+        function increaseQty(btn, max) { 
+            let span = btn.parentElement.querySelector('.qty-num'); 
+            let val = parseInt(span.textContent);
+            if (val < max) span.textContent = val + 1; 
+        }
 
         function addToCart(name, price, maxStock, btn) {
             let qty = parseInt(btn.closest('.product-card').querySelector('.qty-num').textContent);
@@ -601,6 +610,19 @@
             if (existing) existing.quantity += qty; else cart.push({ name, price, quantity: qty });
             saveCart(); updateCartUI(); toggleCart();
         }
+
+        function changeCartItemQty(name, delta) {
+            let item = cart.find(i => i.name === name);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i.name !== name);
+                }
+                saveCart();
+                updateCartUI();
+            }
+        }
+
         function removeFromCart(name) { cart = cart.filter(i => i.name !== name); saveCart(); updateCartUI(); }
         
         function updateCartUI() {
@@ -610,7 +632,22 @@
                 container.innerHTML = '';
                 cart.forEach(item => {
                     count += item.quantity; subtotal += item.price * item.quantity;
-                    container.innerHTML += `<div class="cart-item"><div class="cart-item-details"><div>${item.name}</div><div>Qty ${item.quantity} / AED ${item.price}</div></div><div class="cart-item-right"><div class="cart-item-price">AED ${(item.price*item.quantity).toFixed(2)}</div><button type="button" class="remove-item" onclick="removeFromCart('${item.name}')">Remove</button></div></div>`;
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-details">
+                                <div>${item.name}</div>
+                                <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                                    <button type="button" onclick="changeCartItemQty('${item.name}', -1)" style="background:#fff; border:1px solid var(--line); width:18px; height:18px; cursor:pointer; font-weight:bold;">-</button>
+                                    <span style="font-size:0.85rem; font-weight:600;">${item.quantity}</span>
+                                    <button type="button" onclick="changeCartItemQty('${item.name}', 1)" style="background:#fff; border:1px solid var(--line); width:18px; height:18px; cursor:pointer; font-weight:bold;">+</button>
+                                    <span style="color:var(--wood); font-size:0.75rem;">/ AED ${item.price}</span>
+                                </div>
+                            </div>
+                            <div class="cart-item-right">
+                                <div class="cart-item-price">AED ${(item.price*item.quantity).toFixed(2)}</div>
+                                <button type="button" class="remove-item" onclick="removeFromCart('${item.name}')">Remove</button>
+                            </div>
+                        </div>`;
                 });
             }
             document.getElementById('cart-count').textContent = count;
@@ -718,7 +755,7 @@
             formData.append('contact_submit', 'true');
             fetch(window.location.href, { method: 'POST', body: formData })
             .then(res => { if(res.ok) { document.getElementById('contactForm').style.display = 'none'; document.getElementById('contactSuccessMsg').style.display = 'block'; } })
-            .catch(e => { document.getElementById('contactForm'].submit(); });
+            .catch(e => { document.getElementById('contactForm').submit(); });
         }
     </script>
 </body>
