@@ -19,7 +19,7 @@ def home_view(request):
             return redirect('home')
 
     slides = HeroSlide.objects.all()
-    categories = Category.objects.all()
+    categories = Category.objects.all().order_by('sort_order')
     products = Product.objects.all()
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
@@ -34,7 +34,7 @@ def home_view(request):
 
 def product_detail_view(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
-    categories = Category.objects.all()
+    categories = Category.objects.all().order_by('sort_order')
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
     
@@ -44,3 +44,18 @@ def product_detail_view(request, product_slug):
         'promo_dict': promo_dict,
     }
     return render(request, 'store/product_detail.html', context)
+
+def category_detail_view(request, category_slug):
+    category = get_object_or_404(Category, slug=category_slug)
+    categories = Category.objects.all().order_by('sort_order')
+    products = category.products.all()
+    promo_codes = PromoCode.objects.filter(is_active=True)
+    promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
+
+    context = {
+        'category': category,
+        'categories': categories,
+        'products': products,
+        'promo_dict': promo_dict,
+    }
+    return render(request, 'store/category_detail.html', context)
