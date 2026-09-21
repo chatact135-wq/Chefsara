@@ -31,15 +31,23 @@
         .announcement-bar strong { color: #fff; }
 
         header { position: sticky; top: 0; z-index: 1000; background-color: rgba(236, 224, 196, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; padding: 14px 4%; width: 100%; }
-        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-emblem { width: 34px; height: 34px; border: 1px solid var(--brass); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
         .logo-emblem::before { content: ""; width: 14px; height: 14px; background-color: var(--burgundy); transform: rotate(45deg); }
         .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 0.12em; }
         .logo-text span { color: var(--burgundy); }
 
-        nav { display: flex; align-items: center; gap: 24px; }
-        .nav-link { font-size: 0.88rem; font-weight: 500; color: var(--ink); transition: color 0.2s; }
+        nav { display: flex; align-items: center; gap: 22px; }
+        .nav-link { font-size: 0.88rem; font-weight: 500; color: var(--ink); transition: color 0.2s; padding: 8px 0; }
         .nav-link:hover { color: var(--burgundy); }
+
+        /* Dropdown Styling */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--panel); min-width: 230px; box-shadow: 0 12px 30px rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 6px; z-index: 2000; padding: 8px 0; }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+        .dropdown-item { color: var(--ink); padding: 9px 16px; font-size: 0.85rem; display: block; transition: background 0.2s, color 0.2s; }
+        .dropdown-item:hover { background-color: var(--stucco); color: var(--burgundy); }
+        .dropdown-sub-item { padding-left: 26px; font-size: 0.82rem; color: var(--ink-soft); }
 
         .header-actions { display: flex; align-items: center; gap: 12px; }
         .cart-btn { background: none; border: 1px solid var(--brass); color: var(--ink); padding: 7px 14px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
@@ -49,8 +57,9 @@
         /* Mobile Drawer */
         .mobile-drawer { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--dark-bg); color: #F5EBE6; z-index: 3000; transition: right 0.3s ease; display: flex; flex-direction: column; padding: 30px; overflow-y: auto; }
         .mobile-drawer.open { right: 0; }
-        .mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .mobile-nav-link { font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); color: #F5EBE6; display: block; }
+        .mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .mobile-nav-link { font-size: 1.15rem; font-family: 'Cormorant Garamond', serif; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #F5EBE6; display: block; }
+        .mobile-sub-link { padding-left: 20px; font-size: 0.9rem; color: #D3C5B4; border-bottom: none; padding-top: 6px; padding-bottom: 6px; }
 
         /* Hero Slideshow */
         .hero-slider { background-color: var(--dark-bg); color: #F5EBE6; position: relative; min-height: 480px; overflow: hidden; display: flex; align-items: center; }
@@ -213,6 +222,8 @@
             .product-grid { grid-template-columns: 1fr; }
             .cat-grid { grid-template-columns: 1fr; }
             .chef-grid { grid-template-columns: 1fr; gap: 30px; }
+            .chef-content { order: 1; }
+            .chef-img-box { order: 2; }
             .slide { flex-direction: column; text-align: center; padding: 40px 5%; }
             .slide-graphic { margin-top: 30px; width: 220px; height: 220px; }
             .form-row-grid { grid-template-columns: 1fr; }
@@ -227,19 +238,31 @@
     </div>
     
     <header>
-        <div class="logo-area">
+        <div class="logo-area" onclick="location.href='{% url 'home' %}'">
             <div class="logo-emblem"></div>
             <div class="logo-text">BY CHEF <span>SARA</span></div>
         </div>
         <nav>
-            <a href="#" class="nav-link">Home</a>
-            <a href="#products-section" class="nav-link">Moroccan Hand Craft</a>
-            <a href="#products-section" class="nav-link">Breakfast</a>
-            <a href="#products-section" class="nav-link">Spices Blend</a>
-            <a href="#products-section" class="nav-link">Amlou</a>
-            <a href="#about-section" class="nav-link">Meet the Chef</a>
-            <a href="#catering-section" class="nav-link">Catering Inquiries</a>
-            <a href="#contact-section" class="nav-link">Contact Us</a>
+            <a href="{% url 'home' %}" class="nav-link">Home</a>
+            
+            <!-- Dynamic Categories Dropdown Menu -->
+            {% for cat in categories %}
+            <div class="nav-dropdown">
+                <a href="{% url 'category_detail' cat.slug %}" class="nav-link">{{ cat.name }} &#9662;</a>
+                {% if cat.products.all %}
+                <div class="nav-dropdown-content">
+                    <a href="{% url 'category_detail' cat.slug %}" class="dropdown-item" style="font-weight: 600; border-bottom: 1px solid var(--line); color: var(--burgundy);">All {{ cat.name }}</a>
+                    {% for prod in cat.products.all %}
+                    <a href="{% url 'product_detail' prod.slug %}" class="dropdown-item dropdown-sub-item">{{ prod.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <a href="{% url 'home' %}#about-section" class="nav-link">Meet the Chef</a>
+            <a href="{% url 'home' %}#catering-section" class="nav-link">Catering Inquiries</a>
+            <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
         </nav>
         <div class="header-actions">
             <button class="cart-btn" onclick="toggleCart()">
@@ -256,14 +279,18 @@
             <div class="logo-text" style="color: #fff;">BY CHEF <span>SARA</span></div>
             <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer;">&times;</button>
         </div>
-        <a href="#" class="mobile-nav-link" onclick="toggleMobileMenu()">Home</a>
-        <a href="#products-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Moroccan Hand Craft</a>
-        <a href="#products-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Breakfast Hand Crafted</a>
-        <a href="#products-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Moroccan Spices Blend</a>
-        <a href="#products-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Amlou</a>
-        <a href="#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Meet the Chef & About Us</a>
-        <a href="#catering-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Catering Inquiries</a>
-        <a href="#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
+        <a href="{% url 'home' %}" class="mobile-nav-link" onclick="toggleMobileMenu()">Home</a>
+        
+        {% for cat in categories %}
+        <a href="{% url 'category_detail' cat.slug %}" class="mobile-nav-link" onclick="toggleMobileMenu()">{{ cat.name }}</a>
+        {% for prod in cat.products.all %}
+        <a href="{% url 'product_detail' prod.slug %}" class="mobile-nav-link mobile-sub-link" onclick="toggleMobileMenu()">&mdash; {{ prod.name }}</a>
+        {% endfor %}
+        {% endfor %}
+
+        <a href="{% url 'home' %}#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Meet the Chef</a>
+        <a href="{% url 'home' %}#catering-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Catering Inquiries</a>
+        <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
     </div>
 
     <!-- Hero Slideshow -->
@@ -315,7 +342,7 @@
         </div>
         <div class="cat-grid">
             {% for cat in categories %}
-            <div class="cat-card-modern" onclick="location.href='#products-section'">
+            <div class="cat-card-modern" onclick="location.href='{% url 'category_detail' cat.slug %}'">
                 {% if cat.image %}
                 <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="cat-card-img">
                 {% else %}
@@ -556,7 +583,7 @@
         <div class="footer-pattern-bar"></div>
         <div class="footer-grid">
             <div class="footer-brand-col">
-                <div class="logo-area" style="margin-bottom: 10px;">
+                <div class="logo-area" style="margin-bottom: 10px;" onclick="location.href='{% url 'home' %}'">
                     <div class="logo-emblem"></div>
                     <div class="logo-text" style="color: #FAF3E0;">BY CHEF <span>SARA</span></div>
                 </div>
@@ -565,18 +592,17 @@
             <div class="footer-col">
                 <h4>Shop</h4>
                 <ul class="footer-links-list">
-                    <li><a href="#products-section">Moroccan Hand Craft</a></li>
-                    <li><a href="#products-section">Breakfast Hand Crafted</a></li>
-                    <li><a href="#products-section">Spices Blend</a></li>
-                    <li><a href="#products-section">Amlou</a></li>
+                    {% for cat in categories %}
+                    <li><a href="{% url 'category_detail' cat.slug %}">{{ cat.name }}</a></li>
+                    {% endfor %}
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Company &amp; Policies</h4>
                 <ul class="footer-links-list">
-                    <li><a href="#about-section">Meet the Chef</a></li>
-                    <li><a href="#about-section">About Us</a></li>
-                    <li><a href="#catering-section">Catering Inquiries</a></li>
+                    <li><a href="{% url 'home' %}#about-section">Meet the Chef</a></li>
+                    <li><a href="{% url 'home' %}#about-section">About Us</a></li>
+                    <li><a href="{% url 'home' %}#catering-section">Catering Inquiries</a></li>
                     <li><a href="#" onclick="alert('Terms & Conditions: All products are handcrafted in small batches in Al Ain, UAE.'); return false;">Terms &amp; Conditions</a></li>
                 </ul>
             </div>
