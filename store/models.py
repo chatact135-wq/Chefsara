@@ -39,6 +39,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory_stock = models.PositiveIntegerField(default=10)
     is_bestseller = models.BooleanField(default=False)
+    show_on_home = models.BooleanField(default=True, help_text="Check to display this product on the home page.")
     image_placeholder_tag = models.CharField(max_length=50, choices=IMAGE_CHOICES, default='khlii')
 
     def __str__(self):
@@ -65,7 +66,6 @@ class HeroSlide(models.Model):
     button_text = models.CharField(max_length=50, default="Shop Now")
     button_link = models.CharField(max_length=200, default="#products-section")
     
-    # Added Image Uploader Field for Hero Slides
     image = models.ImageField(upload_to='hero_slides/', blank=True, null=True)
     
     graphic_type = models.CharField(max_length=50, choices=SLIDE_GRAPHICS, default='star')
