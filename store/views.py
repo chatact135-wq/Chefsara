@@ -20,7 +20,10 @@ def home_view(request):
 
     slides = HeroSlide.objects.all()
     categories = Category.objects.all().order_by('sort_order')
-    products = Product.objects.all()
+    
+    # Only show products on the home page if 'show_on_home' is checked True in the admin
+    products = Product.objects.filter(show_on_home=True)
+    
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
@@ -48,7 +51,10 @@ def product_detail_view(request, product_slug):
 def category_detail_view(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     categories = Category.objects.all().order_by('sort_order')
+    
+    # Category pages show all products belonging to this category regardless of the home flag
     products = category.products.all()
+    
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
