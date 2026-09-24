@@ -1,12 +1,17 @@
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+from django.urls import path
+from django.contrib.sitemaps.views import sitemap
+from store.sitemaps import StaticViewSitemap, CategorySitemap, ProductSitemap
+from . import views
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'categories': CategorySitemap,
+    'products': ProductSitemap,
+}
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('store.urls')),
+    path('', views.home_view, name='home'),
+    path('product/<slug:product_slug>/', views.product_detail_view, name='product_detail'),
+    path('category/<slug:category_slug>/', views.category_detail_view, name='category_detail'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
