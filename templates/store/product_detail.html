@@ -66,6 +66,8 @@
         .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--burgundy); margin-bottom: 20px; }
         .prod-desc { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 25px; line-height: 1.8; }
         
+        .stock-note-link { font-size: 0.8rem; color: var(--burgundy); text-decoration: underline; margin-top: 4px; display: inline-block; cursor: pointer; }
+
         .purchase-row { display: flex; gap: 15px; align-items: center; border-top: 1px solid var(--line); padding-top: 25px; }
         .qty-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; gap: 14px; }
         .qty-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--wood); font-weight: bold; }
@@ -144,12 +146,14 @@
         .whatsapp-note { font-size: 0.72rem; color: var(--wood); text-align: center; margin-top: 8px; line-height: 1.4; }
 
         footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 80px; }
+        .footer-pattern-bar { height: 16px; background: repeating-linear-gradient(45deg, #1A3029, #1A3029 10px, #B08D4F 10px, #B08D4F 20px, #7A2E2A 20px, #7A2E2A 30px); margin-bottom: 50px; border-radius: 2px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-brand-col p { font-size: 0.9rem; color: #D3C5B4; margin-top: 10px; line-height: 1.5; max-width: 280px; }
         .footer-col h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #FAF3E0; margin-bottom: 16px; font-weight: 600; letter-spacing: 0.05em; }
         .footer-links-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
         .footer-links-list a { font-size: 0.88rem; color: #D3C5B4; transition: color 0.2s; cursor: pointer; }
         .footer-links-list a:hover { color: var(--brass-light); }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; font-size: 0.82rem; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: #A89884; }
 
         @media(max-width: 900px) {
             nav { display: none; }
@@ -175,6 +179,21 @@
         </div>
         <nav>
             <a href="{% url 'home' %}" class="nav-link">Home</a>
+            
+            {% for cat in categories %}
+            <div class="nav-dropdown">
+                <a href="{% url 'category_detail' cat.slug %}" class="nav-link">{{ cat.name }} &#9662;</a>
+                {% if cat.products.all %}
+                <div class="nav-dropdown-content">
+                    <a href="{% url 'category_detail' cat.slug %}" class="dropdown-item" style="font-weight: 600; border-bottom: 1px solid var(--line); color: var(--burgundy);">All {{ cat.name }}</a>
+                    {% for prod in cat.products.all %}
+                    <a href="{% url 'product_detail' prod.slug %}" class="dropdown-item dropdown-sub-item">{{ prod.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
             <a href="{% url 'home' %}#about-section" class="nav-link">Meet the Chef</a>
             <a href="{% url 'home' %}#catering-section" class="nav-link">Catering Inquiries</a>
             <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
@@ -195,6 +214,14 @@
             <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer;">&times;</button>
         </div>
         <a href="{% url 'home' %}" class="mobile-nav-link" onclick="toggleMobileMenu()">Home</a>
+        
+        {% for cat in categories %}
+        <a href="{% url 'category_detail' cat.slug %}" class="mobile-nav-link" onclick="toggleMobileMenu()">{{ cat.name }}</a>
+        {% for prod in cat.products.all %}
+        <a href="{% url 'product_detail' prod.slug %}" class="mobile-nav-link mobile-sub-link" onclick="toggleMobileMenu()">&mdash; {{ prod.name }}</a>
+        {% endfor %}
+        {% endfor %}
+
         <a href="{% url 'home' %}#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Meet the Chef</a>
         <a href="{% url 'home' %}#catering-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Catering Inquiries</a>
         <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
@@ -227,7 +254,10 @@
             <div class="prod-subtitle">{{ product.subtitle }}</div>
             <div class="prod-price">AED {{ product.price }}</div>
             <div class="prod-desc">{{ product.description|safe }}</div>
-            <p style="font-size: 0.85rem; color: var(--wood); margin-bottom: 20px;">Stock available: {{ product.inventory_stock }} units</p>
+            <div style="margin-bottom: 20px;">
+                <p style="font-size: 0.85rem; color: var(--wood);">Stock available: {{ product.inventory_stock }} units</p>
+                <a href="{% url 'home' %}#contact-section" class="stock-note-link">Want to order more? Click here to contact us directly &rarr;</a>
+            </div>
 
             <div class="purchase-row">
                 <div class="qty-box">
@@ -366,19 +396,24 @@
 
     <!-- Main Footer -->
     <footer>
-        <div class="footer-grid" style="max-width:1100px; margin:0 auto; padding: 0 16px;">
-            <div>
+        <div class="footer-pattern-bar"></div>
+        <div class="footer-grid">
+            <div class="footer-brand-col">
                 <div class="logo-area" style="margin-bottom: 10px;" onclick="location.href='{% url 'home' %}'">
                     <div class="logo-emblem"></div>
                     <div class="logo-text" style="color: #FAF3E0;">BY CHEF <span>SARA</span></div>
                 </div>
                 <p>Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.</p>
             </div>
-            <div>
+            <div class="footer-col">
                 <h4>Shop</h4>
-                <p style="color: #D3C5B4; font-size: 0.88rem;">Moroccan Hand Craft &middot; Breakfast &middot; Spices &middot; Amlou</p>
+                <ul class="footer-links-list">
+                    {% for cat in categories %}
+                    <li><a href="{% url 'category_detail' cat.slug %}">{{ cat.name }}</a></li>
+                    {% endfor %}
+                </ul>
             </div>
-            <div>
+            <div class="footer-col">
                 <h4>Company &amp; Policies</h4>
                 <ul class="footer-links-list">
                     <li><a href="{% url 'home' %}#about-section">Meet the Chef</a></li>
@@ -387,7 +422,7 @@
                 </ul>
             </div>
         </div>
-        <div class="footer-bottom" style="max-width:1100px; margin:40px auto 0 auto; padding: 25px 16px 0 16px;">
+        <div class="footer-bottom">
             <div>&copy; 2026 By Chef Sara. Handcrafted in the UAE</div>
             <div>Al Ain, United Arab Emirates</div>
         </div>
