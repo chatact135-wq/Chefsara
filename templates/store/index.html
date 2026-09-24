@@ -9,7 +9,7 @@
     <style>
         html { scroll-behavior: smooth; }
         :root {
-            --ink:          #2B1D12;
+            --ink:        #2B1D12;
             --ink-soft:     #4A3620;
             --wood:         #8B5A2B;
             --brass:        #B08D4F;
@@ -41,7 +41,6 @@
         .nav-link { font-size: 0.88rem; font-weight: 500; color: var(--ink); transition: color 0.2s; padding: 8px 0; }
         .nav-link:hover { color: var(--burgundy); }
 
-        /* Dropdown Styling */
         .nav-dropdown { position: relative; display: inline-block; }
         .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--panel); min-width: 230px; box-shadow: 0 12px 30px rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 6px; z-index: 2000; padding: 8px 0; }
         .nav-dropdown:hover .nav-dropdown-content { display: block; }
@@ -54,14 +53,12 @@
         .cart-badge { background-color: var(--burgundy); color: #fff; border-radius: 50%; padding: 1px 5px; font-size: 0.7rem; }
         .menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--ink); }
 
-        /* Mobile Drawer */
         .mobile-drawer { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--dark-bg); color: #F5EBE6; z-index: 3000; transition: right 0.3s ease; display: flex; flex-direction: column; padding: 30px; overflow-y: auto; }
         .mobile-drawer.open { right: 0; }
         .mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .mobile-nav-link { font-size: 1.15rem; font-family: 'Cormorant Garamond', serif; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #F5EBE6; display: block; }
         .mobile-sub-link { padding-left: 20px; font-size: 0.9rem; color: #D3C5B4; border-bottom: none; padding-top: 6px; padding-bottom: 6px; }
 
-        /* Hero Slideshow */
         .hero-slider { background-color: var(--dark-bg); color: #F5EBE6; position: relative; min-height: 480px; overflow: hidden; display: flex; align-items: center; }
         .slide { display: none; width: 100%; height: 100%; align-items: center; justify-content: space-between; padding: 60px 8%; opacity: 0; transition: opacity 0.5s ease-in-out; }
         .slide.active { display: flex; opacity: 1; }
@@ -80,7 +77,6 @@
         .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; }
         .dot.active { background: var(--brass-light); }
 
-        /* Modern Web 2.0 Category Banners */
         .category-grid-section { padding: 80px 8%; background-color: var(--dark-bg); border-top: 1px solid rgba(176,141,79,0.2); }
         .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
         .cat-card-modern { position: relative; border-radius: 12px; overflow: hidden; height: 280px; cursor: pointer; border: 1px solid rgba(176,141,79,0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; }
@@ -91,7 +87,6 @@
         .cat-card-overlay h3 { font-size: 2rem; font-family: 'Cormorant Garamond', serif; color: #FAF3E0; margin-bottom: 4px; }
         .cat-card-overlay p { font-size: 0.9rem; color: var(--brass-light); }
 
-        /* Products Section */
         section#products-section { padding: 80px 8%; }
         .section-header { text-align: center; max-width: 700px; margin: 0 auto 50px auto; }
         .section-kicker { color: var(--burgundy); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px; }
@@ -115,7 +110,6 @@
         .add-to-order-btn:hover { background-color: var(--burgundy); }
         .bottom-action-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
 
-        /* Meet the Chef Section */
         .chef-section { background-color: var(--dark-bg); color: #F5EBE6; padding: 80px 8%; }
         .chef-grid { display: grid; grid-template-columns: 420px 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; }
         .chef-img-box { border: 1px solid var(--brass); padding: 12px; background: rgba(176,141,79,0.05); }
@@ -127,7 +121,6 @@
         .chef-stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--brass-light); }
         .chef-stat-label { font-size: 0.85rem; color: #D3C5B4; }
 
-        /* Catering Section */
         .catering-section { background-color: #1A3029; color: #F5EBE6; padding: 80px 8%; }
         .catering-container { max-width: 800px; margin: 0 auto; }
         .catering-checklist { list-style: none; margin: 30px 0; }
@@ -136,16 +129,13 @@
         .form-control-dark { width: 100%; padding: 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; margin-bottom: 15px; color: var(--ink); }
         .submit-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 4px; font-weight: 600; cursor: pointer; width: 100%; }
 
-        /* Contact Section */
         .contact-section { background-color: var(--panel); padding: 80px 8%; border-top: 1px solid var(--line); }
         .contact-container { max-width: 800px; margin: 0 auto; }
         .contact-card { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 30px; margin-top: 30px; }
 
-        /* Sticky Bottom-Right "Your Order" Widget */
         .sticky-order-bar { position: fixed; bottom: 24px; right: 24px; background-color: var(--dark-bg); border: 1px solid var(--brass); color: #FAF3E0; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-size: 0.9rem; font-weight: 500; transition: transform 0.2s, background-color 0.2s; }
         .sticky-order-bar:hover { background-color: #2F2118; transform: translateY(-2px); }
 
-        /* Cart & Terms Modal Styling */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
         .cart-drawer { position: fixed; top: 0; right: -440px; width: 420px; max-width: 100%; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
         .cart-drawer.open { right: 0; }
@@ -162,15 +152,24 @@
         .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; margin-bottom: 15px; }
         
         .terms-title-header { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--burgundy); letter-spacing: 0.08em; margin-bottom: 6px; }
-        .terms-scrollbox { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); height: 85px; overflow-y: auto; margin-bottom: 12px; line-height: 1.4; }
+        .terms-scrollbox { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); height: 85px; overflow-y: auto; margin-bottom: 12px; line-height: 1.4; cursor: pointer; }
         .terms-scrollbox h4 { font-size: 0.8rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
         .terms-checkbox-row { display: flex; align-items: flex-start; gap: 8px; font-size: 0.75rem; color: var(--ink); margin-bottom: 15px; }
         .terms-checkbox-row input { margin-top: 2px; cursor: pointer; }
-        .terms-checkbox-row a { color: var(--burgundy); text-decoration: underline; }
+        .terms-checkbox-row a { color: var(--burgundy); text-decoration: underline; cursor: pointer; }
 
         .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; }
         .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; opacity: 0.7; }
         .checkout-warning { font-size: 0.72rem; color: var(--burgundy); text-align: center; margin-top: 6px; }
+
+        /* Terms & Conditions Modal Overlay */
+        .terms-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.6); backdrop-filter: blur(3px); z-index: 4000; display: none; align-items: center; justify-content: center; }
+        .terms-modal-box { background: var(--panel); width: 680px; max-width: 92%; max-height: 85vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 15px 40px rgba(0,0,0,0.3); overflow: hidden; }
+        .terms-modal-header { padding: 20px 24px; background: var(--stucco); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+        .terms-modal-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--ink); }
+        .terms-modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; }
+        .terms-modal-body h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--ink); margin-top: 16px; margin-bottom: 6px; }
+        .terms-modal-body p { margin-bottom: 10px; }
 
         /* Checkout Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
@@ -212,7 +211,7 @@
         .footer-brand-col p { font-size: 0.9rem; color: #D3C5B4; margin-top: 10px; line-height: 1.5; max-width: 280px; }
         .footer-col h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #FAF3E0; margin-bottom: 16px; font-weight: 600; letter-spacing: 0.05em; }
         .footer-links-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-        .footer-links-list a { font-size: 0.88rem; color: #D3C5B4; transition: color 0.2s; }
+        .footer-links-list a { font-size: 0.88rem; color: #D3C5B4; transition: color 0.2s; cursor: pointer; }
         .footer-links-list a:hover { color: var(--brass-light); }
         .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: #A89884; }
 
@@ -245,7 +244,6 @@
         <nav>
             <a href="{% url 'home' %}" class="nav-link">Home</a>
             
-            <!-- Dynamic Categories Dropdown Menu -->
             {% for cat in categories %}
             <div class="nav-dropdown">
                 <a href="{% url 'category_detail' cat.slug %}" class="nav-link">{{ cat.name }} &#9662;</a>
@@ -334,7 +332,7 @@
         <div class="slider-dots" id="sliderDots"></div>
     </div>
 
-    <!-- Modern Web 2.0 Category Banners -->
+    <!-- Category Banners -->
     <div class="category-grid-section">
         <div style="text-align:center; margin-bottom: 40px;">
             <div style="color:var(--brass-light); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.8rem; font-weight: 600;">Curated Collections</div>
@@ -361,7 +359,7 @@
         </div>
     </div>
 
-    <!-- Products Section with Clickable Links -->
+    <!-- Products Section -->
     <section id="products-section">
         <div class="section-header">
             <div class="section-kicker">Live Database Menu</div>
@@ -405,7 +403,7 @@
         </div>
     </section>
 
-    <!-- Updated Meet the Chef Section -->
+    <!-- Meet the Chef Section -->
     <section id="about-section" class="chef-section">
         <div class="chef-grid">
             <div class="chef-content">
@@ -454,7 +452,7 @@
                 <form method="POST" id="cateringForm" onsubmit="handleCateringSubmit(event)">
                     {% csrf_token %}
                     <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Name</label><input type="text" name="name" class="form-control-dark" required placeholder="Your full name"></div>
-                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Phone / WhatsApp</label><input type="text" name="phone" class="form-control-dark" required placeholder="+971 XX XXX XXXX"></div>
+                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Phone / WhatsApp</label><input type="tel" name="phone" class="form-control-dark" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
                     <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Event date</label><input type="date" name="event_date" class="form-control-dark" required></div>
                     <button type="submit" name="catering_submit" class="submit-btn">Send Catering Inquiry</button>
                 </form>
@@ -479,7 +477,7 @@
                 <form method="POST" id="contactForm" onsubmit="handleContactSubmit(event)">
                     {% csrf_token %}
                     <div class="form-group"><label>Your Name</label><input type="text" name="name" class="form-control" required placeholder="Your full name"></div>
-                    <div class="form-group"><label>Phone / WhatsApp</label><input type="text" name="email" class="form-control" required placeholder="+971 XX XXX XXXX"></div>
+                    <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" name="email" class="form-control" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
                     <div class="form-group"><label>Message / Inquiry</label><textarea name="message" class="form-control" required placeholder="How can we help you?"></textarea></div>
                     <button type="submit" name="contact_submit" class="submit-btn">Send Message to Admin</button>
                 </form>
@@ -496,7 +494,7 @@
         🛒 Your Order (<span id="sticky-order-count">0</span>)
     </div>
 
-    <!-- Cart Drawer with Terms & Conditions Checkbox -->
+    <!-- Cart Drawer -->
     <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
     <div class="cart-drawer" id="cartDrawer">
         <div class="cart-header">
@@ -511,19 +509,85 @@
             <div class="subtotal-row"><span>Subtotal</span><span id="cartSubtotal">AED 0</span></div>
             
             <div class="terms-title-header">Terms &amp; Conditions</div>
-            <div class="terms-scrollbox">
-                <h4>1. General</h4>
-                <p>By placing an order with BY CHEF SARA (&quot;we&quot;, &quot;us&quot;, &quot;our brand&quot;), you confirm that you have read, understood, and agree to be bound by these Terms &amp; Conditions in full. If you do not agree, please do not place an order.</p>
-                <p style="margin-top:6px;">All artisanal items are handcrafted in small batches in Al Ain, UAE.</p>
+            <div class="terms-scrollbox" onclick="openTermsModal()">
+                <h4>1. General &amp; Acceptance</h4>
+                <p>By placing an order with BY CHEF SARA, you agree to be bound by these Terms &amp; Conditions in full. Click to view full legal terms.</p>
             </div>
             
             <div class="terms-checkbox-row">
                 <input type="checkbox" id="termsAgreeCheckbox" onchange="toggleCheckoutButton()">
-                <label for="termsAgreeCheckbox">I have read and agree to the <a href="#" onclick="alert('Terms & Conditions: All products are handcrafted in small batches in Al Ain, UAE.'); return false;">Terms &amp; Conditions</a>, including the No Return / No Refund policy and Cash on Delivery deposit terms.</label>
+                <label for="termsAgreeCheckbox">I have read and agree to the <a onclick="openTermsModal()">Terms &amp; Conditions</a>, including the No Return / No Refund policy and Cash on Delivery deposit terms.</label>
             </div>
 
             <button type="button" class="checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutModal()" disabled>Proceed to Checkout</button>
             <div class="checkout-warning" id="checkoutWarningText">Please agree to the Terms &amp; Conditions above to continue.</div>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Modal -->
+    <div class="terms-modal-overlay" id="termsModalOverlay">
+        <div class="terms-modal-box">
+            <div class="terms-modal-header">
+                <h3>TERMS &amp; CONDITIONS</h3>
+                <button class="close-drawer" onclick="closeTermsModal()">&times;</button>
+            </div>
+            <div class="terms-modal-body">
+                <p><strong>Last Updated:</strong> September 2026<br><strong>Brand:</strong> BY CHEF SARA<br><strong>Jurisdiction:</strong> United Arab Emirates</p>
+                
+                <h4>1. General &amp; Acceptance of Terms</h4>
+                <p>By accessing this website, placing an order, or making payment to BY CHEF SARA ("we", "us", "our", or "the brand"), you confirm that you are at least 18 years of age (or have parental/guardian consent) and agree to be bound by these Terms &amp; Conditions in full. If you do not agree with any part of these Terms, please do not proceed with your order.</p>
+
+                <h4>2. Nature of Artisanal Food Products</h4>
+                <p>All products offered by BY CHEF SARA are handcrafted food items prepared fresh in small batches without artificial preservatives. Because items are artisanal: natural variations in color, texture, shape, garnish, and appearance between batches are customary and expected. Variations that do not compromise food safety, taste, or core product integrity do not constitute a defect or failure of specification.</p>
+
+                <h4>3. All Sales Final (No Returns &amp; No Refunds)</h4>
+                <p>In compliance with international food hygiene regulations and UAE consumer protection practices for perishable goods: all food sales are final. We do not accept returns, cancellations, exchanges, or refund requests once an order has been prepared or dispatched. Refunds or exchanges are not provided for personal taste preferences, change of mind, partial consumption, recipient unavailability, or delivery delays caused by external courier factors beyond our reasonable control.</p>
+
+                <h4>4. Transit Damage &amp; Verification Policy</h4>
+                <p>We package every item with care to ensure it arrives in optimal condition. In the rare event an item is visibly damaged, cracked, or leaking upon arrival: Reporting Window: You must report the issue within two (2) hours of confirmed delivery by contacting our customer care team via WhatsApp or email at hello@bychefsara.com. Required Evidence: Clear, high-resolution photographs and/or video of the unopened product, outer packaging, shipping label, and the specific damage or leak must be provided. Remedy: Once verified as damage occurring prior to delivery acceptance, BY CHEF SARA will, at our election, provide an immediate priority replacement or a refund/store credit for the damaged item.</p>
+
+                <h4>5. Discretionary Review for Sealed Products</h4>
+                <p>Unopened, shelf-stable items in their original, tamper-evident packaging may be submitted for review within 48 hours of delivery. Any replacement, exchange, or store credit issued under this clause is evaluated on a strict case-by-case basis at our sole discretion.</p>
+
+                <h4>6. Cash on Delivery (COD) &amp; Security Deposits</h4>
+                <p>Orders placed under Cash on Delivery (COD) may require a non-refundable security deposit at checkout, as disclosed prior to payment confirmation. This deposit covers direct preparation, packaging, and perishable ingredients dedicated to your order. Forfeiture: If a customer arbitrarily rejects delivery, cancels after kitchen preparation has commenced, or fails to pay the outstanding balance to the courier upon arrival, the security deposit is forfeited in full.</p>
+
+                <h4>7. Order Acceptance, Modifications &amp; Cancellations by Us</h4>
+                <p>Confirmation receipts generated at checkout do not constitute a binding acceptance of an order. We reserve the right to limit, decline, or cancel any order prior to dispatch due to ingredient unavailability, pricing or listing errors, delivery zone restrictions, or suspected fraudulent activity.</p>
+
+                <h4>8. Pricing, Currency &amp; Availability</h4>
+                <p>All prices are displayed in UAE Dirhams (AED) and include Value Added Tax (VAT) where applicable by UAE law. Prices, active promotions, and product availability are subject to change without prior notice.</p>
+
+                <h4>9. Delivery &amp; Recipient Availability</h4>
+                <p>Delivery timeframes provided at checkout are estimates and cannot be strictly guaranteed due to traffic, weather, or third-party courier dispatch conditions. The customer is solely responsible for providing complete and accurate delivery details.</p>
+
+                <h4>10. Storage &amp; Product Handling After Delivery</h4>
+                <p>Once delivered, full legal responsibility for correct storage, refrigeration, and temperature control rests entirely with the customer. Perishable items must be refrigerated or frozen immediately in accordance with product label instructions.</p>
+
+                <h4>11. Allergen Declaration &amp; Kitchen Notice</h4>
+                <p>Our kitchen prepares items that contain or may come into contact with common allergens, including tree nuts, peanuts, dairy, eggs, soy, sesame, and gluten. Complete ingredient declarations are available upon request and listed on product pages.</p>
+
+                <h4>12. Promotional Offers &amp; Discount Codes</h4>
+                <p>Promo codes are valid only within their stated promotional period, may not be combined with other offers unless explicitly stated, and carry no monetary cash surrender value.</p>
+
+                <h4>13. Catering &amp; Large Custom Orders</h4>
+                <p>Catering bookings, bespoke dessert tables, and large corporate orders require custom written confirmation and an advance deposit. Deposits for catering orders cancelled inside the non-refundable window will not be refunded.</p>
+
+                <h4>14. Product Photography &amp; Visual Representation</h4>
+                <p>Photographs, illustrations, and digital media displayed on our website and social channels are for illustrative purposes. Subtle visual differences in finish, color tone, or packaging may occur.</p>
+
+                <h4>15. Intellectual Property</h4>
+                <p>All website content—including the brand name BY CHEF SARA, logos, culinary formulas, text, graphics, photography, and brand collateral—is the exclusive intellectual property of BY CHEF SARA and protected under UAE and international copyright laws.</p>
+
+                <h4>16. Limitation of Liability</h4>
+                <p>To the fullest extent permitted under UAE law, BY CHEF SARA’s total financial liability for any claim arising out of or related to an order shall not exceed the actual purchase price paid by the customer for that specific order.</p>
+
+                <h4>17. Governing Law &amp; Dispute Resolution</h4>
+                <p>These Terms &amp; Conditions are governed by and construed in accordance with the laws of the United Arab Emirates. Any dispute, claim, or controversy arising out of or relating to these Terms shall be subject to the exclusive jurisdiction of the competent courts of the United Arab Emirates.</p>
+
+                <h4>18. Amendments &amp; Customer Support</h4>
+                <p>We reserve the right to revise or update these Terms &amp; Conditions at our discretion. For questions regarding our products, orders, or these Terms &amp; Conditions, please contact us at hello@bychefsara.com.</p>
+            </div>
         </div>
     </div>
 
@@ -538,7 +602,7 @@
                 <div class="modal-section-title">Contact &amp; Delivery Details</div>
                 <div class="form-row-grid">
                     <div class="form-group"><label>Full name</label><input type="text" id="custName" class="form-control" required placeholder="Your name"></div>
-                    <div class="form-group"><label>Phone / WhatsApp</label><input type="text" id="custPhone" class="form-control" required placeholder="+971 XX XXX XXXX"></div>
+                    <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="custPhone" class="form-control" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
                 </div>
                 <div class="form-group"><label>Delivery address</label><textarea id="custAddress" class="form-control" required placeholder="Building, street, area, emirate"></textarea></div>
 
@@ -569,7 +633,7 @@
                 <div class="summary-box" id="modalSummaryBox"></div>
 
                 <div class="modal-terms-note">
-                    ✓ You agreed to our <a href="#" onclick="alert('Terms & Conditions: Handcrafted items in Al Ain, UAE.'); return false;" style="color:var(--burgundy); text-decoration:underline;">Terms &amp; Conditions</a> in your cart, including the No Return / No Refund policy and Cash on Delivery deposit terms.
+                    ✓ You agreed to our <a onclick="openTermsModal()" style="color:var(--burgundy); text-decoration:underline; cursor:pointer;">Terms &amp; Conditions</a> in your cart, including the No Return / No Refund policy and Cash on Delivery deposit terms.
                 </div>
 
                 <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">Place Order via WhatsApp</button>
@@ -601,9 +665,8 @@
                 <h4>Company &amp; Policies</h4>
                 <ul class="footer-links-list">
                     <li><a href="{% url 'home' %}#about-section">Meet the Chef</a></li>
-                    <li><a href="{% url 'home' %}#about-section">About Us</a></li>
                     <li><a href="{% url 'home' %}#catering-section">Catering Inquiries</a></li>
-                    <li><a href="#" onclick="alert('Terms & Conditions: All products are handcrafted in small batches in Al Ain, UAE.'); return false;">Terms &amp; Conditions</a></li>
+                    <li><a onclick="openTermsModal()">Terms &amp; Conditions</a></li>
                 </ul>
             </div>
         </div>
@@ -653,6 +716,9 @@
 
         function toggleMobileMenu() { document.getElementById('mobileDrawer').classList.toggle('open'); }
         function toggleCart() { let drawer = document.getElementById('cartDrawer'); drawer.classList.toggle('open'); document.getElementById('cartOverlay').style.display = drawer.classList.contains('open') ? 'block' : 'none'; }
+        
+        function openTermsModal() { document.getElementById('termsModalOverlay').style.display = 'flex'; }
+        function closeTermsModal() { document.getElementById('termsModalOverlay').style.display = 'none'; }
         
         function decreaseQty(btn) { 
             let span = btn.parentElement.querySelector('.qty-num'); 
