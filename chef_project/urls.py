@@ -1,7 +1,8 @@
+from django.contrib import admin
 from django.urls import path
 from django.contrib.sitemaps.views import sitemap
 from store.sitemaps import StaticViewSitemap, CategorySitemap, ProductSitemap
-from . import views
+from store import views  # <-- MUST import from store, NOT from .
 
 sitemaps = {
     'static': StaticViewSitemap,
@@ -10,6 +11,7 @@ sitemaps = {
 }
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', views.home_view, name='home'),
     path('product/<slug:product_slug>/', views.product_detail_view, name='product_detail'),
     path('category/<slug:category_slug>/', views.category_detail_view, name='category_detail'),
