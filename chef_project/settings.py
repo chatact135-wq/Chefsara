@@ -7,7 +7,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-change-me-in-production-environment")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ['https://chefsara-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = [
+    'https://chefsara-production.up.railway.app',
+    'https://bychefsara.com',
+    'https://www.bychefsara.com'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -15,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sitemaps',  # Added for Google Sitemaps
     'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
