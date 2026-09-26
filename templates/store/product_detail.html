@@ -27,6 +27,14 @@
         .nav-link { font-size: 0.88rem; font-weight: 500; color: var(--ink); transition: color 0.2s; padding: 8px 0; }
         .nav-link:hover { color: var(--burgundy); }
 
+        /* Dropdown Navigation Styles */
+        .nav-dropdown { position: relative; display: inline-block; }
+        .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--panel); min-width: 230px; box-shadow: 0 12px 30px rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 6px; z-index: 2000; padding: 8px 0; }
+        .nav-dropdown:hover .nav-dropdown-content { display: block; }
+        .dropdown-item { color: var(--ink); padding: 9px 16px; font-size: 0.85rem; display: block; transition: background 0.2s, color 0.2s; }
+        .dropdown-item:hover { background-color: var(--stucco); color: var(--burgundy); }
+        .dropdown-sub-item { padding-left: 26px; font-size: 0.82rem; color: var(--ink-soft); }
+
         .header-actions { display: flex; align-items: center; gap: 12px; }
         .cart-btn { background: none; border: 1px solid var(--brass); color: var(--ink); padding: 7px 14px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
         .cart-badge { background-color: var(--burgundy); color: #fff; border-radius: 50%; padding: 1px 5px; font-size: 0.7rem; }
@@ -36,6 +44,7 @@
         .mobile-drawer.open { right: 0; }
         .mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .mobile-nav-link { font-size: 1.15rem; font-family: 'Cormorant Garamond', serif; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #F5EBE6; display: block; }
+        .mobile-sub-link { padding-left: 20px; font-size: 0.9rem; color: #D3C5B4; border-bottom: none; padding-top: 6px; padding-bottom: 6px; }
 
         /* Main Product Layout */
         .product-detail-container { max-width: 1100px; width: 100%; margin: 60px auto; padding: 0 4%; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
@@ -182,11 +191,27 @@
         </div>
         <nav>
             <a href="{% url 'home' %}" class="nav-link">Home</a>
+            
             {% for cat in categories %}
-            <a href="{% url 'category_detail' cat.slug %}" class="nav-link">
-                {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
-            </a>
+            <div class="nav-dropdown">
+                <a href="{% url 'category_detail' cat.slug %}" class="nav-link">
+                    {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %} &#9662;
+                </a>
+                {% if cat.products.all %}
+                <div class="nav-dropdown-content">
+                    <a href="{% url 'category_detail' cat.slug %}" class="dropdown-item" style="font-weight: 600; border-bottom: 1px solid var(--line); color: var(--burgundy);">
+                        All {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
+                    </a>
+                    {% for prod in cat.products.all %}
+                    <a href="{% url 'product_detail' prod.slug %}" class="dropdown-item dropdown-sub-item">
+                        {% if request.GET.lang == 'ar' and prod.name_ar %}{{ prod.name_ar }}{% else %}{{ prod.name }}{% endif %}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
             {% endfor %}
+
             <a href="{% url 'home' %}#about-section" class="nav-link">Meet the Chef</a>
             <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
         </nav>
@@ -208,11 +233,19 @@
             <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer;">&times;</button>
         </div>
         <a href="{% url 'home' %}" class="mobile-nav-link" onclick="toggleMobileMenu()">Home</a>
+        
         {% for cat in categories %}
         <a href="{% url 'category_detail' cat.slug %}" class="mobile-nav-link" onclick="toggleMobileMenu()">
             {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
         </a>
+        {% for prod in cat.products.all %}
+        <a href="{% url 'product_detail' prod.slug %}" class="mobile-nav-link mobile-sub-link" onclick="toggleMobileMenu()">
+            &mdash; {% if request.GET.lang == 'ar' and prod.name_ar %}{{ prod.name_ar }}{% else %}{{ prod.name }}{% endif %}
+        </a>
         {% endfor %}
+        {% endfor %}
+
+        <a href="{% url 'home' %}#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Meet the Chef</a>
         <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
     </div>
 
