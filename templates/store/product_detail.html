@@ -4,35 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product.name }} — By Chef Sara</title>
+    <title>{% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar }}{% else %}{{ product.name }}{% endif %} — By Chef Sara</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'ar,en',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
-            }, 'google_translate_element');
-        }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <style>
         :root {
             --ink: #2B1D12; --ink-soft: #4A3620; --wood: #8B5A2B; --brass: #B08D4F; --brass-light: #D9BE85;
             --stucco: #ECE0C4; --panel: #F6EFDC; --burgundy: #7A2E2A; --dark-bg: #23170F; --line: rgba(43,29,18,0.16);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Jost', sans-serif; background-color: var(--stucco); color: var(--ink); line-height: 1.6; overflow-x: hidden; top: 0px !important; }
+        body { font-family: 'Jost', sans-serif; background-color: var(--stucco); color: var(--ink); line-height: 1.6; overflow-x: hidden; }
         h1, h2, h3 { font-family: 'Cormorant Garamond', serif; }
         a { text-decoration: none; color: inherit; }
-
-        /* Google Translate Widget Custom Styling */
-        .goog-te-banner-frame.skiptranslate { display: none !important; }
-        .goog-te-gadget { font-family: 'Jost', sans-serif !important; font-size: 0px !important; color: transparent !important; }
-        .goog-te-gadget select { background: var(--panel); border: 1px solid var(--brass); color: var(--ink); padding: 5px 10px; border-radius: 4px; font-family: 'Jost', sans-serif; font-size: 0.85rem; cursor: pointer; outline: none; }
-        .goog-logo-link { display: none !important; }
-        .goog-te-gadget span { display: none !important; }
 
         header { position: sticky; top: 0; z-index: 1000; background-color: rgba(236, 224, 196, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; padding: 14px 4%; width: 100%; }
         .logo-area { display: flex; align-items: center; gap: 10px; cursor: pointer; }
@@ -94,18 +76,6 @@
         .add-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; flex-grow: 1; font-size: 1rem; transition: background-color 0.2s; }
         .add-btn:hover { background-color: #5c221f; }
 
-        .related-section { max-width: 1100px; margin: 60px auto; padding: 0 16px; }
-        .related-header { text-align: center; margin-bottom: 30px; font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--ink); }
-        .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .related-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
-        .related-card:hover { transform: translateY(-3px); }
-        .related-img { height: 160px; background: rgba(0,0,0,0.03); border-radius: 6px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .related-img img { width: 100%; height: 100%; object-fit: cover; }
-        .related-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
-        .related-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--burgundy); font-weight: 600; margin-bottom: 12px; }
-        .related-btn { background: var(--ink); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; font-size: 0.8rem; text-align: center; cursor: pointer; }
-        .related-btn:hover { background: var(--burgundy); }
-
         .sticky-order-bar { position: fixed; bottom: 24px; right: 24px; background-color: var(--dark-bg); border: 1px solid var(--brass); color: #FAF3E0; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-size: 0.9rem; font-weight: 500; }
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
         .cart-drawer { position: fixed; top: 0; right: -440px; width: 420px; max-width: 100%; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
@@ -133,8 +103,6 @@
         .terms-modal-header { padding: 20px 24px; background: var(--stucco); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
         .terms-modal-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--ink); }
         .terms-modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; }
-        .terms-modal-body h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--ink); margin-top: 16px; margin-bottom: 6px; }
-        .terms-modal-body p { margin-bottom: 10px; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: var(--panel); width: 680px; max-width: 95%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
@@ -169,7 +137,6 @@
             nav { display: none; }
             .menu-toggle { display: block; }
             .product-detail-container { grid-template-columns: 1fr; gap: 20px; }
-            .related-grid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; gap: 30px; }
             .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
         }
@@ -185,16 +152,17 @@
         <nav>
             <a href="{% url 'home' %}" class="nav-link">Home</a>
             {% for cat in categories %}
-            <a href="{% url 'category_detail' cat.slug %}" class="nav-link">{{ cat.name }}</a>
+            <a href="{% url 'category_detail' cat.slug %}" class="nav-link">
+                {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
+            </a>
             {% endfor %}
             <a href="{% url 'home' %}#about-section" class="nav-link">Meet the Chef</a>
-            <a href="{% url 'home' %}#catering-section" class="nav-link">Catering Inquiries</a>
             <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
         </nav>
         <div class="header-actions">
-            <!-- Google Translate Widget Container -->
-            <div id="google_translate_element"></div>
-
+            <a href="?lang={% if request.GET.lang == 'ar' %}en{% else %}ar{% endif %}" style="font-size:0.85rem; font-weight:600; color:var(--burgundy); border:1px solid var(--brass); padding:5px 10px; border-radius:4px;">
+                {% if request.GET.lang == 'ar' %}English{% else %}العربية{% endif %}
+            </a>
             <button class="cart-btn" onclick="toggleCart()">
                 <span>Cart</span>
                 <span class="cart-badge" id="cart-count">0</span>
@@ -210,10 +178,10 @@
         </div>
         <a href="{% url 'home' %}" class="mobile-nav-link" onclick="toggleMobileMenu()">Home</a>
         {% for cat in categories %}
-        <a href="{% url 'category_detail' cat.slug %}" class="mobile-nav-link" onclick="toggleMobileMenu()">{{ cat.name }}</a>
+        <a href="{% url 'category_detail' cat.slug %}" class="mobile-nav-link" onclick="toggleMobileMenu()">
+            {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
+        </a>
         {% endfor %}
-        <a href="{% url 'home' %}#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Meet the Chef</a>
-        <a href="{% url 'home' %}#catering-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Catering Inquiries</a>
         <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
     </div>
 
@@ -239,8 +207,12 @@
         </div>
 
         <div class="prod-info-card">
-            <h1 class="prod-title">{{ product.name }}</h1>
-            <div class="prod-subtitle">{{ product.subtitle }}</div>
+            <h1 class="prod-title">
+                {% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar }}{% else %}{{ product.name }}{% endif %}
+            </h1>
+            <div class="prod-subtitle">
+                {% if request.GET.lang == 'ar' and product.subtitle_ar %}{{ product.subtitle_ar }}{% else %}{{ product.subtitle }}{% endif %}
+            </div>
 
             <!-- Prominent High-Visibility Tabs Container -->
             <div class="product-tabs-container">
@@ -253,23 +225,43 @@
 
                 <!-- Tab 1: Description with Read More -->
                 <div id="tabDesc" class="tab-content-pane active">
-                    <div id="descTextContainer" class="desc-preview">{{ product.description|safe }}</div>
+                    <div id="descTextContainer" class="desc-preview">
+                        {% if request.GET.lang == 'ar' and product.description_ar %}{{ product.description_ar|safe }}{% else %}{{ product.description|safe }}{% endif %}
+                    </div>
                     <button type="button" id="readMoreBtn" class="read-more-link" onclick="toggleReadMore()">Read More</button>
                 </div>
 
                 <!-- Tab 2: Shipping -->
                 <div id="tabShipping" class="tab-content-pane">
-                    {{ product.shipping_info|default:"Standard refrigerated and secure shipping available across all supported GCC countries (UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, Oman)."|safe }}
+                    {% if request.GET.lang == 'ar' and product.shipping_info_ar %}
+                        {{ product.shipping_info_ar|safe }}
+                    {% elif product.shipping_info %}
+                        {{ product.shipping_info|safe }}
+                    {% else %}
+                        Standard refrigerated and secure shipping available across all supported GCC countries (UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, Oman).
+                    {% endif %}
                 </div>
 
                 <!-- Tab 3: Care & Instructions -->
                 <div id="tabCare" class="tab-content-pane">
-                    {{ product.care_instructions|default:"Store in a cool, dry place away from direct sunlight. Keep sealed tightly after opening."|safe }}
+                    {% if request.GET.lang == 'ar' and product.care_instructions_ar %}
+                        {{ product.care_instructions_ar|safe }}
+                    {% elif product.care_instructions %}
+                        {{ product.care_instructions|safe }}
+                    {% else %}
+                        Store in a cool, dry place away from direct sunlight. Keep sealed tightly after opening.
+                    {% endif %}
                 </div>
 
                 <!-- Tab 4: Ingredients & Allergy -->
                 <div id="tabIngr" class="tab-content-pane">
-                    {{ product.ingredients_allergy|default:"Handcrafted in a facility that processes nuts, dairy, and authentic spices. Check specific product labels for complete details."|safe }}
+                    {% if request.GET.lang == 'ar' and product.ingredients_allergy_ar %}
+                        {{ product.ingredients_allergy_ar|safe }}
+                    {% elif product.ingredients_allergy %}
+                        {{ product.ingredients_allergy|safe }}
+                    {% else %}
+                        Handcrafted in a facility that processes nuts, dairy, and authentic spices. Check specific product labels for complete details.
+                    {% endif %}
                 </div>
             </div>
 
@@ -280,11 +272,11 @@
                     {% for s in product.sizes.all %}
                     <button type="button" class="size-btn {% if forloop.first %}active{% endif %}" 
                             data-size-id="{{ s.id }}" 
-                            data-size-label="{{ s.size_label }}" 
+                            data-size-label="{% if request.GET.lang == 'ar' and s.size_label_ar %}{{ s.size_label_ar }}{% else %}{{ s.size_label }}{% endif %}" 
                             data-price="{{ s.price }}" 
                             data-stock="{{ s.inventory_stock }}" 
                             onclick="selectSize(this)">
-                        {{ s.size_label }}
+                        {% if request.GET.lang == 'ar' and s.size_label_ar %}{{ s.size_label_ar }}{% else %}{{ s.size_label }}{% endif %}
                     </button>
                     {% endfor %}
                 </div>
@@ -309,7 +301,7 @@
         </div>
     </div>
 
-    <!-- Related Items Section ("You May Also Like") -->
+    <!-- Related Items Section -->
     {% if related_products %}
     <div class="related-section">
         <h2 class="related-header">You May Also Like</h2>
@@ -324,7 +316,9 @@
                         <svg width="50" height="60" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
                         {% endif %}
                     </div>
-                    <div class="related-title">{{ rel.name }}</div>
+                    <div class="related-title">
+                        {% if request.GET.lang == 'ar' and rel.name_ar %}{{ rel.name_ar }}{% else %}{{ rel.name }}{% endif %}
+                    </div>
                     <div class="related-price">AED {{ rel.price }}</div>
                 </div>
                 <button type="button" class="related-btn" onclick="location.href='{% url 'product_detail' rel.slug %}'">View Product</button>
@@ -402,7 +396,6 @@
                         <button type="button" onclick="searchGoogleLocation()" style="background: var(--burgundy); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Search</button>
                         <button type="button" onclick="detectUserGPS()" title="Use My Current GPS Location" style="background: var(--wood); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px;">📍 GPS</button>
                     </div>
-                    <!-- Google Maps Embed iframe -->
                     <div style="width: 100%; height: 220px; border-radius: 4px; border: 1px solid var(--line); overflow: hidden; margin-bottom: 6px;">
                         <iframe id="googleMapFrame" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" src="https://maps.google.com/maps?q=United%20Arab%20Emirates&t=&z=6&ie=UTF8&iwloc=&output=embed"></iframe>
                     </div>
@@ -435,7 +428,9 @@
                 <h4>Shop</h4>
                 <ul class="footer-links-list">
                     {% for cat in categories %}
-                    <li><a href="{% url 'category_detail' cat.slug %}">{{ cat.name }}</a></li>
+                    <li><a href="{% url 'category_detail' cat.slug %}">
+                        {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
+                    </a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -511,7 +506,7 @@
 
         function addSelectedProductToCart() {
             let qty = parseInt(document.getElementById('detailQty').textContent);
-            let baseName = "{{ product.name|escapejs }}";
+            let baseName = "{% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar|escapejs }}{% else %}{{ product.name|escapejs }}{% endif %}";
             let displayName = currentSelectedSizeLabel ? `${baseName} (${currentSelectedSizeLabel})` : baseName;
             
             let existing = cart.find(i => i.name === displayName);
@@ -599,41 +594,11 @@
 
         let selectedCountry = 'United Arab Emirates';
 
-        function verifyAndSetCountry(queryOrLatLon) {
-            let statusEl = document.getElementById('mapCountryStatus');
-            statusEl.style.color = 'var(--burgundy)';
-            statusEl.innerHTML = `Verifying delivery zone for "${queryOrLatLon}"...`;
-
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(queryOrLatLon)}`)
-                .then(res => res.json())
-                .then(results => {
-                    if (results && results.length > 0) {
-                        let displayName = results[0].display_name.toLowerCase();
-                        let allowed = ['united arab emirates', 'saudi arabia', 'qatar', 'bahrain', 'kuwait', 'oman', 'uae', 'ksa'];
-                        
-                        let found = allowed.some(c => displayName.includes(c));
-                        if (found) {
-                            selectedCountry = results[0].display_name;
-                            statusEl.style.color = 'var(--burgundy)';
-                            statusEl.innerHTML = `<strong>Verified Location:</strong> ${results[0].display_name} ✅ (Eligible for GCC Delivery)`;
-                        } else {
-                            selectedCountry = '';
-                            statusEl.style.color = '#7A2E2A';
-                            statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
-                        }
-                    }
-                }).catch(err => { console.error(err); });
-        }
-
         function searchGoogleLocation() {
             let query = document.getElementById('mapSearchInput').value;
             if (!query) return;
-
-            let iframe = document.getElementById('googleMapFrame');
-            iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
-            
+            document.getElementById('googleMapFrame').src = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
             document.getElementById('custAddress').value = query;
-            verifyAndSetCountry(query);
         }
 
         function detectUserGPS() {
@@ -641,39 +606,14 @@
                 alert("Geolocation is not supported by your browser");
                 return;
             }
-            
-            let statusEl = document.getElementById('mapCountryStatus');
-            statusEl.style.color = 'var(--wood)';
-            statusEl.innerHTML = "Detecting your exact GPS location...";
-
             navigator.geolocation.getCurrentPosition(
                 function(position) {
                     let lat = position.coords.latitude;
                     let lng = position.coords.longitude;
-                    
-                    let iframe = document.getElementById('googleMapFrame');
-                    iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-
-                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            let country = data.address && data.address.country ? data.address.country : '';
-                            let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
-                            
-                            if (allowedCountries.includes(country)) {
-                                selectedCountry = country;
-                                statusEl.style.color = 'var(--burgundy)';
-                                statusEl.innerHTML = `<strong>Detected GPS Location:</strong> ${country} ✅`;
-                            } else {
-                                selectedCountry = '';
-                                statusEl.style.color = '#7A2E2A';
-                                statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location (${country || 'Unknown'})</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
-                            }
-                        });
+                    document.getElementById('googleMapFrame').src = `https://maps.google.com/maps?q=${lat},${lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
                 },
                 function(error) {
                     alert("Unable to retrieve your location. Please type your area in the search box.");
-                    statusEl.innerHTML = "GPS detection failed. Please search manually.";
                 },
                 { timeout: 10000, enableHighAccuracy: true }
             );
@@ -682,37 +622,12 @@
         function openCheckoutModal() { 
             if (cart.length === 0) return; 
             toggleCart(); 
-            updateModalSummary();
             document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
         }
 
         function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
 
-        function updateModalSummary() {
-            let box = document.getElementById('modalSummaryBox');
-            let subtotal = 0, html = '';
-            cart.forEach(i => {
-                subtotal += i.price * i.quantity;
-                html += `<div class="summary-item-row"><span>${i.name} x ${i.quantity}</span><span>AED ${(i.price * i.quantity).toFixed(2)}</span></div>`;
-            });
-            html += `<div class="summary-divider"></div>`;
-            html += `<div class="summary-line"><span>Subtotal</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
-            let deliveryFee = subtotal >= 650 ? 0 : 25;
-            html += `<div class="summary-line"><span>Delivery</span><span>${deliveryFee === 0 ? 'Free' : 'AED 25.00'}</span></div>`;
-            let total = subtotal + deliveryFee;
-            html += `<div class="summary-total"><span>Total</span><span>AED ${total.toFixed(2)}</span></div>`;
-            box.innerHTML = html;
-        }
-
         function placeWhatsAppOrder() {
-            let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
-            let isAllowed = allowedCountries.some(c => selectedCountry.toLowerCase().includes(c.toLowerCase()));
-            
-            if (!isAllowed) {
-                alert("Sorry, we can't deliver to this location. Please enter or select a valid address in UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, or Oman.");
-                return;
-            }
-
             let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, addr = document.getElementById('custAddress').value;
             if (!name || !phone || !addr) { alert('Please fill in your contact & delivery details.'); return; }
             
@@ -722,7 +637,7 @@
             let deliveryFee = subtotal >= 650 ? 0 : 25;
             let total = subtotal + deliveryFee;
 
-            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nLocation: ${selectedCountry}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
+            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
             cart.forEach(i => { msg += `- ${i.name} x ${i.quantity} (AED ${(i.price*i.quantity).toFixed(2)})\n`; });
             msg += `Subtotal: AED ${subtotal.toFixed(2)}\nDelivery: AED ${deliveryFee.toFixed(2)}\nTotal: AED ${total.toFixed(2)}`;
 
