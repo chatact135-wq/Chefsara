@@ -1,11 +1,11 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{% if request.GET.lang == 'ar' %}ar{% else %}en{% endif %}" dir="{% if request.GET.lang == 'ar' %}rtl{% else %}ltr{% endif %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BY CHEF SARA — Handcrafted Moroccan Pantry & Catering</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>BY CHEF SARA — {% if request.GET.lang == 'ar' %}أصالة المطبخ المغربي{% else %}Handcrafted Moroccan Pantry & Catering{% endif %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         html { scroll-behavior: smooth; }
         :root {
@@ -23,8 +23,14 @@
             --line:         rgba(43,29,18,0.16);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Jost', sans-serif; background-color: var(--stucco); color: var(--ink); line-height: 1.6; overflow-x: hidden; }
-        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; }
+        
+        body { 
+            font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Jost', sans-serif{% endif %}; 
+            background-color: var(--stucco); color: var(--ink); line-height: 1.6; overflow-x: hidden; 
+        }
+        h1, h2, h3, h4 { 
+            font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; 
+        }
         a { text-decoration: none; color: inherit; }
 
         .announcement-bar { background-color: var(--dark-bg); color: var(--brass-light); text-align: center; font-size: 0.85rem; padding: 8px 16px; border-bottom: 1px solid rgba(176,141,79,0.2); }
@@ -42,37 +48,37 @@
         .nav-link:hover { color: var(--burgundy); }
 
         .nav-dropdown { position: relative; display: inline-block; }
-        .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--panel); min-width: 230px; box-shadow: 0 12px 30px rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 6px; z-index: 2000; padding: 8px 0; }
+        .nav-dropdown-content { display: none; position: absolute; top: 100%; {% if request.GET.lang == 'ar' %}right: 0;{% else %}left: 0;{% endif %} background-color: var(--panel); min-width: 230px; box-shadow: 0 12px 30px rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 6px; z-index: 2000; padding: 8px 0; }
         .nav-dropdown:hover .nav-dropdown-content { display: block; }
         .dropdown-item { color: var(--ink); padding: 9px 16px; font-size: 0.85rem; display: block; transition: background 0.2s, color 0.2s; }
         .dropdown-item:hover { background-color: var(--stucco); color: var(--burgundy); }
-        .dropdown-sub-item { padding-left: 26px; font-size: 0.82rem; color: var(--ink-soft); }
+        .dropdown-sub-item { padding: 0 26px; font-size: 0.82rem; color: var(--ink-soft); }
 
         .header-actions { display: flex; align-items: center; gap: 12px; }
-        .cart-btn { background: none; border: 1px solid var(--brass); color: var(--ink); padding: 7px 14px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+        .cart-btn { background: none; border: 1px solid var(--brass); color: var(--ink); padding: 7px 14px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-family: inherit; }
         .cart-badge { background-color: var(--burgundy); color: #fff; border-radius: 50%; padding: 1px 5px; font-size: 0.7rem; }
         .menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--ink); }
 
-        .mobile-drawer { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--dark-bg); color: #F5EBE6; z-index: 3000; transition: right 0.3s ease; display: flex; flex-direction: column; padding: 30px; overflow-y: auto; }
-        .mobile-drawer.open { right: 0; }
+        .mobile-drawer { position: fixed; top: 0; {% if request.GET.lang == 'ar' %}left: -100%;{% else %}right: -100%;{% endif %} width: 100%; height: 100%; background: var(--dark-bg); color: #F5EBE6; z-index: 3000; transition: all 0.3s ease; display: flex; flex-direction: column; padding: 30px; overflow-y: auto; }
+        .mobile-drawer.open { {% if request.GET.lang == 'ar' %}left: 0;{% else %}right: 0;{% endif %} }
         .mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .mobile-nav-link { font-size: 1.15rem; font-family: 'Cormorant Garamond', serif; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #F5EBE6; display: block; }
-        .mobile-sub-link { padding-left: 20px; font-size: 0.9rem; color: #D3C5B4; border-bottom: none; padding-top: 6px; padding-bottom: 6px; }
+        .mobile-nav-link { font-size: 1.15rem; font-family: inherit; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #F5EBE6; display: block; }
+        .mobile-sub-link { padding: 0 20px; font-size: 0.9rem; color: #D3C5B4; border-bottom: none; padding-top: 6px; padding-bottom: 6px; }
 
         .hero-slider { background-color: var(--dark-bg); color: #F5EBE6; position: relative; min-height: 480px; overflow: hidden; display: flex; align-items: center; }
         .slide { display: none; width: 100%; height: 100%; align-items: center; justify-content: space-between; padding: 60px 8%; opacity: 0; transition: opacity 0.5s ease-in-out; }
         .slide.active { display: flex; opacity: 1; }
         .slide-content { max-width: 550px; }
-        .slide-kicker { color: var(--brass-light); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
-        .slide h1 { font-size: 3rem; font-weight: 400; line-height: 1.15; margin-bottom: 16px; color: #FAF3E0; }
+        .slide-kicker { color: var(--brass-light); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; font-weight: bold; }
+        .slide h1 { font-size: 3rem; font-weight: {% if request.GET.lang == 'ar' %}700{% else %}400{% endif %}; line-height: 1.15; margin-bottom: 16px; color: #FAF3E0; }
         .slide p { color: #D3C5B4; font-size: 0.95rem; margin-bottom: 24px; line-height: 1.6; }
-        .slide-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 4px; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: inline-block; }
+        .slide-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 4px; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: inline-block; font-family: inherit;}
         .slide-graphic { display: flex; align-items: center; justify-content: center; width: 300px; height: 300px; }
         .slide-graphic img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--brass); }
 
         .slider-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; }
-        .prev-arrow { left: 20px; }
-        .next-arrow { right: 20px; }
+        .prev-arrow { {% if request.GET.lang == 'ar' %}right: 20px;{% else %}left: 20px;{% endif %} }
+        .next-arrow { {% if request.GET.lang == 'ar' %}left: 20px;{% else %}right: 20px;{% endif %} }
         .slider-dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; }
         .dot.active { background: var(--brass-light); }
@@ -84,17 +90,17 @@
         .cat-card-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.65); transition: transform 0.5s ease; }
         .cat-card-modern:hover .cat-card-img { transform: scale(1.05); }
         .cat-card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); }
-        .cat-card-overlay h3 { font-size: 2rem; font-family: 'Cormorant Garamond', serif; color: #FAF3E0; margin-bottom: 4px; }
+        .cat-card-overlay h3 { font-size: 2rem; color: #FAF3E0; margin-bottom: 4px; }
         .cat-card-overlay p { font-size: 0.9rem; color: var(--brass-light); }
 
         section#products-section { padding: 80px 8%; }
         .section-header { text-align: center; max-width: 700px; margin: 0 auto 50px auto; }
         .section-kicker { color: var(--burgundy); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px; }
-        .section-header h2 { font-size: 2.75rem; font-weight: 500; }
+        .section-header h2 { font-size: 2.75rem; font-weight: {% if request.GET.lang == 'ar' %}700{% else %}500{% endif %}; }
         .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .product-card { background-color: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: transform 0.2s; }
         .product-card:hover { transform: translateY(-3px); }
-        .badge-bestseller { position: absolute; top: 16px; right: 16px; background-color: var(--mustard); color: var(--ink); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 3px; text-transform: uppercase; z-index: 10; }
+        .badge-bestseller { position: absolute; top: 16px; {% if request.GET.lang == 'ar' %}left: 16px;{% else %}right: 16px;{% endif %} background-color: var(--mustard); color: var(--ink); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 3px; text-transform: uppercase; z-index: 10; }
         .product-img-placeholder { height: 210px; background-color: rgba(0,0,0,0.03); border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; cursor: pointer; overflow: hidden; }
         .product-img-placeholder img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
         .product-info h3 a { color: var(--ink); transition: color 0.2s; }
@@ -102,11 +108,11 @@
         .product-subtitle { font-style: italic; color: var(--wood); font-size: 0.9rem; margin-bottom: 10px; }
         .product-desc { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 20px; }
         .product-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 16px; }
-        .product-price { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--burgundy); }
+        .product-price { font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; font-size: 1.3rem; font-weight: 600; color: var(--burgundy); }
         .quantity-control { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 4px 8px; gap: 8px; font-size: 0.85rem; }
         .qty-btn { background: none; border: none; cursor: pointer; color: var(--wood); font-weight: 600; font-size: 1rem; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
         .qty-num { min-width: 20px; text-align: center; font-weight: 600; }
-        .add-to-order-btn { background-color: var(--ink); color: var(--stucco); border: none; padding: 10px 14px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-weight: 500; }
+        .add-to-order-btn { background-color: var(--ink); color: var(--stucco); border: none; padding: 10px 14px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-weight: 500; font-family: inherit;}
         .add-to-order-btn:hover { background-color: var(--burgundy); }
         .bottom-action-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
 
@@ -114,11 +120,11 @@
         .chef-grid { display: grid; grid-template-columns: 420px 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; }
         .chef-img-box { border: 1px solid var(--brass); padding: 12px; background: rgba(176,141,79,0.05); }
         .chef-img-box img { width: 100%; height: 500px; object-fit: cover; display: block; }
-        .chef-content h2 { font-size: 2.75rem; font-weight: 400; color: #FAF3E0; margin-bottom: 20px; }
+        .chef-content h2 { font-size: 2.75rem; font-weight: {% if request.GET.lang == 'ar' %}700{% else %}400{% endif %}; color: #FAF3E0; margin-bottom: 20px; }
         .chef-quote { font-style: italic; color: #D3C5B4; margin-bottom: 25px; font-size: 1.1rem; line-height: 1.6; }
         .chef-bio { color: #C8B9A6; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.7; }
         .chef-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 30px; }
-        .chef-stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--brass-light); }
+        .chef-stat-num { font-size: 2.5rem; color: var(--brass-light); }
         .chef-stat-label { font-size: 0.85rem; color: #D3C5B4; }
 
         .catering-section { background-color: #1A3029; color: #F5EBE6; padding: 80px 8%; }
@@ -126,30 +132,30 @@
         .catering-checklist { list-style: none; margin: 30px 0; }
         .catering-checklist li { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; color: #D3C5B4; }
         .catering-form { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 30px; margin-top: 30px; }
-        .form-control-dark { width: 100%; padding: 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; margin-bottom: 15px; color: var(--ink); }
-        .submit-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 4px; font-weight: 600; cursor: pointer; width: 100%; }
+        .form-control-dark { width: 100%; padding: 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; margin-bottom: 15px; color: var(--ink); font-family: inherit;}
+        .submit-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 4px; font-weight: 600; cursor: pointer; width: 100%; font-family: inherit;}
 
         .contact-section { background-color: var(--panel); padding: 80px 8%; border-top: 1px solid var(--line); }
         .contact-container { max-width: 800px; margin: 0 auto; }
         .contact-card { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 30px; margin-top: 30px; }
 
-        .sticky-order-bar { position: fixed; bottom: 24px; right: 24px; background-color: var(--dark-bg); border: 1px solid var(--brass); color: #FAF3E0; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-size: 0.9rem; font-weight: 500; transition: transform 0.2s, background-color 0.2s; }
+        .sticky-order-bar { position: fixed; bottom: 24px; {% if request.GET.lang == 'ar' %}left: 24px;{% else %}right: 24px;{% endif %} background-color: var(--dark-bg); border: 1px solid var(--brass); color: #FAF3E0; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-size: 0.9rem; font-weight: 500; transition: transform 0.2s, background-color 0.2s; }
         .sticky-order-bar:hover { background-color: #2F2118; transform: translateY(-2px); }
 
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
-        .cart-drawer { position: fixed; top: 0; right: -440px; width: 420px; max-width: 100%; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
-        .cart-drawer.open { right: 0; }
+        .cart-drawer { position: fixed; top: 0; {% if request.GET.lang == 'ar' %}left: -440px; border-right: 1px solid var(--line);{% else %}right: -440px; border-left: 1px solid var(--line);{% endif %} width: 420px; max-width: 100%; height: 100%; background: var(--panel); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: all 0.3s ease; }
+        .cart-drawer.open { {% if request.GET.lang == 'ar' %}left: 0;{% else %}right: 0;{% endif %} }
         .cart-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
         .cart-header h3 { font-size: 1.4rem; font-weight: 600; }
         .close-drawer { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ink); }
         .cart-body { padding: 20px 24px; flex-grow: 1; overflow-y: auto; }
         .cart-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
-        .cart-item-right { text-align: right; }
-        .cart-item-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--burgundy); }
-        .remove-item { background: none; border: none; color: var(--burgundy); font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 4px; }
+        .cart-item-right { text-align: {% if request.GET.lang == 'ar' %}left{% else %}right{% endif %}; }
+        .cart-item-price { font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; font-size: 1.1rem; font-weight: 600; color: var(--burgundy); }
+        .remove-item { background: none; border: none; color: var(--burgundy); font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 4px; font-family: inherit;}
         
         .cart-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: var(--stucco); }
-        .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; margin-bottom: 15px; }
+        .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; }
         
         .terms-title-header { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--burgundy); letter-spacing: 0.08em; margin-bottom: 6px; }
         .terms-scrollbox { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); height: 85px; overflow-y: auto; margin-bottom: 12px; line-height: 1.4; cursor: pointer; }
@@ -158,7 +164,7 @@
         .terms-checkbox-row input { margin-top: 2px; cursor: pointer; }
         .terms-checkbox-row a { color: var(--burgundy); text-decoration: underline; cursor: pointer; }
 
-        .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; }
+        .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; font-family: inherit;}
         .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; opacity: 0.7; }
         .checkout-warning { font-size: 0.72rem; color: var(--burgundy); text-align: center; margin-top: 6px; }
 
@@ -166,23 +172,22 @@
         .terms-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.6); backdrop-filter: blur(3px); z-index: 4000; display: none; align-items: center; justify-content: center; }
         .terms-modal-box { background: var(--panel); width: 680px; max-width: 92%; max-height: 85vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 15px 40px rgba(0,0,0,0.3); overflow: hidden; }
         .terms-modal-header { padding: 20px 24px; background: var(--stucco); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-        .terms-modal-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--ink); }
+        .terms-modal-header h3 { font-size: 1.5rem; color: var(--ink); font-weight: 700;}
         .terms-modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; }
-        .terms-modal-body h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--ink); margin-top: 16px; margin-bottom: 6px; }
-        .terms-modal-body p { margin-bottom: 10px; }
+        .terms-modal-body h4 { font-size: 1.1rem; color: var(--ink); margin-top: 16px; margin-bottom: 6px; font-weight: 700;}
 
         /* Checkout Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: var(--panel); width: 620px; max-width: 95%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
         .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--stucco); }
-        .modal-header h3 { font-size: 1.5rem; font-weight: 500; font-family: 'Cormorant Garamond', serif; }
+        .modal-header h3 { font-size: 1.5rem; font-weight: 700; }
         .modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; }
         
         .modal-section-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--wood); letter-spacing: 0.1em; margin-bottom: 12px; margin-top: 6px; }
         .form-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 4px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 5px; }
-        .form-control { width: 100%; padding: 10px 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; color: var(--ink); }
+        .form-control { width: 100%; padding: 10px 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; color: var(--ink); font-family: inherit;}
         textarea.form-control { resize: vertical; height: 65px; }
         
         .payment-option { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
@@ -190,7 +195,7 @@
         .payment-details { font-size: 0.78rem; color: var(--wood); margin-top: 3px; line-height: 1.4; }
         
         .promo-input-row { display: flex; gap: 8px; margin-bottom: 15px; }
-        .apply-btn { background-color: var(--ink); color: #fff; border: none; padding: 0 18px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+        .apply-btn { background-color: var(--ink); color: #fff; border: none; padding: 0 18px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.85rem; font-family: inherit;}
         .apply-btn:hover { background-color: var(--burgundy); }
         .promo-msg { font-size: 0.75rem; margin-top: 4px; }
 
@@ -198,10 +203,10 @@
         .summary-item-row { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 8px; color: var(--ink); }
         .summary-divider { border-bottom: 1px dashed var(--line); margin: 10px 0; }
         .summary-line { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; color: var(--ink-soft); }
-        .summary-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 600; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 8px; }
+        .summary-total { display: flex; justify-content: space-between; font-size: 1.35rem; font-weight: 700; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 8px; }
         
         .modal-terms-note { background: var(--stucco); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); margin-bottom: 15px; line-height: 1.4; }
-        .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
+        .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; font-family: inherit;}
         .whatsapp-note { font-size: 0.72rem; color: var(--wood); text-align: center; margin-top: 8px; line-height: 1.4; }
 
         /* Authentic Footer Section */
@@ -209,7 +214,7 @@
         .footer-pattern-bar { height: 16px; background: repeating-linear-gradient(45deg, #1A3029, #1A3029 10px, #B08D4F 10px, #B08D4F 20px, #7A2E2A 20px, #7A2E2A 30px); margin-bottom: 50px; border-radius: 2px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
         .footer-brand-col p { font-size: 0.9rem; color: #D3C5B4; margin-top: 10px; line-height: 1.5; max-width: 280px; }
-        .footer-col h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #FAF3E0; margin-bottom: 16px; font-weight: 600; letter-spacing: 0.05em; }
+        .footer-col h4 { font-size: 1.1rem; color: #FAF3E0; margin-bottom: 16px; font-weight: 700; letter-spacing: 0.05em; }
         .footer-links-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
         .footer-links-list a { font-size: 0.88rem; color: #D3C5B4; transition: color 0.2s; cursor: pointer; }
         .footer-links-list a:hover { color: var(--brass-light); }
@@ -233,29 +238,33 @@
 </head>
 <body>
     <div class="announcement-bar">
-        Free delivery on orders above <strong>AED 650</strong> &middot; Handcrafted in small batches &mdash; Al Ain, UAE
+        {% if request.GET.lang == 'ar' %}
+            توصيل مجاني للطلبات فوق <strong>650 درهم</strong> &middot; مصنوع يدوياً في مدينة العين، الإمارات
+        {% else %}
+            Free delivery on orders above <strong>AED 650</strong> &middot; Handcrafted in small batches &mdash; Al Ain, UAE
+        {% endif %}
     </div>
     
     <header>
-        <div class="logo-area" onclick="location.href='{% url 'home' %}'">
+        <div class="logo-area" onclick="location.href='{% url 'home' %}?lang={{ request.GET.lang|default:"en" }}'">
             <div class="logo-emblem"></div>
             <div class="logo-text">BY CHEF <span>SARA</span></div>
         </div>
         <nav>
-            <a href="{% url 'home' %}" class="nav-link">Home</a>
+            <a href="{% url 'home' %}?lang={{ request.GET.lang|default:"en" }}" class="nav-link">{% if request.GET.lang == 'ar' %}الرئيسية{% else %}Home{% endif %}</a>
             
             {% for cat in categories %}
             <div class="nav-dropdown">
-                <a href="{% url 'category_detail' cat.slug %}" class="nav-link">
+                <a href="{% url 'category_detail' cat.slug %}?lang={{ request.GET.lang|default:"en" }}" class="nav-link">
                     {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %} &#9662;
                 </a>
                 {% if cat.products.all %}
                 <div class="nav-dropdown-content">
-                    <a href="{% url 'category_detail' cat.slug %}" class="dropdown-item" style="font-weight: 600; border-bottom: 1px solid var(--line); color: var(--burgundy);">
-                        All {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
+                    <a href="{% url 'category_detail' cat.slug %}?lang={{ request.GET.lang|default:"en" }}" class="dropdown-item" style="font-weight: 600; border-bottom: 1px solid var(--line); color: var(--burgundy);">
+                        {% if request.GET.lang == 'ar' %}عرض الكل{% else %}All{% endif %} {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
                     </a>
                     {% for prod in cat.products.all %}
-                    <a href="{% url 'product_detail' prod.slug %}" class="dropdown-item dropdown-sub-item">
+                    <a href="{% url 'product_detail' prod.slug %}?lang={{ request.GET.lang|default:"en" }}" class="dropdown-item dropdown-sub-item">
                         {% if request.GET.lang == 'ar' and prod.name_ar %}{{ prod.name_ar }}{% else %}{{ prod.name }}{% endif %}
                     </a>
                     {% endfor %}
@@ -264,18 +273,18 @@
             </div>
             {% endfor %}
 
-            <a href="{% url 'home' %}#about-section" class="nav-link">Meet the Chef</a>
-            <a href="{% url 'home' %}#catering-section" class="nav-link">Catering Inquiries</a>
-            <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
+            <a href="{% url 'home' %}#about-section" class="nav-link">{% if request.GET.lang == 'ar' %}تعرف على الشيف{% else %}Meet the Chef{% endif %}</a>
+            <a href="{% url 'home' %}#catering-section" class="nav-link">{% if request.GET.lang == 'ar' %}طلبات الحفلات{% else %}Catering Inquiries{% endif %}</a>
+            <a href="{% url 'home' %}#contact-section" class="nav-link">{% if request.GET.lang == 'ar' %}اتصل بنا{% else %}Contact Us{% endif %}</a>
         </nav>
         <div class="header-actions">
             <!-- Language Switcher Add-on -->
-            <a href="?lang={% if request.GET.lang == 'ar' %}en{% else %}ar{% endif %}" style="font-size:0.85rem; font-weight:600; color:var(--burgundy); border:1px solid var(--brass); padding:5px 10px; border-radius:4px;">
+            <a href="?lang={% if request.GET.lang == 'ar' %}en{% else %}ar{% endif %}" style="font-size:0.85rem; font-weight:600; color:var(--burgundy); border:1px solid var(--brass); padding:5px 10px; border-radius:4px; font-family: 'Jost', sans-serif;">
                 {% if request.GET.lang == 'ar' %}English{% else %}العربية{% endif %}
             </a>
 
             <button class="cart-btn" onclick="toggleCart()">
-                <span>Cart</span>
+                <span>{% if request.GET.lang == 'ar' %}السلة{% else %}Cart{% endif %}</span>
                 <span class="cart-badge" id="cart-count">0</span>
             </button>
             <button class="menu-toggle" onclick="toggleMobileMenu()">&#9776;</button>
@@ -288,22 +297,22 @@
             <div class="logo-text" style="color: #fff;">BY CHEF <span>SARA</span></div>
             <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer;">&times;</button>
         </div>
-        <a href="{% url 'home' %}" class="mobile-nav-link" onclick="toggleMobileMenu()">Home</a>
+        <a href="{% url 'home' %}?lang={{ request.GET.lang|default:"en" }}" class="mobile-nav-link" onclick="toggleMobileMenu()">{% if request.GET.lang == 'ar' %}الرئيسية{% else %}Home{% endif %}</a>
         
         {% for cat in categories %}
-        <a href="{% url 'category_detail' cat.slug %}" class="mobile-nav-link" onclick="toggleMobileMenu()">
+        <a href="{% url 'category_detail' cat.slug %}?lang={{ request.GET.lang|default:"en" }}" class="mobile-nav-link" onclick="toggleMobileMenu()">
             {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
         </a>
         {% for prod in cat.products.all %}
-        <a href="{% url 'product_detail' prod.slug %}" class="mobile-nav-link mobile-sub-link" onclick="toggleMobileMenu()">
+        <a href="{% url 'product_detail' prod.slug %}?lang={{ request.GET.lang|default:"en" }}" class="mobile-nav-link mobile-sub-link" onclick="toggleMobileMenu()">
             &mdash; {% if request.GET.lang == 'ar' and prod.name_ar %}{{ prod.name_ar }}{% else %}{{ prod.name }}{% endif %}
         </a>
         {% endfor %}
         {% endfor %}
 
-        <a href="{% url 'home' %}#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Meet the Chef</a>
-        <a href="{% url 'home' %}#catering-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Catering Inquiries</a>
-        <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
+        <a href="{% url 'home' %}#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">{% if request.GET.lang == 'ar' %}تعرف على الشيف{% else %}Meet the Chef{% endif %}</a>
+        <a href="{% url 'home' %}#catering-section" class="mobile-nav-link" onclick="toggleMobileMenu()">{% if request.GET.lang == 'ar' %}طلبات الحفلات{% else %}Catering Inquiries{% endif %}</a>
+        <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">{% if request.GET.lang == 'ar' %}اتصل بنا{% else %}Contact Us{% endif %}</a>
     </div>
 
     <!-- Hero Slideshow -->
@@ -314,10 +323,10 @@
         {% for slide in slides %}
         <div class="slide {% if forloop.first %}active{% endif %}">
             <div class="slide-content">
-                <div class="slide-kicker">{{ slide.kicker }}</div>
-                <h1>{{ slide.title }}</h1>
-                <p>{{ slide.description }}</p>
-                <a href="{{ slide.button_link }}" class="slide-btn">{{ slide.button_text }}</a>
+                <div class="slide-kicker">{% if request.GET.lang == 'ar' and slide.kicker_ar %}{{ slide.kicker_ar }}{% else %}{{ slide.kicker }}{% endif %}</div>
+                <h1>{% if request.GET.lang == 'ar' and slide.title_ar %}{{ slide.title_ar }}{% else %}{{ slide.title }}{% endif %}</h1>
+                <p>{% if request.GET.lang == 'ar' and slide.description_ar %}{{ slide.description_ar }}{% else %}{{ slide.description }}{% endif %}</p>
+                <a href="{{ slide.button_link }}" class="slide-btn">{% if request.GET.lang == 'ar' and slide.button_text_ar %}{{ slide.button_text_ar }}{% else %}{{ slide.button_text }}{% endif %}</a>
             </div>
             <div class="slide-graphic">
                 {% if slide.image %}
@@ -334,10 +343,10 @@
         {% empty %}
         <div class="slide active">
             <div class="slide-content">
-                <div class="slide-kicker">Best Seller</div>
-                <h1>Moroccan Khlii, confit by hand.</h1>
-                <p>Salt-cured beef, slow-confit in spiced fat — Morocco's original preserved meat, made the traditional way.</p>
-                <a href="#products-section" class="slide-btn">Shop Hand Craft Products</a>
+                <div class="slide-kicker">{% if request.GET.lang == 'ar' %}الأكثر مبيعاً{% else %}Best Seller{% endif %}</div>
+                <h1>{% if request.GET.lang == 'ar' %}الخليع المغربي الأصيل{% else %}Moroccan Khlii, confit by hand.{% endif %}</h1>
+                <p>{% if request.GET.lang == 'ar' %}لحم بقر مقدد ومطهو ببطء في دهن متبل — الطريقة المغربية التقليدية لحفظ اللحوم.{% else %}Salt-cured beef, slow-confit in spiced fat — Morocco's original preserved meat, made the traditional way.{% endif %}</p>
+                <a href="#products-section" class="slide-btn">{% if request.GET.lang == 'ar' %}تسوق المنتجات اليدوية{% else %}Shop Hand Craft Products{% endif %}</a>
             </div>
             <div class="slide-graphic">
                 <svg width="180" height="220" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
@@ -350,12 +359,12 @@
     <!-- Category Banners -->
     <div class="category-grid-section">
         <div style="text-align:center; margin-bottom: 40px;">
-            <div style="color:var(--brass-light); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.8rem; font-weight: 600;">Curated Collections</div>
-            <h2 style="font-size: 2.5rem; color: #FAF3E0; font-family: 'Cormorant Garamond', serif;">Explore Our Categories</h2>
+            <div style="color:var(--brass-light); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.8rem; font-weight: 600;">{% if request.GET.lang == 'ar' %}مجموعات مختارة{% else %}Curated Collections{% endif %}</div>
+            <h2 style="font-size: 2.5rem; color: #FAF3E0; font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %};">{% if request.GET.lang == 'ar' %}استكشف أقسامنا{% else %}Explore Our Categories{% endif %}</h2>
         </div>
         <div class="cat-grid">
             {% for cat in categories %}
-            <div class="cat-card-modern" onclick="location.href='{% url 'category_detail' cat.slug %}'">
+            <div class="cat-card-modern" onclick="location.href='{% url 'category_detail' cat.slug %}?lang={{ request.GET.lang|default:"en" }}'">
                 {% if cat.image %}
                 <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="cat-card-img">
                 {% else %}
@@ -376,13 +385,16 @@
 
     <!-- Products Section -->
     <section id="products-section">
-     
+        <div class="section-header">
+            <div class="section-kicker">{% if request.GET.lang == 'ar' %}الأكثر مبيعاً{% else %}Our Top Picks{% endif %}</div>
+            <h2>{% if request.GET.lang == 'ar' %}إبداعات مميزة{% else %}Featured Creations{% endif %}</h2>
+        </div>
         <div class="product-grid">
             {% for product in products %}
             <div class="product-card" data-stock="{{ product.inventory_stock }}">
-                {% if product.is_bestseller %}<span class="badge-bestseller">Best Seller</span>{% endif %}
+                {% if product.is_bestseller %}<span class="badge-bestseller">{% if request.GET.lang == 'ar' %}الأكثر مبيعاً{% else %}Best Seller{% endif %}</span>{% endif %}
                 
-                <div class="product-img-placeholder" onclick="location.href='{% url 'product_detail' product.slug %}'">
+                <div class="product-img-placeholder" onclick="location.href='{% url 'product_detail' product.slug %}?lang={{ request.GET.lang|default:"en" }}'">
                     {% if product.gallery_images.first %}
                         <img src="{{ product.gallery_images.first.image.url }}" alt="{{ product.name }}">
                     {% else %}
@@ -391,7 +403,7 @@
                 </div>
 
                 <div class="product-info">
-                    <h3><a href="{% url 'product_detail' product.slug %}">
+                    <h3><a href="{% url 'product_detail' product.slug %}?lang={{ request.GET.lang|default:"en" }}">
                         {% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar }}{% else %}{{ product.name }}{% endif %}
                     </a></h3>
                     <div class="product-subtitle">
@@ -400,23 +412,25 @@
                     <p class="product-desc">
                         {% if request.GET.lang == 'ar' and product.description_ar %}{{ product.description_ar|striptags|truncatechars:90 }}{% else %}{{ product.description|striptags|truncatechars:90 }}{% endif %}
                     </p>
-                    <p style="font-size:0.75rem; color:var(--wood);">Stock available: {{ product.inventory_stock }} units</p>
+                    <p style="font-size:0.75rem; color:var(--wood);">{% if request.GET.lang == 'ar' %}الكمية المتوفرة:{% else %}Stock available:{% endif %} {{ product.inventory_stock }}</p>
                 </div>
                 
                 <div class="product-footer">
-                    <div class="product-price">AED {{ product.price }}</div>
+                    <div class="product-price">{% if request.GET.lang == 'ar' %}{{ product.price }} درهم{% else %}AED {{ product.price }}{% endif %}</div>
                     <div class="bottom-action-row">
                         <div class="quantity-control">
                             <button type="button" class="qty-btn" onclick="decreaseQty(this)">-</button>
                             <span class="qty-num">1</span>
                             <button type="button" class="qty-btn" onclick="increaseQty(this, {{ product.inventory_stock }})">+</button>
                         </div>
-                        <button type="button" class="add-to-order-btn" onclick="addToCart('{% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar|escapejs }}{% else %}{{ product.name|escapejs }}{% endif %}', {{ product.price }}, {{ product.inventory_stock }}, this)">Add to order</button>
+                        <button type="button" class="add-to-order-btn" onclick="addToCart('{% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar|escapejs }}{% else %}{{ product.name|escapejs }}{% endif %}', {{ product.price }}, {{ product.inventory_stock }}, this)">
+                            {% if request.GET.lang == 'ar' %}أضف للطلب{% else %}Add to order{% endif %}
+                        </button>
                     </div>
                 </div>
             </div>
             {% empty %}
-            <p style="grid-column: span 3; text-align:center;">No products found in database.</p>
+            <p style="grid-column: span 3; text-align:center;">{% if request.GET.lang == 'ar' %}لا توجد منتجات.{% else %}No products found in database.{% endif %}</p>
             {% endfor %}
         </div>
     </section>
@@ -425,24 +439,24 @@
     <section id="about-section" class="chef-section">
         <div class="chef-grid">
             <div class="chef-content">
-                <div class="section-kicker" style="color:var(--brass-light); margin-bottom: 12px; letter-spacing: 0.15em;">— Meet the Chef</div>
-                <h2>Chef Sara Akkar</h2>
-                <p class="chef-quote">"I created this brand to give people who don't yet know Moroccan treasures the chance to discover our culture through delicious, nourishing food."</p>
-                <p class="chef-bio">Chef Sara Akkar is a Moroccan chef living in the UAE, with a passion for cooking built over more than 16 years of experience. Raised on the recipes of her own family's kitchen, she has spent her career mastering the techniques that make Moroccan food what it is — patient, generous, and full of flavour.</p>
-                <p class="chef-bio">BY CHEF SARA was born from a simple idea: that the best way to introduce people to Moroccan culture is through its food. Every khlii, every jar of smen, every spice blend she makes is prepared the same way she learned it at home — by hand, in small batches, without shortcuts.</p>
+                <div class="section-kicker" style="color:var(--brass-light); margin-bottom: 12px; letter-spacing: 0.15em;">{% if request.GET.lang == 'ar' %}— تعرف على الشيف{% else %}— Meet the Chef{% endif %}</div>
+                <h2>{% if request.GET.lang == 'ar' %}الشيف سارة عكار{% else %}Chef Sara Akkar{% endif %}</h2>
+                <p class="chef-quote">{% if request.GET.lang == 'ar' %}"أنشأت هذه العلامة التجارية لأمنح الأشخاص الذين لم يكتشفوا الكنوز المغربية بعد فرصة لاكتشاف ثقافتنا من خلال طعام لذيذ ومغذي."{% else %}"I created this brand to give people who don't yet know Moroccan treasures the chance to discover our culture through delicious, nourishing food."{% endif %}</p>
+                <p class="chef-bio">{% if request.GET.lang == 'ar' %}الشيف سارة عكار هي شيف مغربية مقيمة في الإمارات، وتتمتع بشغف للطبخ مبني على أكثر من 16 عامًا من الخبرة. نشأت على وصفات مطبخ عائلتها، وأمضت مسيرتها المهنية في إتقان التقنيات التي تجعل الطعام المغربي على ما هو عليه — صبور وكريم ومليء بالنكهة.{% else %}Chef Sara Akkar is a Moroccan chef living in the UAE, with a passion for cooking built over more than 16 years of experience. Raised on the recipes of her own family's kitchen, she has spent her career mastering the techniques that make Moroccan food what it is — patient, generous, and full of flavour.{% endif %}</p>
+                <p class="chef-bio">{% if request.GET.lang == 'ar' %}وُلدت علامة BY CHEF SARA من فكرة بسيطة: أفضل طريقة لتعريف الناس بالثقافة المغربية هي من خلال طعامها. كل وعاء من السمن، وكل برطمان من التوابل يتم تحضيره بنفس الطريقة التي تعلمتها في المنزل — يدويًا، بكميات صغيرة، وبدون اختصارات.{% else %}BY CHEF SARA was born from a simple idea: that the best way to introduce people to Moroccan culture is through its food. Every khlii, every jar of smen, every spice blend she makes is prepared the same way she learned it at home — by hand, in small batches, without shortcuts.{% endif %}</p>
                 
                 <div class="chef-stats-row">
                     <div>
                         <div class="chef-stat-num">16+</div>
-                        <div class="chef-stat-label">Years of experience</div>
+                        <div class="chef-stat-label">{% if request.GET.lang == 'ar' %}سنوات من الخبرة{% else %}Years of experience{% endif %}</div>
                     </div>
                     <div>
                         <div class="chef-stat-num">100%</div>
-                        <div class="chef-stat-label">Handcrafted, small batch</div>
+                        <div class="chef-stat-label">{% if request.GET.lang == 'ar' %}صنع يدوي بالكامل{% else %}Handcrafted, small batch{% endif %}</div>
                     </div>
                     <div>
                         <div class="chef-stat-num">UAE</div>
-                        <div class="chef-stat-label">Based in Al Ain</div>
+                        <div class="chef-stat-label">{% if request.GET.lang == 'ar' %}العين، الإمارات{% else %}Based in Al Ain{% endif %}</div>
                     </div>
                 </div>
             </div>
@@ -455,28 +469,28 @@
     <!-- Catering Inquiries Section -->
     <section id="catering-section" class="catering-section">
         <div class="catering-container">
-            <div class="section-kicker" style="color:var(--brass-light);">Catering Inquiries</div>
-            <h2 style="font-size: 2.75rem; margin-bottom: 15px; color:#FAF3E0;">Bring Chef Sara's pantry to your event.</h2>
-            <p style="color: #D3C5B4;">From gifting hampers to full tasting boards, Chef Sara caters Moroccan preserves and spice sets for private and corporate events across the UAE.</p>
+            <div class="section-kicker" style="color:var(--brass-light);">{% if request.GET.lang == 'ar' %}طلبات الحفلات والمناسبات{% else %}Catering Inquiries{% endif %}</div>
+            <h2 style="font-size: 2.75rem; margin-bottom: 15px; color:#FAF3E0;">{% if request.GET.lang == 'ar' %}اجلب إبداعات الشيف سارة إلى مناسبتك.{% else %}Bring Chef Sara's pantry to your event.{% endif %}</h2>
+            <p style="color: #D3C5B4;">{% if request.GET.lang == 'ar' %}من سلال الهدايا إلى طاولات التذوق الكاملة، توفر الشيف سارة منتجاتها للفعاليات الخاصة والشركات في جميع أنحاء الإمارات.{% else %}From gifting hampers to full tasting boards, Chef Sara caters Moroccan preserves and spice sets for private and corporate events across the UAE.{% endif %}</p>
             
             <ul class="catering-checklist">
-                <li>✓ Ramadan &amp; Eid gifting hampers</li>
-                <li>✓ Corporate &amp; brand gifting</li>
-                <li>✓ Private event tasting boards</li>
-                <li>✓ Bulk &amp; wholesale for restaurants</li>
+                <li>✓ {% if request.GET.lang == 'ar' %}سلال هدايا رمضان والعيد{% else %}Ramadan &amp; Eid gifting hampers{% endif %}</li>
+                <li>✓ {% if request.GET.lang == 'ar' %}هدايا الشركات والمؤسسات{% else %}Corporate &amp; brand gifting{% endif %}</li>
+                <li>✓ {% if request.GET.lang == 'ar' %}طاولات التذوق للفعاليات الخاصة{% else %}Private event tasting boards{% endif %}</li>
+                <li>✓ {% if request.GET.lang == 'ar' %}طلبات الجملة للمطاعم والمقاهي{% else %}Bulk &amp; wholesale for restaurants{% endif %}</li>
             </ul>
 
             <div class="catering-form">
                 <form method="POST" id="cateringForm" onsubmit="handleCateringSubmit(event)">
                     {% csrf_token %}
-                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Name</label><input type="text" name="name" class="form-control-dark" required placeholder="Your full name"></div>
-                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Phone / WhatsApp</label><input type="tel" name="phone" class="form-control-dark" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
-                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">Event date</label><input type="date" name="event_date" class="form-control-dark" required></div>
-                    <button type="submit" name="catering_submit" class="submit-btn">Send Catering Inquiry</button>
+                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">{% if request.GET.lang == 'ar' %}الاسم الكامل{% else %}Name{% endif %}</label><input type="text" name="name" class="form-control-dark" required placeholder="{% if request.GET.lang == 'ar' %}الاسم الكامل{% else %}Your full name{% endif %}"></div>
+                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">{% if request.GET.lang == 'ar' %}رقم الهاتف / واتساب{% else %}Phone / WhatsApp{% endif %}</label><input type="tel" name="phone" class="form-control-dark" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
+                    <div class="form-group"><label style="color:#fff; font-size:0.85rem;">{% if request.GET.lang == 'ar' %}تاريخ المناسبة{% else %}Event date{% endif %}</label><input type="date" name="event_date" class="form-control-dark" required></div>
+                    <button type="submit" name="catering_submit" class="submit-btn">{% if request.GET.lang == 'ar' %}إرسال الطلب{% else %}Send Catering Inquiry{% endif %}</button>
                 </form>
                 <div id="cateringSuccessMsg" style="display: none; text-align: center; padding: 30px; color: #FAF3E0;">
-                    <h3 style="font-size: 1.8rem; color: var(--brass-light); margin-bottom: 10px;">Thank you for your inquiry!</h3>
-                    <p style="color: #D3C5B4;">We have received your catering request and will get in touch with you shortly.</p>
+                    <h3 style="font-size: 1.8rem; color: var(--brass-light); margin-bottom: 10px;">{% if request.GET.lang == 'ar' %}شكراً لتواصلك معنا!{% else %}Thank you for your inquiry!{% endif %}</h3>
+                    <p style="color: #D3C5B4;">{% if request.GET.lang == 'ar' %}لقد تلقينا طلبك وسنتواصل معك قريباً.{% else %}We have received your catering request and will get in touch with you shortly.{% endif %}</p>
                 </div>
             </div>
         </div>
@@ -485,23 +499,23 @@
     <!-- Contact Section -->
     <section id="contact-section" class="contact-section">
         <div class="contact-container">
-            <div class="section-header" style="text-align: left; margin-bottom: 20px;">
-                <div class="section-kicker">Contact Us</div>
-                <h2 style="font-size: 2.5rem;">Questions or orders?</h2>
-                <p style="color: var(--wood);">Reach out on WhatsApp for the fastest response, or send a message below.</p>
+            <div class="section-header" style="text-align: {% if request.GET.lang == 'ar' %}right{% else %}left{% endif %}; margin-bottom: 20px;">
+                <div class="section-kicker">{% if request.GET.lang == 'ar' %}اتصل بنا{% else %}Contact Us{% endif %}</div>
+                <h2 style="font-size: 2.5rem;">{% if request.GET.lang == 'ar' %}أسئلة أو طلبات؟{% else %}Questions or orders?{% endif %}</h2>
+                <p style="color: var(--wood);">{% if request.GET.lang == 'ar' %}تواصل معنا عبر الواتساب للحصول على أسرع استجابة، أو أرسل رسالة أدناه.{% else %}Reach out on WhatsApp for the fastest response, or send a message below.{% endif %}</p>
             </div>
             
             <div class="contact-card">
                 <form method="POST" id="contactForm" onsubmit="handleContactSubmit(event)">
                     {% csrf_token %}
-                    <div class="form-group"><label>Your Name</label><input type="text" name="name" class="form-control" required placeholder="Your full name"></div>
-                    <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" name="email" class="form-control" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
-                    <div class="form-group"><label>Message / Inquiry</label><textarea name="message" class="form-control" required placeholder="How can we help you?"></textarea></div>
-                    <button type="submit" name="contact_submit" class="submit-btn">Send Message to Admin</button>
+                    <div class="form-group"><label>{% if request.GET.lang == 'ar' %}الاسم الكامل{% else %}Your Name{% endif %}</label><input type="text" name="name" class="form-control" required placeholder="{% if request.GET.lang == 'ar' %}الاسم الكامل{% else %}Your full name{% endif %}"></div>
+                    <div class="form-group"><label>{% if request.GET.lang == 'ar' %}رقم الهاتف / واتساب{% else %}Phone / WhatsApp{% endif %}</label><input type="tel" name="email" class="form-control" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
+                    <div class="form-group"><label>{% if request.GET.lang == 'ar' %}الرسالة{% else %}Message / Inquiry{% endif %}</label><textarea name="message" class="form-control" required placeholder="{% if request.GET.lang == 'ar' %}كيف يمكننا مساعدتك؟{% else %}How can we help you?{% endif %}"></textarea></div>
+                    <button type="submit" name="contact_submit" class="submit-btn">{% if request.GET.lang == 'ar' %}إرسال الرسالة{% else %}Send Message to Admin{% endif %}</button>
                 </form>
                 <div id="contactSuccessMsg" style="display: none; text-align: center; padding: 30px; color: var(--ink);">
-                    <h3 style="font-size: 1.8rem; color: var(--burgundy); margin-bottom: 10px;">Thank you for contacting us!</h3>
-                    <p style="color: var(--ink-soft);">Your message has been successfully submitted. We will get in touch with you shortly.</p>
+                    <h3 style="font-size: 1.8rem; color: var(--burgundy); margin-bottom: 10px;">{% if request.GET.lang == 'ar' %}شكراً لتواصلك معنا!{% else %}Thank you for contacting us!{% endif %}</h3>
+                    <p style="color: var(--ink-soft);">{% if request.GET.lang == 'ar' %}تم إرسال رسالتك بنجاح. وسنتواصل معك قريباً.{% else %}Your message has been successfully submitted. We will get in touch with you shortly.{% endif %}</p>
                 </div>
             </div>
         </div>
@@ -509,36 +523,36 @@
 
     <!-- Sticky Bottom-Right "Your Order" Widget -->
     <div class="sticky-order-bar" onclick="toggleCart()">
-        🛒 Your Order (<span id="sticky-order-count">0</span>)
+        🛒 {% if request.GET.lang == 'ar' %}طلبك{% else %}Your Order{% endif %} (<span id="sticky-order-count">0</span>)
     </div>
 
     <!-- Cart Drawer -->
     <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
     <div class="cart-drawer" id="cartDrawer">
         <div class="cart-header">
-            <h3>Your Order</h3>
+            <h3>{% if request.GET.lang == 'ar' %}طلبك{% else %}Your Order{% endif %}</h3>
             <button class="close-drawer" onclick="toggleCart()">&times;</button>
         </div>
         <div class="cart-body" id="cartItemsContainer">
-            <p style="color: var(--wood); text-align: center; margin-top: 40px;">Your cart is empty.</p>
+            <p style="color: var(--wood); text-align: center; margin-top: 40px;">{% if request.GET.lang == 'ar' %}السلة فارغة.{% else %}Your cart is empty.{% endif %}</p>
         </div>
         <div class="cart-footer">
-            <div id="deliveryNotice" style="font-size: 0.8rem; color: var(--wood); margin-bottom: 10px;">Add AED 650 more for free delivery</div>
-            <div class="subtotal-row"><span>Subtotal</span><span id="cartSubtotal">AED 0</span></div>
+            <div id="deliveryNotice" style="font-size: 0.8rem; color: var(--wood); margin-bottom: 10px;">{% if request.GET.lang == 'ar' %}أضف 650 درهم للحصول على توصيل مجاني{% else %}Add AED 650 more for free delivery{% endif %}</div>
+            <div class="subtotal-row"><span>{% if request.GET.lang == 'ar' %}المجموع{% else %}Subtotal{% endif %}</span><span id="cartSubtotal">AED 0</span></div>
             
-            <div class="terms-title-header">Terms &amp; Conditions</div>
+            <div class="terms-title-header">{% if request.GET.lang == 'ar' %}الشروط والأحكام{% else %}Terms &amp; Conditions{% endif %}</div>
             <div class="terms-scrollbox" onclick="openTermsModal()">
-                <h4>1. General &amp; Acceptance</h4>
-                <p>By placing an order with BY CHEF SARA, you agree to be bound by these Terms &amp; Conditions in full. Click to view full legal terms.</p>
+                <h4>{% if request.GET.lang == 'ar' %}1. الشروط العامة{% else %}1. General &amp; Acceptance{% endif %}</h4>
+                <p>{% if request.GET.lang == 'ar' %}من خلال تقديم طلب مع BY CHEF SARA، فإنك توافق على الالتزام بهذه الشروط والأحكام بالكامل. انقر لعرض الشروط القانونية الكاملة.{% else %}By placing an order with BY CHEF SARA, you agree to be bound by these Terms &amp; Conditions in full. Click to view full legal terms.{% endif %}</p>
             </div>
             
             <div class="terms-checkbox-row">
                 <input type="checkbox" id="termsAgreeCheckbox" onchange="toggleCheckoutButton()">
-                <label for="termsAgreeCheckbox">I have read and agree to the <a onclick="openTermsModal()">Terms &amp; Conditions</a>, including the No Return / No Refund policy and Cash on Delivery deposit terms.</label>
+                <label for="termsAgreeCheckbox">{% if request.GET.lang == 'ar' %}لقد قرأت وأوافق على <a onclick="openTermsModal()">الشروط والأحكام</a>، بما في ذلك سياسة عدم الاسترجاع/الاستبدال وشروط الدفع عند الاستلام.{% else %}I have read and agree to the <a onclick="openTermsModal()">Terms &amp; Conditions</a>, including the No Return / No Refund policy and Cash on Delivery deposit terms.{% endif %}</label>
             </div>
 
-            <button type="button" class="checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutModal()" disabled>Proceed to Checkout</button>
-            <div class="checkout-warning" id="checkoutWarningText">Please agree to the Terms &amp; Conditions above to continue.</div>
+            <button type="button" class="checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutModal()" disabled>{% if request.GET.lang == 'ar' %}إتمام الطلب{% else %}Proceed to Checkout{% endif %}</button>
+            <div class="checkout-warning" id="checkoutWarningText">{% if request.GET.lang == 'ar' %}يرجى الموافقة على الشروط والأحكام أعلاه للمتابعة.{% else %}Please agree to the Terms &amp; Conditions above to continue.{% endif %}</div>
         </div>
     </div>
 
@@ -546,7 +560,7 @@
     <div class="terms-modal-overlay" id="termsModalOverlay">
         <div class="terms-modal-box">
             <div class="terms-modal-header">
-                <h3>TERMS &amp; CONDITIONS</h3>
+                <h3>{% if request.GET.lang == 'ar' %}الشروط والأحكام{% else %}TERMS &amp; CONDITIONS{% endif %}</h3>
                 <button class="close-drawer" onclick="closeTermsModal()">&times;</button>
             </div>
             <div class="terms-modal-body">
@@ -609,69 +623,67 @@
         </div>
     </div>
 
-    <!-- Checkout Modal with Google Maps GPS Block -->
+    <!-- Checkout Modal -->
     <div class="modal-overlay" id="checkoutModalOverlay">
         <div class="checkout-modal">
             <div class="modal-header">
-                <h3>Checkout</h3>
+                <h3>{% if request.GET.lang == 'ar' %}إتمام الطلب{% else %}Checkout{% endif %}</h3>
                 <button class="close-drawer" onclick="closeCheckoutModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="modal-section-title">Contact &amp; Delivery Details</div>
+                <div class="modal-section-title">{% if request.GET.lang == 'ar' %}تفاصيل الاتصال والتوصيل{% else %}Contact &amp; Delivery Details{% endif %}</div>
                 <div class="form-row-grid">
-                    <div class="form-group"><label>Full name</label><input type="text" id="custName" class="form-control" required placeholder="Your name"></div>
-                    <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="custPhone" class="form-control" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
+                    <div class="form-group"><label>{% if request.GET.lang == 'ar' %}الاسم الكامل{% else %}Full name{% endif %}</label><input type="text" id="custName" class="form-control" required placeholder="{% if request.GET.lang == 'ar' %}الاسم الكامل{% else %}Your name{% endif %}"></div>
+                    <div class="form-group"><label>{% if request.GET.lang == 'ar' %}رقم الهاتف / واتساب{% else %}Phone / WhatsApp{% endif %}</label><input type="tel" id="custPhone" class="form-control" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
                 </div>
-                
-                <div class="form-group"><label>Delivery address text</label><textarea id="custAddress" class="form-control" required placeholder="Building, street, area, emirate/city"></textarea></div>
-                
+                <div class="form-group"><label>{% if request.GET.lang == 'ar' %}عنوان التوصيل{% else %}Delivery address{% endif %}</label><textarea id="custAddress" class="form-control" required placeholder="{% if request.GET.lang == 'ar' %}المبنى، الشارع، المنطقة، الإمارة{% else %}Building, street, area, emirate{% endif %}"></textarea></div>
+
                 <!-- Google Maps Block -->
                 <div class="form-group">
-                    <label>Select Delivery Location (GCC Delivery Only)</label>
+                    <label>{% if request.GET.lang == 'ar' %}حدد موقع التوصيل (دول الخليج فقط){% else %}Select Delivery Location (GCC Delivery Only){% endif %}</label>
                     <div style="display: flex; gap: 6px; margin-bottom: 8px;">
-                        <input type="text" id="mapSearchInput" class="form-control" placeholder="Search street, area, or city (e.g. Dubai, Riyadh, Doha)..." style="flex-grow: 1;">
-                        <button type="button" onclick="searchGoogleLocation()" style="background: var(--burgundy); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Search</button>
-                        <button type="button" onclick="detectUserGPS()" title="Use My Current GPS Location" style="background: var(--wood); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px;">📍 GPS</button>
+                        <input type="text" id="mapSearchInput" class="form-control" placeholder="{% if request.GET.lang == 'ar' %}ابحث عن شارع، منطقة، أو مدينة...{% else %}Search street, area, or city (e.g. Dubai, Riyadh, Doha)...{% endif %}" style="flex-grow: 1;">
+                        <button type="button" onclick="searchGoogleLocation()" style="background: var(--burgundy); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: inherit;">{% if request.GET.lang == 'ar' %}بحث{% else %}Search{% endif %}</button>
+                        <button type="button" onclick="detectUserGPS()" title="Use My Current GPS Location" style="background: var(--wood); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; font-family: inherit;">📍 GPS</button>
                     </div>
-                    <!-- Google Maps Embed iframe -->
                     <div style="width: 100%; height: 220px; border-radius: 4px; border: 1px solid var(--line); overflow: hidden; margin-bottom: 6px;">
                         <iframe id="googleMapFrame" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" src="https://maps.google.com/maps?q=United%20Arab%20Emirates&t=&z=6&ie=UTF8&iwloc=&output=embed"></iframe>
                     </div>
-                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">Search your location or click 'GPS' to auto-verify your GCC delivery zone.</small>
+                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">{% if request.GET.lang == 'ar' %}ابحث عن موقعك أو انقر على GPS للتحقق من التوصيل داخل الخليج.{% else %}Search your location or click 'GPS' to auto-verify your GCC delivery zone.{% endif %}</small>
                 </div>
 
-                <div class="modal-section-title">Payment Method</div>
+                <div class="modal-section-title">{% if request.GET.lang == 'ar' %}طريقة الدفع{% else %}Payment Method{% endif %}</div>
                 <label class="payment-option">
                     <input type="radio" name="paymentMethod" value="Cash on Delivery" checked>
                     <div>
-                        <strong>Cash on Delivery</strong>
-                        <div class="payment-details">A non-refundable deposit is required to confirm COD orders — details will be confirmed with you directly.</div>
+                        <strong>{% if request.GET.lang == 'ar' %}الدفع عند الاستلام{% else %}Cash on Delivery{% endif %}</strong>
+                        <div class="payment-details">{% if request.GET.lang == 'ar' %}مطلوب عربون غير مسترد لتأكيد الطلبات الدفع عند الاستلام — سيتم تأكيد التفاصيل معك مباشرة.{% else %}A non-refundable deposit is required to confirm COD orders — details will be confirmed with you directly.{% endif %}</div>
                     </div>
                 </label>
                 <label class="payment-option">
                     <input type="radio" name="paymentMethod" value="Bank Transfer">
                     <div>
-                        <strong>Bank Transfer</strong>
-                        <div class="payment-details">Bank details will be sent to you to complete payment before dispatch.</div>
+                        <strong>{% if request.GET.lang == 'ar' %}تحويل بنكي{% else %}Bank Transfer{% endif %}</strong>
+                        <div class="payment-details">{% if request.GET.lang == 'ar' %}سيتم إرسال التفاصيل البنكية إليك لإتمام الدفع قبل الإرسال.{% else %}Bank details will be sent to you to complete payment before dispatch.{% endif %}</div>
                     </div>
                 </label>
 
-                <div class="modal-section-title">Discount Code</div>
+                <div class="modal-section-title">{% if request.GET.lang == 'ar' %}كود الخصم{% else %}Discount Code{% endif %}</div>
                 <div class="promo-input-row">
-                    <input type="text" id="modalPromoInput" class="form-control" placeholder="Enter code">
-                    <button type="button" class="apply-btn" onclick="applyPromoCode()">Apply</button>
+                    <input type="text" id="modalPromoInput" class="form-control" placeholder="{% if request.GET.lang == 'ar' %}أدخل الكود{% else %}Enter code{% endif %}">
+                    <button type="button" class="apply-btn" onclick="applyPromoCode()">{% if request.GET.lang == 'ar' %}تطبيق{% else %}Apply{% endif %}</button>
                 </div>
                 <div class="promo-msg" id="promoMessage"></div>
 
-                <div class="modal-section-title">Order Summary</div>
+                <div class="modal-section-title">{% if request.GET.lang == 'ar' %}ملخص الطلب{% else %}Order Summary{% endif %}</div>
                 <div class="summary-box" id="modalSummaryBox"></div>
 
                 <div class="modal-terms-note">
-                    ✓ You agreed to our <a onclick="openTermsModal()" style="color:var(--burgundy); text-decoration:underline; cursor:pointer;">Terms &amp; Conditions</a> in your cart, including the No Return / No Refund policy and Cash on Delivery deposit terms.
+                    ✓ {% if request.GET.lang == 'ar' %}لقد وافقت على <a onclick="openTermsModal()" style="color:var(--burgundy); text-decoration:underline; cursor:pointer;">الشروط والأحكام</a> الخاصة بنا في سلتك.{% else %}You agreed to our <a onclick="openTermsModal()" style="color:var(--burgundy); text-decoration:underline; cursor:pointer;">Terms &amp; Conditions</a> in your cart.{% endif %}
                 </div>
 
-                <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">Place Order via WhatsApp</button>
-                <div class="whatsapp-note">Your order details will be sent to Chef Sara's team on WhatsApp for confirmation. Placing an order does not guarantee acceptance — see Terms &amp; Conditions.</div>
+                <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">{% if request.GET.lang == 'ar' %}إتمام الطلب عبر واتساب{% else %}Place Order via WhatsApp{% endif %}</button>
+                <div class="whatsapp-note">{% if request.GET.lang == 'ar' %}سيتم إرسال تفاصيل طلبك إلى فريق الشيف سارة على واتساب للتأكيد.{% else %}Your order details will be sent to Chef Sara's team on WhatsApp for confirmation. Placing an order does not guarantee acceptance — see Terms &amp; Conditions.{% endif %}</div>
             </div>
         </div>
     </div>
@@ -685,24 +697,24 @@
                     <div class="logo-emblem"></div>
                     <div class="logo-text" style="color: #FAF3E0;">BY CHEF <span>SARA</span></div>
                 </div>
-                <p>Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.</p>
+                <p>{% if request.GET.lang == 'ar' %}كنوز مغربية، مصنوعة يدوياً بكميات صغيرة — العين، الإمارات العربية المتحدة.{% else %}Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.{% endif %}</p>
             </div>
             <div class="footer-col">
-                <h4>Shop</h4>
+                <h4>{% if request.GET.lang == 'ar' %}تسوق{% else %}Shop{% endif %}</h4>
                 <ul class="footer-links-list">
                     {% for cat in categories %}
-                    <li><a href="{% url 'category_detail' cat.slug %}">
+                    <li><a href="{% url 'category_detail' cat.slug %}?lang={{ request.GET.lang|default:"en" }}">
                         {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
                     </a></li>
                     {% endfor %}
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Company &amp; Policies</h4>
+                <h4>{% if request.GET.lang == 'ar' %}الشركة والسياسات{% else %}Company &amp; Policies{% endif %}</h4>
                 <ul class="footer-links-list">
-                    <li><a href="{% url 'home' %}#about-section">Meet the Chef</a></li>
-                    <li><a href="{% url 'home' %}#catering-section">Catering Inquiries</a></li>
-                    <li><a onclick="openTermsModal()">Terms &amp; Conditions</a></li>
+                    <li><a href="{% url 'home' %}#about-section">{% if request.GET.lang == 'ar' %}تعرف على الشيف{% else %}Meet the Chef{% endif %}</a></li>
+                    <li><a href="{% url 'home' %}#catering-section">{% if request.GET.lang == 'ar' %}طلبات الحفلات{% else %}Catering Inquiries{% endif %}</a></li>
+                    <li><a onclick="openTermsModal()">{% if request.GET.lang == 'ar' %}الشروط والأحكام{% else %}Terms &amp; Conditions{% endif %}</a></li>
                 </ul>
             </div>
         </div>
@@ -717,8 +729,6 @@
         let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
         let appliedDiscountPercent = 0;
         let appliedPromoName = '';
-        
-        // Map Variables
         let selectedCountry = 'United Arab Emirates';
         
         document.addEventListener("DOMContentLoaded", function() {
@@ -773,7 +783,7 @@
         function addToCart(name, price, maxStock, btn) {
             let qty = parseInt(btn.closest('.product-card').querySelector('.qty-num').textContent);
             let existing = cart.find(i => i.name === name);
-            if ((existing ? existing.quantity : 0) + qty > maxStock) { alert('Stock limit reached.'); return; }
+            if ((existing ? existing.quantity : 0) + qty > maxStock) { alert('{% if request.GET.lang == 'ar' %}عذراً، وصلت للحد الأقصى للمخزون.{% else %}Stock limit reached.{% endif %}'); return; }
             if (existing) existing.quantity += qty; else cart.push({ name, price, quantity: qty });
             saveCart(); updateCartUI(); toggleCart();
         }
@@ -794,7 +804,7 @@
         
         function updateCartUI() {
             let container = document.getElementById('cartItemsContainer'), count = 0, subtotal = 0;
-            if (cart.length === 0) container.innerHTML = '<p style="color:var(--wood); text-align:center; margin-top:40px;">Your cart is empty.</p>';
+            if (cart.length === 0) container.innerHTML = '<p style="color:var(--wood); text-align:center; margin-top:40px;">{% if request.GET.lang == 'ar' %}السلة فارغة.{% else %}Your cart is empty.{% endif %}</p>';
             else {
                 container.innerHTML = '';
                 cart.forEach(item => {
@@ -812,7 +822,7 @@
                             </div>
                             <div class="cart-item-right">
                                 <div class="cart-item-price">AED ${(item.price*item.quantity).toFixed(2)}</div>
-                                <button type="button" class="remove-item" onclick="removeFromCart('${item.name}')">Remove</button>
+                                <button type="button" class="remove-item" onclick="removeFromCart('${item.name}')">{% if request.GET.lang == 'ar' %}إزالة{% else %}Remove{% endif %}</button>
                             </div>
                         </div>`;
                 });
@@ -820,7 +830,7 @@
             document.getElementById('cart-count').textContent = count;
             document.getElementById('sticky-order-count').textContent = count;
             document.getElementById('cartSubtotal').textContent = 'AED ' + subtotal.toFixed(2);
-            document.getElementById('deliveryNotice').textContent = subtotal >= 650 ? '🎉 You qualify for free delivery!' : `Add AED ${(650 - subtotal).toFixed(2)} more for free delivery`;
+            document.getElementById('deliveryNotice').textContent = subtotal >= 650 ? '{% if request.GET.lang == 'ar' %}🎉 مؤهل لتوصيل مجاني!{% else %}🎉 You qualify for free delivery!{% endif %}' : `{% if request.GET.lang == 'ar' %}أضف AED ${(650 - subtotal).toFixed(2)} للحصول على توصيل مجاني{% else %}Add AED ${(650 - subtotal).toFixed(2)} more for free delivery{% endif %}`;
         }
 
         function toggleCheckoutButton() {
@@ -843,13 +853,13 @@
                 appliedDiscountPercent = activePromos[codeInput];
                 appliedPromoName = codeInput;
                 msgEl.style.color = '#2E7D32';
-                msgEl.textContent = `Success! ${appliedDiscountPercent}% discount applied.`;
+                msgEl.textContent = `{% if request.GET.lang == 'ar' %}تم تطبيق خصم{% else %}Success! Discount applied:{% endif %} ${appliedDiscountPercent}%`;
                 updateModalSummary();
             } else {
                 appliedDiscountPercent = 0;
                 appliedPromoName = '';
                 msgEl.style.color = '#C62828';
-                msgEl.textContent = 'Invalid or inactive promo code.';
+                msgEl.textContent = '{% if request.GET.lang == 'ar' %}كود غير صالح{% else %}Invalid or inactive promo code.{% endif %}';
                 updateModalSummary();
             }
         }
@@ -871,19 +881,19 @@
                 html += `<div class="summary-item-row"><span>${i.name} x ${i.quantity}</span><span>AED ${(i.price * i.quantity).toFixed(2)}</span></div>`;
             });
             html += `<div class="summary-divider"></div>`;
-            html += `<div class="summary-line"><span>Subtotal</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
+            html += `<div class="summary-line"><span>{% if request.GET.lang == 'ar' %}المجموع{% else %}Subtotal{% endif %}</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
 
             let discountAmount = 0;
             if (appliedDiscountPercent > 0) {
                 discountAmount = (subtotal * appliedDiscountPercent) / 100;
-                html += `<div class="summary-line" style="color:#2E7D32;"><span>Discount (${appliedPromoName} - ${appliedDiscountPercent}%)</span><span>- AED ${discountAmount.toFixed(2)}</span></div>`;
+                html += `<div class="summary-line" style="color:#2E7D32;"><span>{% if request.GET.lang == 'ar' %}خصم{% else %}Discount{% endif %} (${appliedPromoName} - ${appliedDiscountPercent}%)</span><span>- AED ${discountAmount.toFixed(2)}</span></div>`;
             }
 
             let deliveryFee = subtotal >= 650 ? 0 : 25;
-            html += `<div class="summary-line"><span>Delivery</span><span>${deliveryFee === 0 ? 'Free' : 'AED 25.00'}</span></div>`;
+            html += `<div class="summary-line"><span>{% if request.GET.lang == 'ar' %}التوصيل{% else %}Delivery{% endif %}</span><span>${deliveryFee === 0 ? '{% if request.GET.lang == 'ar' %}مجاني{% else %}Free{% endif %}' : 'AED 25.00'}</span></div>`;
             
             let total = (subtotal - discountAmount) + deliveryFee;
-            html += `<div class="summary-total"><span>Total</span><span>AED ${total.toFixed(2)}</span></div>`;
+            html += `<div class="summary-total"><span>{% if request.GET.lang == 'ar' %}الإجمالي{% else %}Total{% endif %}</span><span>AED ${total.toFixed(2)}</span></div>`;
             box.innerHTML = html;
         }
 
