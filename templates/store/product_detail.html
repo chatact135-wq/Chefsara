@@ -52,7 +52,6 @@
         .prod-title { font-size: 2.5rem; font-weight: 500; margin-bottom: 6px; }
         .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.1rem; margin-bottom: 15px; }
         
-        /* Prominent High-Visibility Tabs Design */
         .product-tabs-container { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 20px; }
         .tabs-header-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; background: #EFE4CC; padding: 6px; border-radius: 8px; border: 1px solid var(--line); }
         .tab-btn { background: transparent; border: none; padding: 10px 12px; font-family: 'Jost', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; border-radius: 6px; transition: all 0.2s ease; text-align: center; }
@@ -381,10 +380,11 @@
                     <label>Pin Your Location on Map (GCC Delivery Only)</label>
                     <div style="display: flex; gap: 6px; margin-bottom: 8px;">
                         <input type="text" id="mapSearchInput" class="form-control" placeholder="Search street, area, or city..." style="flex-grow: 1;">
-                        <button type="button" onclick="searchLocation()" style="background: var(--burgundy); color: #fff; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Search</button>
+                        <button type="button" onclick="searchLocation()" style="background: var(--burgundy); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Search</button>
+                        <button type="button" onclick="detectUserGPS()" title="Use My Current GPS Location" style="background: var(--wood); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px;">📍 GPS</button>
                     </div>
                     <div id="checkoutMap" style="width: 100%; height: 200px; border-radius: 4px; border: 1px solid var(--line); margin-bottom: 6px;"></div>
-                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">Search your area or click on the map to drop your delivery pin.</small>
+                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">Click 'GPS' to detect your location, search an area, or click on the map.</small>
                 </div>
 
                 <div class="modal-section-title">Payment Method</div>
@@ -582,10 +582,9 @@
             if (map) { map.remove(); }
             map = L.map('checkoutMap').setView([24.4539, 54.3773], 6);
             
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                subdomains: 'abcd',
-                attribution: '&copy; CARTO'
+                attribution: '&copy; OpenStreetMap'
             }).addTo(map);
 
             map.on('click', function(e) {
@@ -632,6 +631,30 @@
                         alert('Location not found. Please try entering a broader street or city name.');
                     }
                 }).catch(err => { console.error(err); });
+        }
+
+        function detectUserGPS() {
+            if (!navigator.geolocation) {
+                alert("Geolocation is not supported by your browser");
+                return;
+            }
+            
+            let statusEl = document.getElementById('mapCountryStatus');
+            statusEl.style.color = 'var(--wood)';
+            statusEl.innerHTML = "Detecting your exact GPS location...";
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    let lat = position.coords.latitude;
+                    let lng = position.coords.longitude;
+                    handleMapSelection(lat, lng);
+                },
+                function(error) {
+                    alert("Unable to retrieve your location. Please check your browser permission settings or search manually.");
+                    statusEl.innerHTML = "GPS detection failed. Please search or click on the map.";
+                },
+                { timeout: 10000, enableHighAccuracy: true }
+            );
         }
 
         function openCheckoutModal() { 
