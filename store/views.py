@@ -20,10 +20,7 @@ def home_view(request):
 
     slides = HeroSlide.objects.all()
     categories = Category.objects.all().order_by('sort_order')
-    
-    # Only show products on the home page if 'show_on_home' is checked True in the admin
     products = Product.objects.filter(show_on_home=True)
-    
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
@@ -41,20 +38,26 @@ def product_detail_view(request, product_slug):
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
     
+    # Related items ("You may also like"): 3 items from same category, fallback to random if needed
+    related_products = list(Product.objects.filter(category=product.category).exclude(id=product.id)[:3])
+    if len(related_products) < 3:
+        needed = 3 - len(related_products)
+        existing_ids = [product.id] + [p.id for p in related_products]
+        fallback_products = list(Product.objects.exclude(id__in=existing_ids).order_by('?')[:needed])
+        related_products.extend(fallback_products)
+
     context = {
         'product': product,
         'categories': categories,
         'promo_dict': promo_dict,
+        'related_products': related_products,
     }
     return render(request, 'store/product_detail.html', context)
 
 def category_detail_view(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     categories = Category.objects.all().order_by('sort_order')
-    
-    # Category pages show all products belonging to this category regardless of the home flag
     products = category.products.all()
-    
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
