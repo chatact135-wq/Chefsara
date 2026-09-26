@@ -94,9 +94,17 @@ class HeroSlide(models.Model):
         ('jar_green', 'Green Jar (Tagine Spice)'),
     ]
     kicker = models.CharField(max_length=100)
+    kicker_ar = models.CharField(max_length=100, blank=True, null=True, help_text="Kicker in Arabic")
+    
     title = models.CharField(max_length=200)
+    title_ar = models.CharField(max_length=200, blank=True, null=True, help_text="Title in Arabic")
+    
     description = models.TextField()
+    description_ar = models.TextField(blank=True, null=True, help_text="Description in Arabic")
+    
     button_text = models.CharField(max_length=50, default="Shop Now")
+    button_text_ar = models.CharField(max_length=50, blank=True, null=True, default="تسوق الآن", help_text="Button Text in Arabic")
+    
     button_link = models.CharField(max_length=200, default="#products-section")
     image = models.ImageField(upload_to='hero_slides/', blank=True, null=True)
     graphic_type = models.CharField(max_length=50, choices=SLIDE_GRAPHICS, default='star')
