@@ -37,7 +37,7 @@
         .mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .mobile-nav-link { font-size: 1.15rem; font-family: 'Cormorant Garamond', serif; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #F5EBE6; display: block; }
 
-        /* Hero Slider Styles */
+        /* Hero Slider Section */
         .hero-slider-section { background-color: var(--dark-bg); color: #FAF3E0; padding: 80px 8%; position: relative; overflow: hidden; border-bottom: 1px solid rgba(176,141,79,0.2); }
         .hero-slide-container { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
         .hero-content { max-width: 600px; }
@@ -48,6 +48,7 @@
         .hero-btn:hover { background-color: #5c221f; }
 
         section#products-section { padding: 60px 8%; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; margin-bottom: 40px; color: var(--ink); }
         .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .product-card { background-color: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
         .badge-bestseller { position: absolute; top: 16px; right: 16px; background-color: var(--mustard); color: var(--ink); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 3px; text-transform: uppercase; z-index: 10; }
@@ -64,6 +65,15 @@
         .add-to-order-btn { background-color: var(--ink); color: var(--stucco); border: none; padding: 10px 14px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-weight: 500; }
         .add-to-order-btn:hover { background-color: var(--burgundy); }
         .bottom-action-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+
+        /* About & Catering Sections */
+        .content-section { padding: 80px 8%; background-color: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+        .content-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+        .content-inner h2 { font-size: 2.5rem; margin-bottom: 20px; color: var(--ink); }
+        .content-inner p { color: var(--ink-soft); font-size: 1.05rem; line-height: 1.8; margin-bottom: 30px; }
+
+        .form-card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 40px; max-width: 650px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: left; }
+        .form-card h3 { font-size: 1.8rem; margin-bottom: 20px; text-align: center; }
 
         .sticky-order-bar { position: fixed; bottom: 24px; right: 24px; background-color: var(--dark-bg); border: 1px solid var(--brass); color: #FAF3E0; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-size: 0.9rem; font-weight: 500; }
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
@@ -145,8 +155,9 @@
                 {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
             </a>
             {% endfor %}
-            <a href="{% url 'home' %}#about-section" class="nav-link">Meet the Chef</a>
-            <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
+            <a href="#about-section" class="nav-link">Meet the Chef</a>
+            <a href="#catering-section" class="nav-link">Catering</a>
+            <a href="#contact-section" class="nav-link">Contact Us</a>
         </nav>
         <div class="header-actions">
             <a href="?lang={% if request.GET.lang == 'ar' %}en{% else %}ar{% endif %}" style="font-size:0.85rem; font-weight:600; color:var(--burgundy); border:1px solid var(--brass); padding:5px 10px; border-radius:4px;">
@@ -171,10 +182,12 @@
             {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
         </a>
         {% endfor %}
-        <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
+        <a href="#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Meet the Chef</a>
+        <a href="#catering-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Catering</a>
+        <a href="#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
     </div>
 
-    <!-- Restored Hero Slider Section -->
+    <!-- 1. Hero Slider Section -->
     {% if slides %}
     <section class="hero-slider-section">
         <div class="hero-slide-container">
@@ -190,7 +203,9 @@
     </section>
     {% endif %}
 
+    <!-- 2. Featured Products Section -->
     <section id="products-section">
+        <h2 class="section-title">Featured Creations</h2>
         <div class="product-grid">
             {% for product in products %}
             <div class="product-card" data-stock="{{ product.inventory_stock }}">
@@ -235,6 +250,60 @@
         </div>
     </section>
 
+    <!-- 3. Meet the Chef / About Section -->
+    <section id="about-section" class="content-section">
+        <div class="content-inner">
+            <h2>Meet the Chef</h2>
+            <p>With over 16 years of culinary experience, Chef Sara brings authentic Moroccan treasures and artisanal heritage straight to the UAE. Every batch of Khlii, Smen, Amlou, and spice blends is handcrafted with uncompromising dedication, premium ingredients, and timeless tradition.</p>
+        </div>
+    </section>
+
+    <!-- 4. Catering Inquiries Section -->
+    <section id="catering-section" class="content-section" style="background-color: var(--stucco);">
+        <div class="form-card">
+            <h3>Catering Inquiries</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" class="form-control" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label>Phone / WhatsApp</label>
+                    <input type="tel" name="phone" class="form-control" required placeholder="+971 XX XXX XXXX">
+                </div>
+                <div class="form-group">
+                    <label>Event Date & Details</label>
+                    <input type="text" name="event_date" class="form-control" required placeholder="Preferred date & guest count">
+                </div>
+                <button type="submit" name="catering_submit" class="whatsapp-btn" style="margin-top: 10px;">Submit Inquiry</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- 5. Contact Us Section -->
+    <section id="contact-section" class="content-section">
+        <div class="form-card">
+            <h3>Contact Us</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" class="form-control" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" class="form-control" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea name="message" class="form-control" required placeholder="How can we help you?"></textarea>
+                </div>
+                <button type="submit" name="contact_submit" class="whatsapp-btn" style="margin-top: 10px;">Send Message</button>
+            </form>
+        </div>
+    </section>
+
     <div class="sticky-order-bar" onclick="toggleCart()">
         🛒 Your Order (<span id="sticky-order-count">0</span>)
     </div>
@@ -264,6 +333,26 @@
         </div>
     </div>
 
+    <!-- Terms Modal -->
+    <div class="terms-modal-overlay" id="termsModalOverlay">
+        <div class="terms-modal-box">
+            <div class="terms-modal-header">
+                <h3>TERMS &amp; CONDITIONS</h3>
+                <button class="close-drawer" onclick="closeTermsModal()">&times;</button>
+            </div>
+            <div class="terms-modal-body">
+                <p><strong>Last Updated:</strong> September 2026<br><strong>Brand:</strong> BY CHEF SARA<br><strong>Jurisdiction:</strong> United Arab Emirates</p>
+                <h4>1. General &amp; Acceptance of Terms</h4>
+                <p>By accessing this website, placing an order, or making payment to BY CHEF SARA, you confirm that you are at least 18 years of age and agree to be bound by these Terms &amp; Conditions in full.</p>
+                <h4>2. Nature of Artisanal Food Products</h4>
+                <p>All products offered by BY CHEF SARA are handcrafted food items prepared fresh in small batches without artificial preservatives.</p>
+                <h4>3. All Sales Final (No Returns &amp; No Refunds)</h4>
+                <p>All food sales are final. We do not accept returns, cancellations, exchanges, or refund requests once an order has been prepared or dispatched.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal with Google Maps -->
     <div class="modal-overlay" id="checkoutModalOverlay">
         <div class="checkout-modal">
             <div class="modal-header">
@@ -303,12 +392,50 @@
         </div>
     </div>
 
+    <footer>
+        <div class="footer-pattern-bar"></div>
+        <div class="footer-grid">
+            <div class="footer-brand-col">
+                <div class="logo-area" style="margin-bottom: 10px;" onclick="location.href='{% url 'home' %}'">
+                    <div class="logo-emblem"></div>
+                    <div class="logo-text" style="color: #FAF3E0;">BY CHEF <span>SARA</span></div>
+                </div>
+                <p>Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <ul class="footer-links-list">
+                    {% for cat in categories %}
+                    <li><a href="{% url 'category_detail' cat.slug %}">
+                        {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
+                    </a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company &amp; Policies</h4>
+                <ul class="footer-links-list">
+                    <li><a href="#about-section">Meet the Chef</a></li>
+                    <li><a href="#catering-section">Catering Inquiries</a></li>
+                    <li><a onclick="openTermsModal()">Terms &amp; Conditions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>&copy; 2026 By Chef Sara. Handcrafted in the UAE</div>
+            <div>Al Ain, United Arab Emirates</div>
+        </div>
+    </footer>
+
     <script>
         let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
         document.addEventListener("DOMContentLoaded", function() { updateCartUI(); toggleCheckoutButton(); });
         function saveCart() { localStorage.setItem('chef_sara_cart', JSON.stringify(cart)); }
         function toggleMobileMenu() { document.getElementById('mobileDrawer').classList.toggle('open'); }
         function toggleCart() { let drawer = document.getElementById('cartDrawer'); drawer.classList.toggle('open'); document.getElementById('cartOverlay').style.display = drawer.classList.contains('open') ? 'block' : 'none'; }
+        function openTermsModal() { document.getElementById('termsModalOverlay').style.display = 'flex'; }
+        function closeTermsModal() { document.getElementById('termsModalOverlay').style.display = 'none'; }
+
         function decreaseQty(btn) { let span = btn.parentElement.querySelector('.qty-num'); let val = parseInt(span.textContent); if (val > 1) span.textContent = val - 1; }
         function increaseQty(btn, max) { let span = btn.parentElement.querySelector('.qty-num'); let val = parseInt(span.textContent); if (val < max) span.textContent = val + 1; }
         function addToCart(name, price, maxStock, btn) {
