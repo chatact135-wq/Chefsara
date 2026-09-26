@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ product.name }} — By Chef Sara</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         :root {
             --ink: #2B1D12; --ink-soft: #4A3620; --wood: #8B5A2B; --brass: #B08D4F; --brass-light: #D9BE85;
@@ -377,14 +375,17 @@
                 <div class="form-group"><label>Delivery address text</label><textarea id="custAddress" class="form-control" required placeholder="Building, street, area, emirate/city"></textarea></div>
                 
                 <div class="form-group">
-                    <label>Pin Your Location on Map (GCC Delivery Only)</label>
+                    <label>Select Delivery Location (GCC Delivery Only)</label>
                     <div style="display: flex; gap: 6px; margin-bottom: 8px;">
-                        <input type="text" id="mapSearchInput" class="form-control" placeholder="Search street, area, or city..." style="flex-grow: 1;">
-                        <button type="button" onclick="searchLocation()" style="background: var(--burgundy); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Search</button>
+                        <input type="text" id="mapSearchInput" class="form-control" placeholder="Search street, area, or city (e.g. Dubai, Riyadh, Doha)..." style="flex-grow: 1;">
+                        <button type="button" onclick="searchGoogleLocation()" style="background: var(--burgundy); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Search</button>
                         <button type="button" onclick="detectUserGPS()" title="Use My Current GPS Location" style="background: var(--wood); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px;">📍 GPS</button>
                     </div>
-                    <div id="checkoutMap" style="width: 100%; height: 200px; border-radius: 4px; border: 1px solid var(--line); margin-bottom: 6px;"></div>
-                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">Click 'GPS' to detect your location, search an area, or click on the map.</small>
+                    <!-- Google Maps Embed iframe -->
+                    <div style="width: 100%; height: 220px; border-radius: 4px; border: 1px solid var(--line); overflow: hidden; margin-bottom: 6px;">
+                        <iframe id="googleMapFrame" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" src="https://maps.google.com/maps?q=United%20Arab%20Emirates&t=&z=6&ie=UTF8&iwloc=&output=embed"></iframe>
+                    </div>
+                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">Search your location or click 'GPS' to auto-verify your GCC delivery zone.</small>
                 </div>
 
                 <div class="modal-section-title">Payment Method</div>
@@ -575,62 +576,45 @@
             else btn.setAttribute('disabled', 'true');
         }
 
-        let map, marker;
-        let selectedCountry = '';
+        let selectedCountry = 'United Arab Emirates'; // Default allowed
 
-        function initCheckoutMap() {
-            if (map) { map.remove(); }
-            map = L.map('checkoutMap').setView([24.4539, 54.3773], 6);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(map);
+        function verifyAndSetCountry(queryOrLatLon) {
+            let statusEl = document.getElementById('mapCountryStatus');
+            statusEl.style.color = 'var(--burgundy)';
+            statusEl.innerHTML = `Verifying delivery zone for "${queryOrLatLon}"...`;
 
-            map.on('click', function(e) {
-                handleMapSelection(e.latlng.lat, e.latlng.lng);
-            });
-        }
-
-        function handleMapSelection(lat, lng) {
-            if (marker) { map.removeLayer(marker); }
-            marker = L.marker([lat, lng]).addTo(map);
-            map.setView([lat, lng], 14);
-
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                .then(res => res.json())
-                .then(data => {
-                    let country = data.address && data.address.country ? data.address.country : '';
-                    let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
-                    let statusEl = document.getElementById('mapCountryStatus');
-                    
-                    if (allowedCountries.includes(country)) {
-                        selectedCountry = country;
-                        statusEl.style.color = 'var(--burgundy)';
-                        statusEl.innerHTML = `<strong>Selected Location:</strong> ${country} ✅`;
-                    } else {
-                        selectedCountry = '';
-                        statusEl.style.color = '#7A2E2A';
-                        statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location (${country || 'Unknown'})</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
-                    }
-                }).catch(err => { console.error(err); });
-        }
-
-        function searchLocation() {
-            let query = document.getElementById('mapSearchInput').value;
-            if (!query) return;
-
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(queryOrLatLon)}`)
                 .then(res => res.json())
                 .then(results => {
                     if (results && results.length > 0) {
-                        let lat = parseFloat(results[0].lat);
-                        let lon = parseFloat(results[0].lon);
-                        handleMapSelection(lat, lon);
-                    } else {
-                        alert('Location not found. Please try entering a broader street or city name.');
+                        let displayName = results[0].display_name.toLowerCase();
+                        let allowed = ['united arab emirates', 'saudi arabia', 'qatar', 'bahrain', 'kuwait', 'oman', 'uae', 'ksa'];
+                        
+                        let found = allowed.some(c => displayName.includes(c));
+                        if (found) {
+                            selectedCountry = results[0].display_name;
+                            statusEl.style.color = 'var(--burgundy)';
+                            statusEl.innerHTML = `<strong>Verified Location:</strong> ${results[0].display_name} ✅ (Eligible for GCC Delivery)`;
+                        } else {
+                            selectedCountry = '';
+                            statusEl.style.color = '#7A2E2A';
+                            statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
+                        }
                     }
                 }).catch(err => { console.error(err); });
+        }
+
+        function searchGoogleLocation() {
+            let query = document.getElementById('mapSearchInput').value;
+            if (!query) return;
+
+            // Update Google Maps embed iframe source dynamically
+            let iframe = document.getElementById('googleMapFrame');
+            iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+            
+            // Also copy text to address box for convenience
+            document.getElementById('custAddress').value = query;
+            verifyAndSetCountry(query);
         }
 
         function detectUserGPS() {
@@ -647,11 +631,32 @@
                 function(position) {
                     let lat = position.coords.latitude;
                     let lng = position.coords.longitude;
-                    handleMapSelection(lat, lng);
+                    
+                    // Update Google Maps iframe with exact coordinates
+                    let iframe = document.getElementById('googleMapFrame');
+                    iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+
+                    // Reverse geocode to verify country
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            let country = data.address && data.address.country ? data.address.country : '';
+                            let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
+                            
+                            if (allowedCountries.includes(country)) {
+                                selectedCountry = country;
+                                statusEl.style.color = 'var(--burgundy)';
+                                statusEl.innerHTML = `<strong>Detected GPS Location:</strong> ${country} ✅`;
+                            } else {
+                                selectedCountry = '';
+                                statusEl.style.color = '#7A2E2A';
+                                statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location (${country || 'Unknown'})</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
+                            }
+                        });
                 },
                 function(error) {
-                    alert("Unable to retrieve your location. Please check your browser permission settings or search manually.");
-                    statusEl.innerHTML = "GPS detection failed. Please search or click on the map.";
+                    alert("Unable to retrieve your location. Please type your area in the search box.");
+                    statusEl.innerHTML = "GPS detection failed. Please search manually.";
                 },
                 { timeout: 10000, enableHighAccuracy: true }
             );
@@ -662,10 +667,6 @@
             toggleCart(); 
             updateModalSummary();
             document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
-            setTimeout(() => {
-                if (map) { map.invalidateSize(); }
-                else { initCheckoutMap(); }
-            }, 200);
         }
 
         function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
@@ -688,8 +689,10 @@
 
         function placeWhatsAppOrder() {
             let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
-            if (!selectedCountry || !allowedCountries.includes(selectedCountry)) {
-                alert("Sorry, we can't deliver to this location. Please drop a pin inside UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, or Oman on the map.");
+            let isAllowed = allowedCountries.some(c => selectedCountry.toLowerCase().includes(c.toLowerCase()));
+            
+            if (!isAllowed) {
+                alert("Sorry, we can't deliver to this location. Please enter or select a valid address in UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, or Oman.");
                 return;
             }
 
@@ -702,7 +705,7 @@
             let deliveryFee = subtotal >= 650 ? 0 : 25;
             let total = subtotal + deliveryFee;
 
-            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nCountry: ${selectedCountry}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
+            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nLocation: ${selectedCountry}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
             cart.forEach(i => { msg += `- ${i.name} x ${i.quantity} (AED ${(i.price*i.quantity).toFixed(2)})\n`; });
             msg += `Subtotal: AED ${subtotal.toFixed(2)}\nDelivery: AED ${deliveryFee.toFixed(2)}\nTotal: AED ${total.toFixed(2)}`;
 
