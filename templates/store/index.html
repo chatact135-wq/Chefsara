@@ -37,6 +37,16 @@
         .mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .mobile-nav-link { font-size: 1.15rem; font-family: 'Cormorant Garamond', serif; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #F5EBE6; display: block; }
 
+        /* Hero Slider Styles */
+        .hero-slider-section { background-color: var(--dark-bg); color: #FAF3E0; padding: 80px 8%; position: relative; overflow: hidden; border-bottom: 1px solid rgba(176,141,79,0.2); }
+        .hero-slide-container { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+        .hero-content { max-width: 600px; }
+        .hero-kicker { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--brass-light); margin-bottom: 10px; font-weight: 600; }
+        .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 400; margin-bottom: 16px; line-height: 1.15; }
+        .hero-desc { color: #D3C5B4; font-size: 1.05rem; margin-bottom: 30px; line-height: 1.6; }
+        .hero-btn { background-color: var(--burgundy); color: #fff; padding: 12px 28px; border-radius: 4px; font-weight: 600; font-size: 0.9rem; display: inline-block; transition: background 0.2s; }
+        .hero-btn:hover { background-color: #5c221f; }
+
         section#products-section { padding: 60px 8%; max-width: 1200px; margin: 0 auto; }
         .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .product-card { background-color: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
@@ -116,6 +126,7 @@
             nav { display: none; }
             .menu-toggle { display: block; }
             .product-grid { grid-template-columns: 1fr; }
+            .hero-slide-container { flex-direction: column; text-align: center; }
             .footer-grid { grid-template-columns: 1fr; gap: 30px; }
             .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
         }
@@ -163,6 +174,22 @@
         <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
     </div>
 
+    <!-- Restored Hero Slider Section -->
+    {% if slides %}
+    <section class="hero-slider-section">
+        <div class="hero-slide-container">
+            {% with slide=slides.first %}
+            <div class="hero-content">
+                <div class="hero-kicker">{{ slide.kicker }}</div>
+                <h1 class="hero-title">{{ slide.title }}</h1>
+                <p class="hero-desc">{{ slide.description }}</p>
+                <a href="{{ slide.button_link }}" class="hero-btn">{{ slide.button_text }}</a>
+            </div>
+            {% endwith %}
+        </div>
+    </section>
+    {% endif %}
+
     <section id="products-section">
         <div class="product-grid">
             {% for product in products %}
@@ -208,7 +235,6 @@
         </div>
     </section>
 
-    <!-- Sticky Order Bar, Cart Drawer, Terms Modal, Checkout Modal with Google Maps -->
     <div class="sticky-order-bar" onclick="toggleCart()">
         🛒 Your Order (<span id="sticky-order-count">0</span>)
     </div>
