@@ -6,15 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ product.name }} — By Chef Sara</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'ar,en',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <style>
         :root {
             --ink: #2B1D12; --ink-soft: #4A3620; --wood: #8B5A2B; --brass: #B08D4F; --brass-light: #D9BE85;
             --stucco: #ECE0C4; --panel: #F6EFDC; --burgundy: #7A2E2A; --dark-bg: #23170F; --line: rgba(43,29,18,0.16);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Jost', sans-serif; background-color: var(--stucco); color: var(--ink); line-height: 1.6; overflow-x: hidden; }
+        body { font-family: 'Jost', sans-serif; background-color: var(--stucco); color: var(--ink); line-height: 1.6; overflow-x: hidden; top: 0px !important; }
         h1, h2, h3 { font-family: 'Cormorant Garamond', serif; }
         a { text-decoration: none; color: inherit; }
+
+        /* Google Translate Widget Custom Styling */
+        .goog-te-banner-frame.skiptranslate { display: none !important; }
+        .goog-te-gadget { font-family: 'Jost', sans-serif !important; font-size: 0px !important; color: transparent !important; }
+        .goog-te-gadget select { background: var(--panel); border: 1px solid var(--brass); color: var(--ink); padding: 5px 10px; border-radius: 4px; font-family: 'Jost', sans-serif; font-size: 0.85rem; cursor: pointer; outline: none; }
+        .goog-logo-link { display: none !important; }
+        .goog-te-gadget span { display: none !important; }
 
         header { position: sticky; top: 0; z-index: 1000; background-color: rgba(236, 224, 196, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; padding: 14px 4%; width: 100%; }
         .logo-area { display: flex; align-items: center; gap: 10px; cursor: pointer; }
@@ -174,6 +192,9 @@
             <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
         </nav>
         <div class="header-actions">
+            <!-- Google Translate Widget Container -->
+            <div id="google_translate_element"></div>
+
             <button class="cart-btn" onclick="toggleCart()">
                 <span>Cart</span>
                 <span class="cart-badge" id="cart-count">0</span>
@@ -576,7 +597,7 @@
             else btn.setAttribute('disabled', 'true');
         }
 
-        let selectedCountry = 'United Arab Emirates'; // Default allowed
+        let selectedCountry = 'United Arab Emirates';
 
         function verifyAndSetCountry(queryOrLatLon) {
             let statusEl = document.getElementById('mapCountryStatus');
@@ -608,11 +629,9 @@
             let query = document.getElementById('mapSearchInput').value;
             if (!query) return;
 
-            // Update Google Maps embed iframe source dynamically
             let iframe = document.getElementById('googleMapFrame');
             iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
             
-            // Also copy text to address box for convenience
             document.getElementById('custAddress').value = query;
             verifyAndSetCountry(query);
         }
@@ -632,11 +651,9 @@
                     let lat = position.coords.latitude;
                     let lng = position.coords.longitude;
                     
-                    // Update Google Maps iframe with exact coordinates
                     let iframe = document.getElementById('googleMapFrame');
                     iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
 
-                    // Reverse geocode to verify country
                     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
                         .then(res => res.json())
                         .then(data => {
