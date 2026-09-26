@@ -27,13 +27,6 @@
         .nav-link { font-size: 0.88rem; font-weight: 500; color: var(--ink); transition: color 0.2s; padding: 8px 0; }
         .nav-link:hover { color: var(--burgundy); }
 
-        .nav-dropdown { position: relative; display: inline-block; }
-        .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--panel); min-width: 230px; box-shadow: 0 12px 30px rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 6px; z-index: 2000; padding: 8px 0; }
-        .nav-dropdown:hover .nav-dropdown-content { display: block; }
-        .dropdown-item { color: var(--ink); padding: 9px 16px; font-size: 0.85rem; display: block; transition: background 0.2s, color 0.2s; }
-        .dropdown-item:hover { background-color: var(--stucco); color: var(--burgundy); }
-        .dropdown-sub-item { padding-left: 26px; font-size: 0.82rem; color: var(--ink-soft); }
-
         .header-actions { display: flex; align-items: center; gap: 12px; }
         .cart-btn { background: none; border: 1px solid var(--brass); color: var(--ink); padding: 7px 14px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
         .cart-badge { background-color: var(--burgundy); color: #fff; border-radius: 50%; padding: 1px 5px; font-size: 0.7rem; }
@@ -43,7 +36,6 @@
         .mobile-drawer.open { right: 0; }
         .mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .mobile-nav-link { font-size: 1.15rem; font-family: 'Cormorant Garamond', serif; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #F5EBE6; display: block; }
-        .mobile-sub-link { padding-left: 20px; font-size: 0.9rem; color: #D3C5B4; border-bottom: none; padding-top: 6px; padding-bottom: 6px; }
 
         .product-detail-container { max-width: 1100px; width: 100%; margin: 40px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
         .gallery-wrapper { width: 100%; max-width: 100%; overflow: hidden; }
@@ -156,3 +148,400 @@
         }
     </style>
 </head>
+<body>
+
+    <header>
+        <div class="logo-area" onclick="location.href='{% url 'home' %}'">
+            <div class="logo-emblem"></div>
+            <div class="logo-text">BY CHEF <span>SARA</span></div>
+        </div>
+        <nav>
+            <a href="{% url 'home' %}" class="nav-link">Home</a>
+            {% for cat in categories %}
+            <a href="{% url 'category_detail' cat.slug %}" class="nav-link">{{ cat.name }}</a>
+            {% endfor %}
+            <a href="{% url 'home' %}#about-section" class="nav-link">Meet the Chef</a>
+            <a href="{% url 'home' %}#catering-section" class="nav-link">Catering Inquiries</a>
+            <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
+        </nav>
+        <div class="header-actions">
+            <button class="cart-btn" onclick="toggleCart()">
+                <span>Cart</span>
+                <span class="cart-badge" id="cart-count">0</span>
+            </button>
+            <button class="menu-toggle" onclick="toggleMobileMenu()">&#9776;</button>
+        </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div class="mobile-drawer-header">
+            <div class="logo-text" style="color: #fff;">BY CHEF <span>SARA</span></div>
+            <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer;">&times;</button>
+        </div>
+        <a href="{% url 'home' %}" class="mobile-nav-link" onclick="toggleMobileMenu()">Home</a>
+        {% for cat in categories %}
+        <a href="{% url 'category_detail' cat.slug %}" class="mobile-nav-link" onclick="toggleMobileMenu()">{{ cat.name }}</a>
+        {% endfor %}
+        <a href="{% url 'home' %}#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Meet the Chef</a>
+        <a href="{% url 'home' %}#catering-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Catering Inquiries</a>
+        <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
+    </div>
+
+    <!-- Product Detail Section -->
+    <div class="product-detail-container">
+        <div class="gallery-wrapper">
+            <div class="gallery-main-view" id="mainView">
+                {% if product.gallery_images.all %}
+                    <img id="activeImage" src="{{ product.gallery_images.first.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <div class="fallback-tag-box">
+                        <span>{{ product.name }}</span>
+                    </div>
+                {% endif %}
+            </div>
+            {% if product.gallery_images.all %}
+            <div class="thumbnails-row">
+                {% for img in product.gallery_images.all %}
+                <img src="{{ img.image.url }}" class="thumbnail {% if forloop.first %}active{% endif %}" onclick="switchImage('{{ img.image.url }}', {{ forloop.counter0 }})">
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="prod-info-card">
+            <h1 class="prod-title">{{ product.name }}</h1>
+            <div class="prod-subtitle">{{ product.subtitle }}</div>
+            <div class="prod-price" id="displayPrice">AED {{ product.price }}</div>
+            <div class="prod-desc">{{ product.description|safe }}</div>
+
+            {% if product.sizes.all %}
+            <div class="size-selector-group">
+                <label class="size-label-title">Select Size:</label>
+                <div class="size-options-row">
+                    {% for s in product.sizes.all %}
+                    <button type="button" class="size-btn {% if forloop.first %}active{% endif %}" 
+                            data-size-id="{{ s.id }}" 
+                            data-size-label="{{ s.size_label }}" 
+                            data-price="{{ s.price }}" 
+                            data-stock="{{ s.inventory_stock }}" 
+                            onclick="selectSize(this)">
+                        {{ s.size_label }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div style="margin-bottom: 20px;">
+                <a href="{% url 'home' %}#contact-section" class="stock-note-link">Want to order more? Click here to contact us directly &rarr;</a>
+            </div>
+
+            <div class="purchase-row">
+                <div class="qty-box">
+                    <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
+                    <span id="detailQty" style="font-weight: 600;">1</span>
+                    <button type="button" class="qty-btn" onclick="adjustQty(1)">+</button>
+                </div>
+                <button type="button" class="add-btn" onclick="addSelectedProductToCart()">Add to Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Items Section ("You May Also Like") -->
+    {% if related_products %}
+    <div class="related-section">
+        <h2 class="related-header">You May Also Like</h2>
+        <div class="related-grid">
+            {% for rel in related_products %}
+            <div class="related-card">
+                <div>
+                    <div class="related-img">
+                        {% if rel.gallery_images.first %}
+                        <img src="{{ rel.gallery_images.first.image.url }}" alt="{{ rel.name }}">
+                        {% else %}
+                        <svg width="50" height="60" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
+                        {% endif %}
+                    </div>
+                    <div class="related-title">{{ rel.name }}</div>
+                    <div class="related-price">AED {{ rel.price }}</div>
+                </div>
+                <button type="button" class="related-btn" onclick="location.href='{% url 'product_detail' rel.slug %}'">View Product</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="sticky-order-bar" onclick="toggleCart()">
+        🛒 Your Order (<span id="sticky-order-count">0</span>)
+    </div>
+
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3>Your Order</h3>
+            <button class="close-drawer" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-body" id="cartItemsContainer">
+            <p style="color: var(--wood); text-align: center; margin-top: 40px;">Your cart is empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div id="deliveryNotice" style="font-size: 0.8rem; color: var(--wood); margin-bottom: 10px;">Add AED 650 more for free delivery</div>
+            <div class="subtotal-row"><span>Subtotal</span><span id="cartSubtotal">AED 0</span></div>
+            <div class="terms-title-header">Terms &amp; Conditions</div>
+            <div class="terms-scrollbox" onclick="openTermsModal()">
+                <h4>1. General &amp; Acceptance</h4>
+                <p>By placing an order with BY CHEF SARA, you agree to be bound by these Terms &amp; Conditions in full.</p>
+            </div>
+            <div class="terms-checkbox-row">
+                <input type="checkbox" id="termsAgreeCheckbox" onchange="toggleCheckoutButton()">
+                <label for="termsAgreeCheckbox">I have read and agree to the <a onclick="openTermsModal()">Terms &amp; Conditions</a>, including the No Return / No Refund policy.</label>
+            </div>
+            <button type="button" class="checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutModal()" disabled>Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <div class="terms-modal-overlay" id="termsModalOverlay">
+        <div class="terms-modal-box">
+            <div class="terms-modal-header">
+                <h3>TERMS &amp; CONDITIONS</h3>
+                <button class="close-drawer" onclick="closeTermsModal()">&times;</button>
+            </div>
+            <div class="terms-modal-body">
+                <p><strong>Last Updated:</strong> September 2026<br><strong>Brand:</strong> BY CHEF SARA<br><strong>Jurisdiction:</strong> United Arab Emirates</p>
+                <h4>1. General &amp; Acceptance of Terms</h4>
+                <p>By accessing this website, placing an order, or making payment to BY CHEF SARA, you confirm that you are at least 18 years of age and agree to be bound by these Terms &amp; Conditions in full.</p>
+                <h4>2. Nature of Artisanal Food Products</h4>
+                <p>All products offered by BY CHEF SARA are handcrafted food items prepared fresh in small batches without artificial preservatives.</p>
+                <h4>3. All Sales Final (No Returns &amp; No Refunds)</h4>
+                <p>All food sales are final. We do not accept returns, cancellations, exchanges, or refund requests once an order has been prepared or dispatched.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="checkoutModalOverlay">
+        <div class="checkout-modal">
+            <div class="modal-header">
+                <h3>Checkout</h3>
+                <button class="close-drawer" onclick="closeCheckoutModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section-title">Contact &amp; Delivery Details</div>
+                <div class="form-row-grid">
+                    <div class="form-group"><label>Full name</label><input type="text" id="custName" class="form-control" required placeholder="Your name"></div>
+                    <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="custPhone" class="form-control" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
+                </div>
+                <div class="form-group"><label>Delivery address</label><textarea id="custAddress" class="form-control" required placeholder="Building, street, area, emirate"></textarea></div>
+                <div class="modal-section-title">Payment Method</div>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="Cash on Delivery" checked>
+                    <div><strong>Cash on Delivery</strong><div class="payment-details">A non-refundable deposit is required to confirm COD orders.</div></div>
+                </label>
+                <div class="modal-section-title">Order Summary</div>
+                <div class="summary-box" id="modalSummaryBox"></div>
+                <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">Place Order via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-pattern-bar"></div>
+        <div class="footer-grid">
+            <div class="footer-brand-col">
+                <div class="logo-area" style="margin-bottom: 10px;" onclick="location.href='{% url 'home' %}'">
+                    <div class="logo-emblem"></div>
+                    <div class="logo-text" style="color: #FAF3E0;">BY CHEF <span>SARA</span></div>
+                </div>
+                <p>Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <ul class="footer-links-list">
+                    {% for cat in categories %}
+                    <li><a href="{% url 'category_detail' cat.slug %}">{{ cat.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company &amp; Policies</h4>
+                <ul class="footer-links-list">
+                    <li><a href="{% url 'home' %}#about-section">Meet the Chef</a></li>
+                    <li><a href="{% url 'home' %}#catering-section">Catering Inquiries</a></li>
+                    <li><a onclick="openTermsModal()">Terms &amp; Conditions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>&copy; 2026 By Chef Sara. Handcrafted in the UAE</div>
+            <div>Al Ain, United Arab Emirates</div>
+        </div>
+    </footer>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
+        
+        let currentSelectedPrice = {{ product.price }};
+        let currentSelectedSizeLabel = '';
+        let currentMaxStock = {{ product.inventory_stock }};
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let firstSizeBtn = document.querySelector('.size-btn');
+            if (firstSizeBtn) {
+                selectSize(firstSizeBtn);
+            }
+            updateCartUI();
+            toggleCheckoutButton();
+        });
+
+        function selectSize(btn) {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            currentSelectedPrice = parseFloat(btn.getAttribute('data-price'));
+            currentSelectedSizeLabel = btn.getAttribute('data-size-label');
+            currentMaxStock = parseInt(btn.getAttribute('data-stock'));
+            
+            document.getElementById('displayPrice').textContent = 'AED ' + currentSelectedPrice.toFixed(2);
+            document.getElementById('detailQty').textContent = '1';
+        }
+
+        function adjustQty(delta) {
+            let qtyEl = document.getElementById('detailQty');
+            let val = parseInt(qtyEl.textContent) + delta;
+            if (val >= 1 && val <= currentMaxStock) {
+                qtyEl.textContent = val;
+            }
+        }
+
+        function addSelectedProductToCart() {
+            let qty = parseInt(document.getElementById('detailQty').textContent);
+            let baseName = "{{ product.name|escapejs }}";
+            let displayName = currentSelectedSizeLabel ? `${baseName} (${currentSelectedSizeLabel})` : baseName;
+            
+            let existing = cart.find(i => i.name === displayName);
+            let currentQtyInCart = existing ? existing.quantity : 0;
+            
+            if (currentQtyInCart + qty > currentMaxStock) {
+                alert('Stock limit reached for this size.');
+                return;
+            }
+            
+            if (existing) {
+                existing.quantity += qty;
+            } else {
+                cart.push({ name: displayName, price: currentSelectedPrice, quantity: qty });
+            }
+            
+            saveCart();
+            updateCartUI();
+            toggleCart();
+        }
+
+        function saveCart() { localStorage.setItem('chef_sara_cart', JSON.stringify(cart)); }
+        function toggleMobileMenu() { document.getElementById('mobileDrawer').classList.toggle('open'); }
+        function toggleCart() { let drawer = document.getElementById('cartDrawer'); drawer.classList.toggle('open'); document.getElementById('cartOverlay').style.display = drawer.classList.contains('open') ? 'block' : 'none'; }
+        function openTermsModal() { document.getElementById('termsModalOverlay').style.display = 'flex'; }
+        function closeTermsModal() { document.getElementById('termsModalOverlay').style.display = 'none'; }
+
+        function switchImage(url, index) {
+            let imgEl = document.getElementById('activeImage');
+            imgEl.src = url;
+            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === index);
+            });
+        }
+
+        function changeCartItemQty(name, delta) {
+            let item = cart.find(i => i.name === name);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) cart = cart.filter(i => i.name !== name);
+                saveCart();
+                updateCartUI();
+            }
+        }
+
+        function removeFromCart(name) { cart = cart.filter(i => i.name !== name); saveCart(); updateCartUI(); }
+
+        function updateCartUI() {
+            let container = document.getElementById('cartItemsContainer'), count = 0, subtotal = 0;
+            if (cart.length === 0) container.innerHTML = '<p style="color:var(--wood); text-align:center; margin-top:40px;">Your cart is empty.</p>';
+            else {
+                container.innerHTML = '';
+                cart.forEach(item => {
+                    count += item.quantity; subtotal += item.price * item.quantity;
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <div><b>${item.name}</b></div>
+                                <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                                    <button type="button" onclick="changeCartItemQty('${item.name}', -1)" style="width:18px; height:18px; cursor:pointer;">-</button>
+                                    <span>${item.quantity}</span>
+                                    <button type="button" onclick="changeCartItemQty('${item.name}', 1)" style="width:18px; height:18px; cursor:pointer;">+</button>
+                                    <span style="color:var(--wood); font-size:0.75rem;">/ AED ${item.price}</span>
+                                </div>
+                            </div>
+                            <div class="cart-item-right">
+                                <div class="cart-item-price">AED ${(item.price*item.quantity).toFixed(2)}</div>
+                                <button type="button" class="remove-item" onclick="removeFromCart('${item.name}')">Remove</button>
+                            </div>
+                        </div>`;
+                });
+            }
+            document.getElementById('cart-count').textContent = count;
+            document.getElementById('sticky-order-count').textContent = count;
+            document.getElementById('cartSubtotal').textContent = 'AED ' + subtotal.toFixed(2);
+            document.getElementById('deliveryNotice').textContent = subtotal >= 650 ? '🎉 You qualify for free delivery!' : `Add AED ${(650 - subtotal).toFixed(2)} more for free delivery`;
+        }
+
+        function toggleCheckoutButton() {
+            let isChecked = document.getElementById('termsAgreeCheckbox').checked;
+            let btn = document.getElementById('cartCheckoutBtn');
+            if (isChecked) btn.removeAttribute('disabled');
+            else btn.setAttribute('disabled', 'true');
+        }
+
+        function openCheckoutModal() { 
+            if (cart.length === 0) return; 
+            toggleCart(); 
+            updateModalSummary();
+            document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
+        }
+
+        function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
+
+        function updateModalSummary() {
+            let box = document.getElementById('modalSummaryBox');
+            let subtotal = 0, html = '';
+            cart.forEach(i => {
+                subtotal += i.price * i.quantity;
+                html += `<div class="summary-item-row"><span>${i.name} x ${i.quantity}</span><span>AED ${(i.price * i.quantity).toFixed(2)}</span></div>`;
+            });
+            html += `<div class="summary-divider"></div>`;
+            html += `<div class="summary-line"><span>Subtotal</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
+            let deliveryFee = subtotal >= 650 ? 0 : 25;
+            html += `<div class="summary-line"><span>Delivery</span><span>${deliveryFee === 0 ? 'Free' : 'AED 25.00'}</span></div>`;
+            let total = subtotal + deliveryFee;
+            html += `<div class="summary-total"><span>Total</span><span>AED ${total.toFixed(2)}</span></div>`;
+            box.innerHTML = html;
+        }
+
+        function placeWhatsAppOrder() {
+            let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, addr = document.getElementById('custAddress').value;
+            if (!name || !phone || !addr) { alert('Please fill in your contact & delivery details.'); return; }
+            let paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            let subtotal = 0;
+            cart.forEach(i => subtotal += i.price * i.quantity);
+            let deliveryFee = subtotal >= 650 ? 0 : 25;
+            let total = subtotal + deliveryFee;
+
+            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
+            cart.forEach(i => { msg += `- ${i.name} x ${i.quantity} (AED ${(i.price*i.quantity).toFixed(2)})\n`; });
+            msg += `Subtotal: AED ${subtotal.toFixed(2)}\nDelivery: AED ${deliveryFee.toFixed(2)}\nTotal: AED ${total.toFixed(2)}`;
+
+            window.open(`https://wa.me/971500000000?text=${encodeURIComponent(msg)}`, '_blank');
+            cart = []; saveCart(); updateCartUI(); closeCheckoutModal();
+        }
+    </script>
+</body>
+</html>
