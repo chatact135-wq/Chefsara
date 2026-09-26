@@ -38,7 +38,6 @@ def product_detail_view(request, product_slug):
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
     
-    # Related items ("You may also like"): 3 items from same category, fallback to random if needed
     related_products = list(Product.objects.filter(category=product.category).exclude(id=product.id)[:3])
     if len(related_products) < 3:
         needed = 3 - len(related_products)
