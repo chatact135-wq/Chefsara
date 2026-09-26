@@ -36,14 +36,27 @@ class Product(models.Model):
     slug = models.SlugField(unique=True, blank=True, null=True)
     subtitle = models.CharField(max_length=200)
     description = RichTextField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
-    inventory_stock = models.PositiveIntegerField(default=10)
+    price = models.DecimalField(max_digits=6, decimal_places=2, help_text="Base price if no sizes specified")
+    inventory_stock = models.PositiveIntegerField(default=10, help_text="Base inventory if no sizes specified")
     is_bestseller = models.BooleanField(default=False)
     show_on_home = models.BooleanField(default=True, help_text="Check to display this product on the home page.")
     image_placeholder_tag = models.CharField(max_length=50, choices=IMAGE_CHOICES, default='khlii')
 
     def __str__(self):
         return f"{self.name} (AED {self.price})"
+
+class ProductSize(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sizes')
+    size_label = models.CharField(max_length=50, help_text="e.g., 250 ml, 500 ml")
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    inventory_stock = models.PositiveIntegerField(default=10)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['sort_order']
+
+    def __str__(self):
+        return f"{self.product.name} - {self.size_label} (AED {self.price})"
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='gallery_images')
@@ -65,9 +78,7 @@ class HeroSlide(models.Model):
     description = models.TextField()
     button_text = models.CharField(max_length=50, default="Shop Now")
     button_link = models.CharField(max_length=200, default="#products-section")
-    
     image = models.ImageField(upload_to='hero_slides/', blank=True, null=True)
-    
     graphic_type = models.CharField(max_length=50, choices=SLIDE_GRAPHICS, default='star')
     order = models.PositiveIntegerField(default=0)
 
