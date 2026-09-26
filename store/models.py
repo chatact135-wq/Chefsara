@@ -36,6 +36,12 @@ class Product(models.Model):
     slug = models.SlugField(unique=True, blank=True, null=True)
     subtitle = models.CharField(max_length=200)
     description = RichTextField()
+    
+    # New fields for product tabs
+    shipping_info = RichTextField(blank=True, null=True, help_text="Shipping information for this product")
+    care_instructions = RichTextField(blank=True, null=True, help_text="Care & handling instructions")
+    ingredients_allergy = RichTextField(blank=True, null=True, help_text="Ingredients and allergy information")
+
     price = models.DecimalField(max_digits=6, decimal_places=2, help_text="Base price if no sizes specified")
     inventory_stock = models.PositiveIntegerField(default=10, help_text="Base inventory if no sizes specified")
     is_bestseller = models.BooleanField(default=False)
