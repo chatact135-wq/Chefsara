@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ product.name }} — By Chef Sara</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         :root {
             --ink: #2B1D12; --ink-soft: #4A3620; --wood: #8B5A2B; --brass: #B08D4F; --brass-light: #D9BE85;
@@ -49,16 +51,25 @@
         .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 30px; box-shadow: 0 8px 25px rgba(43,29,18,0.06); word-break: break-word; width: 100%; }
         .prod-title { font-size: 2.5rem; font-weight: 500; margin-bottom: 6px; }
         .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.1rem; margin-bottom: 15px; }
-        .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--burgundy); margin-top: 15px; margin-bottom: 15px; }
-        .prod-desc { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 25px; line-height: 1.8; }
         
-        .size-selector-group { margin-bottom: 20px; }
+        .product-tabs-container { margin-top: 15px; border-top: 1px solid var(--line); padding-top: 15px; }
+        .tabs-header-row { display: flex; gap: 8px; border-bottom: 2px solid var(--line); margin-bottom: 15px; flex-wrap: wrap; }
+        .tab-btn { background: none; border: none; padding: 6px 10px; font-family: 'Jost', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; position: relative; }
+        .tab-btn.active { color: var(--burgundy); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background-color: var(--burgundy); }
+        .tab-content-pane { display: none; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.7; }
+        .tab-content-pane.active { display: block; }
+        .desc-preview { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+        .read-more-link { background: none; border: none; color: var(--burgundy); font-weight: 600; cursor: pointer; font-size: 0.85rem; padding: 0; margin-top: 5px; text-decoration: underline; display: inline-block; }
+
+        .size-selector-group { margin-top: 20px; margin-bottom: 15px; }
         .size-label-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--wood); letter-spacing: 0.08em; margin-bottom: 8px; display: block; }
         .size-options-row { display: flex; gap: 10px; flex-wrap: wrap; }
         .size-btn { background: #fff; border: 1px solid var(--line); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.9rem; color: var(--ink); transition: all 0.2s; }
         .size-btn:hover { border-color: var(--burgundy); }
         .size-btn.active { background-color: var(--burgundy); color: #fff; border-color: var(--burgundy); }
 
+        .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--burgundy); margin-top: 15px; margin-bottom: 15px; }
         .stock-note-link { font-size: 0.8rem; color: var(--burgundy); text-decoration: underline; margin-top: 15px; display: inline-block; cursor: pointer; }
 
         .purchase-row { display: flex; gap: 15px; align-items: center; border-top: 1px solid var(--line); padding-top: 25px; }
@@ -110,7 +121,7 @@
         .terms-modal-body p { margin-bottom: 10px; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
-        .checkout-modal { background: var(--panel); width: 620px; max-width: 95%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .checkout-modal { background: var(--panel); width: 680px; max-width: 95%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
         .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--stucco); }
         .modal-header h3 { font-size: 1.5rem; font-weight: 500; font-family: 'Cormorant Garamond', serif; }
         .modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; }
@@ -211,7 +222,37 @@
         <div class="prod-info-card">
             <h1 class="prod-title">{{ product.name }}</h1>
             <div class="prod-subtitle">{{ product.subtitle }}</div>
-            <div class="prod-desc">{{ product.description|safe }}</div>
+
+            <!-- 4 Tabs Container -->
+            <div class="product-tabs-container">
+                <div class="tabs-header-row">
+                    <button type="button" class="tab-btn active" onclick="switchTab(event, 'tabDesc')">Description</button>
+                    <button type="button" class="tab-btn" onclick="switchTab(event, 'tabShipping')">Shipping</button>
+                    <button type="button" class="tab-btn" onclick="switchTab(event, 'tabCare')">Care & Instructions</button>
+                    <button type="button" class="tab-btn" onclick="switchTab(event, 'tabIngr')">Ingredients & Allergy</button>
+                </div>
+
+                <!-- Tab 1: Description with Read More -->
+                <div id="tabDesc" class="tab-content-pane active">
+                    <div id="descTextContainer" class="desc-preview">{{ product.description|safe }}</div>
+                    <button type="button" id="readMoreBtn" class="read-more-link" onclick="toggleReadMore()">Read More</button>
+                </div>
+
+                <!-- Tab 2: Shipping -->
+                <div id="tabShipping" class="tab-content-pane">
+                    {{ product.shipping_info|default:"Standard shipping applies across all supported GCC countries."|safe }}
+                </div>
+
+                <!-- Tab 3: Care & Instructions -->
+                <div id="tabCare" class="tab-content-pane">
+                    {{ product.care_instructions|default:"Store in a cool, dry place away from direct sunlight."|safe }}
+                </div>
+
+                <!-- Tab 4: Ingredients & Allergy -->
+                <div id="tabIngr" class="tab-content-pane">
+                    {{ product.ingredients_allergy|default:"Handcrafted in a facility that processes nuts and dairy."|safe }}
+                </div>
+            </div>
 
             {% if product.sizes.all %}
             <div class="size-selector-group">
@@ -333,7 +374,14 @@
                     <div class="form-group"><label>Full name</label><input type="text" id="custName" class="form-control" required placeholder="Your name"></div>
                     <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="custPhone" class="form-control" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
                 </div>
-                <div class="form-group"><label>Delivery address</label><textarea id="custAddress" class="form-control" required placeholder="Building, street, area, emirate"></textarea></div>
+                <div class="form-group"><label>Delivery address text</label><textarea id="custAddress" class="form-control" required placeholder="Building, street, area, emirate/city"></textarea></div>
+                
+                <div class="form-group">
+                    <label>Pin Your Location on Map (GCC Delivery Only)</label>
+                    <div id="checkoutMap" style="width: 100%; height: 200px; border-radius: 4px; border: 1px solid var(--line); margin-bottom: 6px;"></div>
+                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">Click anywhere on the map to drop your delivery pin.</small>
+                </div>
+
                 <div class="modal-section-title">Payment Method</div>
                 <label class="payment-option">
                     <input type="radio" name="paymentMethod" value="Cash on Delivery" checked>
@@ -394,6 +442,25 @@
             updateCartUI();
             toggleCheckoutButton();
         });
+
+        function switchTab(evt, tabId) {
+            document.querySelectorAll('.tab-content-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function toggleReadMore() {
+            let container = document.getElementById('descTextContainer');
+            let btn = document.getElementById('readMoreBtn');
+            if (container.classList.contains('desc-preview')) {
+                container.classList.remove('desc-preview');
+                btn.textContent = 'Read Less';
+            } else {
+                container.classList.add('desc-preview');
+                btn.textContent = 'Read More';
+            }
+        }
 
         function selectSize(btn) {
             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
@@ -503,11 +570,53 @@
             else btn.setAttribute('disabled', 'true');
         }
 
+        let map, marker;
+        let selectedCountry = '';
+
+        function initCheckoutMap() {
+            if (map) { map.remove(); }
+            map = L.map('checkoutMap').setView([24.4539, 54.3773], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: 'OpenStreetMap'
+            }).addTo(map);
+
+            map.on('click', function(e) {
+                let lat = e.latlng.lat;
+                let lng = e.latlng.lng;
+                
+                if (marker) { map.removeLayer(marker); }
+                marker = L.marker([lat, lng]).addTo(map);
+
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        let country = data.address && data.address.country ? data.address.country : '';
+                        let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
+                        let statusEl = document.getElementById('mapCountryStatus');
+                        
+                        if (allowedCountries.includes(country)) {
+                            selectedCountry = country;
+                            statusEl.style.color = 'var(--burgundy)';
+                            statusEl.innerHTML = `<strong>Selected Location:</strong> ${country} ✅`;
+                        } else {
+                            selectedCountry = '';
+                            statusEl.style.color = '#7A2E2A';
+                            statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location (${country || 'Unknown'})</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
+                        }
+                    }).catch(err => { console.error(err); });
+            });
+        }
+
         function openCheckoutModal() { 
             if (cart.length === 0) return; 
             toggleCart(); 
             updateModalSummary();
             document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
+            setTimeout(() => {
+                if (map) { map.invalidateSize(); }
+                else { initCheckoutMap(); }
+            }, 200);
         }
 
         function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
@@ -529,15 +638,22 @@
         }
 
         function placeWhatsAppOrder() {
+            let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
+            if (!selectedCountry || !allowedCountries.includes(selectedCountry)) {
+                alert("Sorry, we can't deliver to this location. Please drop a pin inside UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, or Oman on the map.");
+                return;
+            }
+
             let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, addr = document.getElementById('custAddress').value;
             if (!name || !phone || !addr) { alert('Please fill in your contact & delivery details.'); return; }
+            
             let paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
             let subtotal = 0;
             cart.forEach(i => subtotal += i.price * i.quantity);
             let deliveryFee = subtotal >= 650 ? 0 : 25;
             let total = subtotal + deliveryFee;
 
-            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
+            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nCountry: ${selectedCountry}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
             cart.forEach(i => { msg += `- ${i.name} x ${i.quantity} (AED ${(i.price*i.quantity).toFixed(2)})\n`; });
             msg += `Subtotal: AED ${subtotal.toFixed(2)}\nDelivery: AED ${deliveryFee.toFixed(2)}\nTotal: AED ${total.toFixed(2)}`;
 
