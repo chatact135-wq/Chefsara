@@ -52,15 +52,16 @@
         .prod-title { font-size: 2.5rem; font-weight: 500; margin-bottom: 6px; }
         .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.1rem; margin-bottom: 15px; }
         
-        .product-tabs-container { margin-top: 15px; border-top: 1px solid var(--line); padding-top: 15px; }
-        .tabs-header-row { display: flex; gap: 8px; border-bottom: 2px solid var(--line); margin-bottom: 15px; flex-wrap: wrap; }
-        .tab-btn { background: none; border: none; padding: 6px 10px; font-family: 'Jost', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; position: relative; }
-        .tab-btn.active { color: var(--burgundy); }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background-color: var(--burgundy); }
-        .tab-content-pane { display: none; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.7; }
+        /* Prominent High-Visibility Tabs Design */
+        .product-tabs-container { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 20px; }
+        .tabs-header-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; background: #EFE4CC; padding: 6px; border-radius: 8px; border: 1px solid var(--line); }
+        .tab-btn { background: transparent; border: none; padding: 10px 12px; font-family: 'Jost', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; border-radius: 6px; transition: all 0.2s ease; text-align: center; }
+        .tab-btn:hover { color: var(--burgundy); background: rgba(255,255,255,0.5); }
+        .tab-btn.active { background-color: var(--burgundy); color: #fff; box-shadow: 0 4px 12px rgba(122,46,42,0.25); }
+        .tab-content-pane { display: none; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.7; background: #fff; padding: 16px; border-radius: 8px; border: 1px solid var(--line); min-height: 110px; }
         .tab-content-pane.active { display: block; }
         .desc-preview { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
-        .read-more-link { background: none; border: none; color: var(--burgundy); font-weight: 600; cursor: pointer; font-size: 0.85rem; padding: 0; margin-top: 5px; text-decoration: underline; display: inline-block; }
+        .read-more-link { background: none; border: none; color: var(--burgundy); font-weight: 600; cursor: pointer; font-size: 0.85rem; padding: 0; margin-top: 8px; text-decoration: underline; display: inline-block; }
 
         .size-selector-group { margin-top: 20px; margin-bottom: 15px; }
         .size-label-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--wood); letter-spacing: 0.08em; margin-bottom: 8px; display: block; }
@@ -223,7 +224,7 @@
             <h1 class="prod-title">{{ product.name }}</h1>
             <div class="prod-subtitle">{{ product.subtitle }}</div>
 
-            <!-- 4 Tabs Container -->
+            <!-- Prominent High-Visibility Tabs Container -->
             <div class="product-tabs-container">
                 <div class="tabs-header-row">
                     <button type="button" class="tab-btn active" onclick="switchTab(event, 'tabDesc')">Description</button>
@@ -240,17 +241,17 @@
 
                 <!-- Tab 2: Shipping -->
                 <div id="tabShipping" class="tab-content-pane">
-                    {{ product.shipping_info|default:"Standard shipping applies across all supported GCC countries."|safe }}
+                    {{ product.shipping_info|default:"Standard refrigerated and secure shipping available across all supported GCC countries (UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, Oman)."|safe }}
                 </div>
 
                 <!-- Tab 3: Care & Instructions -->
                 <div id="tabCare" class="tab-content-pane">
-                    {{ product.care_instructions|default:"Store in a cool, dry place away from direct sunlight."|safe }}
+                    {{ product.care_instructions|default:"Store in a cool, dry place away from direct sunlight. Keep sealed tightly after opening."|safe }}
                 </div>
 
                 <!-- Tab 4: Ingredients & Allergy -->
                 <div id="tabIngr" class="tab-content-pane">
-                    {{ product.ingredients_allergy|default:"Handcrafted in a facility that processes nuts and dairy."|safe }}
+                    {{ product.ingredients_allergy|default:"Handcrafted in a facility that processes nuts, dairy, and authentic spices. Check specific product labels for complete details."|safe }}
                 </div>
             </div>
 
@@ -378,8 +379,12 @@
                 
                 <div class="form-group">
                     <label>Pin Your Location on Map (GCC Delivery Only)</label>
+                    <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                        <input type="text" id="mapSearchInput" class="form-control" placeholder="Search street, area, or city..." style="flex-grow: 1;">
+                        <button type="button" onclick="searchLocation()" style="background: var(--burgundy); color: #fff; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Search</button>
+                    </div>
                     <div id="checkoutMap" style="width: 100%; height: 200px; border-radius: 4px; border: 1px solid var(--line); margin-bottom: 6px;"></div>
-                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">Click anywhere on the map to drop your delivery pin.</small>
+                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">Search your area or click on the map to drop your delivery pin.</small>
                 </div>
 
                 <div class="modal-section-title">Payment Method</div>
@@ -575,37 +580,58 @@
 
         function initCheckoutMap() {
             if (map) { map.remove(); }
-            map = L.map('checkoutMap').setView([24.4539, 54.3773], 5);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 18,
-                attribution: 'OpenStreetMap'
+            map = L.map('checkoutMap').setView([24.4539, 54.3773], 6);
+            
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19,
+                subdomains: 'abcd',
+                attribution: '&copy; CARTO'
             }).addTo(map);
 
             map.on('click', function(e) {
-                let lat = e.latlng.lat;
-                let lng = e.latlng.lng;
-                
-                if (marker) { map.removeLayer(marker); }
-                marker = L.marker([lat, lng]).addTo(map);
-
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        let country = data.address && data.address.country ? data.address.country : '';
-                        let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
-                        let statusEl = document.getElementById('mapCountryStatus');
-                        
-                        if (allowedCountries.includes(country)) {
-                            selectedCountry = country;
-                            statusEl.style.color = 'var(--burgundy)';
-                            statusEl.innerHTML = `<strong>Selected Location:</strong> ${country} ✅`;
-                        } else {
-                            selectedCountry = '';
-                            statusEl.style.color = '#7A2E2A';
-                            statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location (${country || 'Unknown'})</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
-                        }
-                    }).catch(err => { console.error(err); });
+                handleMapSelection(e.latlng.lat, e.latlng.lng);
             });
+        }
+
+        function handleMapSelection(lat, lng) {
+            if (marker) { map.removeLayer(marker); }
+            marker = L.marker([lat, lng]).addTo(map);
+            map.setView([lat, lng], 14);
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(res => res.json())
+                .then(data => {
+                    let country = data.address && data.address.country ? data.address.country : '';
+                    let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
+                    let statusEl = document.getElementById('mapCountryStatus');
+                    
+                    if (allowedCountries.includes(country)) {
+                        selectedCountry = country;
+                        statusEl.style.color = 'var(--burgundy)';
+                        statusEl.innerHTML = `<strong>Selected Location:</strong> ${country} ✅`;
+                    } else {
+                        selectedCountry = '';
+                        statusEl.style.color = '#7A2E2A';
+                        statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location (${country || 'Unknown'})</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
+                    }
+                }).catch(err => { console.error(err); });
+        }
+
+        function searchLocation() {
+            let query = document.getElementById('mapSearchInput').value;
+            if (!query) return;
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(results => {
+                    if (results && results.length > 0) {
+                        let lat = parseFloat(results[0].lat);
+                        let lon = parseFloat(results[0].lon);
+                        handleMapSelection(lat, lon);
+                    } else {
+                        alert('Location not found. Please try entering a broader street or city name.');
+                    }
+                }).catch(err => { console.error(err); });
         }
 
         function openCheckoutModal() { 
