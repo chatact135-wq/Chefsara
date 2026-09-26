@@ -49,7 +49,7 @@
         .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 30px; box-shadow: 0 8px 25px rgba(43,29,18,0.06); word-break: break-word; width: 100%; }
         .prod-title { font-size: 2.5rem; font-weight: 500; margin-bottom: 6px; }
         .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.1rem; margin-bottom: 15px; }
-        .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--burgundy); margin-bottom: 20px; }
+        .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--burgundy); margin-top: 15px; margin-bottom: 15px; }
         .prod-desc { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 25px; line-height: 1.8; }
         
         .size-selector-group { margin-bottom: 20px; }
@@ -211,7 +211,6 @@
         <div class="prod-info-card">
             <h1 class="prod-title">{{ product.name }}</h1>
             <div class="prod-subtitle">{{ product.subtitle }}</div>
-            <div class="prod-price" id="displayPrice">AED {{ product.price }}</div>
             <div class="prod-desc">{{ product.description|safe }}</div>
 
             {% if product.sizes.all %}
@@ -231,6 +230,9 @@
                 </div>
             </div>
             {% endif %}
+
+            <!-- Price positioned right after sizes -->
+            <div class="prod-price" id="displayPrice">AED {{ product.price }}</div>
 
             <div style="margin-bottom: 20px;">
                 <a href="{% url 'home' %}#contact-section" class="stock-note-link">Want to order more? Click here to contact us directly &rarr;</a>
