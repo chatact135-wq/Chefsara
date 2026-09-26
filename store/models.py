@@ -3,8 +3,10 @@ from ckeditor.fields import RichTextField
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    name_ar = models.CharField(max_length=100, blank=True, null=True, help_text="Category Name in Arabic")
     slug = models.SlugField(unique=True)
     subtitle = models.CharField(max_length=200, blank=True, null=True)
+    subtitle_ar = models.CharField(max_length=200, blank=True, null=True, help_text="Subtitle in Arabic")
     image = models.ImageField(upload_to='category_images/', blank=True, null=True)
     sort_order = models.PositiveIntegerField(default=0)
 
@@ -32,15 +34,26 @@ class Product(models.Model):
     ]
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
-    name = models.CharField(max_length=150)
-    slug = models.SlugField(unique=True, blank=True, null=True)
-    subtitle = models.CharField(max_length=200)
-    description = RichTextField()
     
-    # New fields for product tabs
-    shipping_info = RichTextField(blank=True, null=True, help_text="Shipping information for this product")
-    care_instructions = RichTextField(blank=True, null=True, help_text="Care & handling instructions")
-    ingredients_allergy = RichTextField(blank=True, null=True, help_text="Ingredients and allergy information")
+    # English & Arabic fields
+    name = models.CharField(max_length=150)
+    name_ar = models.CharField(max_length=150, blank=True, null=True, help_text="Product Name in Arabic")
+    slug = models.SlugField(unique=True, blank=True, null=True)
+    
+    subtitle = models.CharField(max_length=200)
+    subtitle_ar = models.CharField(max_length=200, blank=True, null=True, help_text="Subtitle in Arabic")
+    
+    description = RichTextField()
+    description_ar = RichTextField(blank=True, null=True, help_text="Description in Arabic")
+    
+    shipping_info = RichTextField(blank=True, null=True, help_text="Shipping info (English)")
+    shipping_info_ar = RichTextField(blank=True, null=True, help_text="Shipping info (Arabic)")
+    
+    care_instructions = RichTextField(blank=True, null=True, help_text="Care instructions (English)")
+    care_instructions_ar = RichTextField(blank=True, null=True, help_text="Care instructions (Arabic)")
+    
+    ingredients_allergy = RichTextField(blank=True, null=True, help_text="Ingredients & allergy (English)")
+    ingredients_allergy_ar = RichTextField(blank=True, null=True, help_text="Ingredients & allergy (Arabic)")
 
     price = models.DecimalField(max_digits=6, decimal_places=2, help_text="Base price if no sizes specified")
     inventory_stock = models.PositiveIntegerField(default=10, help_text="Base inventory if no sizes specified")
@@ -54,6 +67,7 @@ class Product(models.Model):
 class ProductSize(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sizes')
     size_label = models.CharField(max_length=50, help_text="e.g., 250 ml, 500 ml")
+    size_label_ar = models.CharField(max_length=50, blank=True, null=True, help_text="Size label in Arabic")
     price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory_stock = models.PositiveIntegerField(default=10)
     sort_order = models.PositiveIntegerField(default=0)
