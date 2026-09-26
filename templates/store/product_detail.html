@@ -27,7 +27,6 @@
         .nav-link { font-size: 0.88rem; font-weight: 500; color: var(--ink); transition: color 0.2s; padding: 8px 0; }
         .nav-link:hover { color: var(--burgundy); }
 
-        /* Dropdown Styling */
         .nav-dropdown { position: relative; display: inline-block; }
         .nav-dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: var(--panel); min-width: 230px; box-shadow: 0 12px 30px rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 6px; z-index: 2000; padding: 8px 0; }
         .nav-dropdown:hover .nav-dropdown-content { display: block; }
@@ -46,36 +45,29 @@
         .mobile-nav-link { font-size: 1.15rem; font-family: 'Cormorant Garamond', serif; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #F5EBE6; display: block; }
         .mobile-sub-link { padding-left: 20px; font-size: 0.9rem; color: #D3C5B4; border-bottom: none; padding-top: 6px; padding-bottom: 6px; }
 
-        .product-detail-container { max-width: 1100px; width: 100%; margin: 40px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; animation: fadeIn 0.6s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
+        .product-detail-container { max-width: 1100px; width: 100%; margin: 40px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
         .gallery-wrapper { width: 100%; max-width: 100%; overflow: hidden; }
-        .gallery-main-view { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; width: 100%; max-width: 100%; height: 420px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 8px 25px rgba(43,29,18,0.08); }
+        .gallery-main-view { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; width: 100%; height: 420px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 8px 25px rgba(43,29,18,0.08); }
         .gallery-main-view img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s ease-in-out, transform 0.5s ease; }
-        .gallery-main-view img.fade { opacity: 0; transform: scale(1.03); }
-        
         .fallback-tag-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--wood); font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; }
-        
-        .thumbnails-row { display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px; width: 100%; max-width: 100%; }
+        .thumbnails-row { display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px; width: 100%; }
         .thumbnail { width: 75px; height: 75px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; object-fit: cover; flex-shrink: 0; transition: all 0.2s; }
-        .thumbnail:hover { opacity: 0.85; transform: translateY(-2px); }
         .thumbnail.active { border-color: var(--burgundy); box-shadow: 0 4px 12px rgba(122,46,42,0.25); }
 
-        .lightbox-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(35,23,15,0.9); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .lightbox-content { position: relative; max-width: 85vw; max-height: 85vh; display: flex; align-items: center; justify-content: center; }
-        .lightbox-content img { max-width: 100%; max-height: 85vh; border-radius: 6px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .lightbox-close { position: absolute; top: -45px; right: 0; color: #FAF3E0; font-size: 2.5rem; cursor: pointer; background:none; border:none; }
-        .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); font-size: 1.5rem; padding: 10px 14px; cursor: pointer; border-radius: 50%; }
-        .lightbox-prev { left: -50px; }
-        .lightbox-next { right: -50px; }
-
-        .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 30px; box-shadow: 0 8px 25px rgba(43,29,18,0.06); word-break: break-word; width: 100%; max-width: 100%; }
+        .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 30px; box-shadow: 0 8px 25px rgba(43,29,18,0.06); word-break: break-word; width: 100%; }
         .prod-title { font-size: 2.5rem; font-weight: 500; margin-bottom: 6px; }
         .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.1rem; margin-bottom: 15px; }
         .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--burgundy); margin-bottom: 20px; }
         .prod-desc { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 25px; line-height: 1.8; }
         
-        .stock-note-link { font-size: 0.8rem; color: var(--burgundy); text-decoration: underline; margin-top: 4px; display: inline-block; cursor: pointer; }
+        .size-selector-group { margin-bottom: 20px; }
+        .size-label-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--wood); letter-spacing: 0.08em; margin-bottom: 8px; display: block; }
+        .size-options-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .size-btn { background: #fff; border: 1px solid var(--line); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.9rem; color: var(--ink); transition: all 0.2s; }
+        .size-btn:hover { border-color: var(--burgundy); }
+        .size-btn.active { background-color: var(--burgundy); color: #fff; border-color: var(--burgundy); }
+
+        .stock-note-link { font-size: 0.8rem; color: var(--burgundy); text-decoration: underline; margin-top: 15px; display: inline-block; cursor: pointer; }
 
         .purchase-row { display: flex; gap: 15px; align-items: center; border-top: 1px solid var(--line); padding-top: 25px; }
         .qty-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; gap: 14px; }
@@ -83,9 +75,19 @@
         .add-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; flex-grow: 1; font-size: 1rem; transition: background-color 0.2s; }
         .add-btn:hover { background-color: #5c221f; }
 
-        .sticky-order-bar { position: fixed; bottom: 24px; right: 24px; background-color: var(--dark-bg); border: 1px solid var(--brass); color: #FAF3E0; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-size: 0.9rem; font-weight: 500; transition: transform 0.2s, background-color 0.2s; }
-        .sticky-order-bar:hover { background-color: #2F2118; transform: translateY(-2px); }
+        .related-section { max-width: 1100px; margin: 60px auto; padding: 0 16px; }
+        .related-header { text-align: center; margin-bottom: 30px; font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--ink); }
+        .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .related-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
+        .related-card:hover { transform: translateY(-3px); }
+        .related-img { height: 160px; background: rgba(0,0,0,0.03); border-radius: 6px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .related-img img { width: 100%; height: 100%; object-fit: cover; }
+        .related-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
+        .related-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--burgundy); font-weight: 600; margin-bottom: 12px; }
+        .related-btn { background: var(--ink); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; font-size: 0.8rem; text-align: center; cursor: pointer; }
+        .related-btn:hover { background: var(--burgundy); }
 
+        .sticky-order-bar { position: fixed; bottom: 24px; right: 24px; background-color: var(--dark-bg); border: 1px solid var(--brass); color: #FAF3E0; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-size: 0.9rem; font-weight: 500; }
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
         .cart-drawer { position: fixed; top: 0; right: -440px; width: 420px; max-width: 100%; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
         .cart-drawer.open { right: 0; }
@@ -97,22 +99,16 @@
         .cart-item-right { text-align: right; }
         .cart-item-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--burgundy); }
         .remove-item { background: none; border: none; color: var(--burgundy); font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 4px; }
-        
         .cart-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: var(--stucco); }
         .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; margin-bottom: 15px; }
-        
         .terms-title-header { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--burgundy); letter-spacing: 0.08em; margin-bottom: 6px; }
         .terms-scrollbox { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); height: 85px; overflow-y: auto; margin-bottom: 12px; line-height: 1.4; cursor: pointer; }
-        .terms-scrollbox h4 { font-size: 0.8rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
         .terms-checkbox-row { display: flex; align-items: flex-start; gap: 8px; font-size: 0.75rem; color: var(--ink); margin-bottom: 15px; }
         .terms-checkbox-row input { margin-top: 2px; cursor: pointer; }
         .terms-checkbox-row a { color: var(--burgundy); text-decoration: underline; cursor: pointer; }
-
         .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; }
         .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; opacity: 0.7; }
-        .checkout-warning { font-size: 0.72rem; color: var(--burgundy); text-align: center; margin-top: 6px; }
 
-        /* Terms & Conditions Modal Overlay */
         .terms-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.6); backdrop-filter: blur(3px); z-index: 4000; display: none; align-items: center; justify-content: center; }
         .terms-modal-box { background: var(--panel); width: 680px; max-width: 92%; max-height: 85vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 15px 40px rgba(0,0,0,0.3); overflow: hidden; }
         .terms-modal-header { padding: 20px 24px; background: var(--stucco); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
@@ -121,490 +117,42 @@
         .terms-modal-body h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--ink); margin-top: 16px; margin-bottom: 6px; }
         .terms-modal-body p { margin-bottom: 10px; }
 
-        /* Checkout Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.5); backdrop-filter: blur(3px); z-index: 3000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: var(--panel); width: 620px; max-width: 95%; max-height: 90vh; border-radius: 6px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
         .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--stucco); }
         .modal-header h3 { font-size: 1.5rem; font-weight: 500; font-family: 'Cormorant Garamond', serif; }
         .modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; }
-        
         .modal-section-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--wood); letter-spacing: 0.1em; margin-bottom: 12px; margin-top: 6px; }
         .form-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 4px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 5px; }
         .form-control { width: 100%; padding: 10px 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; color: var(--ink); }
         textarea.form-control { resize: vertical; height: 65px; }
-        
         .payment-option { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
         .payment-option input { margin-top: 3px; accent-color: var(--burgundy); }
         .payment-details { font-size: 0.78rem; color: var(--wood); margin-top: 3px; line-height: 1.4; }
-        
-        .promo-input-row { display: flex; gap: 8px; margin-bottom: 15px; }
-        .apply-btn { background-color: var(--ink); color: #fff; border: none; padding: 0 18px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
-        .apply-btn:hover { background-color: var(--burgundy); }
-        .promo-msg { font-size: 0.75rem; margin-top: 4px; }
-
         .summary-box { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 15px; margin-bottom: 15px; }
         .summary-item-row { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 8px; color: var(--ink); }
         .summary-divider { border-bottom: 1px dashed var(--line); margin: 10px 0; }
         .summary-line { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; color: var(--ink-soft); }
         .summary-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 600; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 8px; }
-        
-        .modal-terms-note { background: var(--stucco); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); margin-bottom: 15px; line-height: 1.4; }
         .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
-        .whatsapp-note { font-size: 0.72rem; color: var(--wood); text-align: center; margin-top: 8px; line-height: 1.4; }
 
         footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 80px; }
-        .footer-pattern-bar { height: 16px; background: repeating-linear-gradient(45deg, #1A3029, #1A3029 10px, #B08D4F 10px, #B08D4F 20px, #7A2E2A 20px, #7A2E2A 30px); margin-bottom: 50px; border-radius: 2px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
-        .footer-brand-col p { font-size: 0.9rem; color: #D3C5B4; margin-top: 10px; line-height: 1.5; max-width: 280px; }
         .footer-col h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #FAF3E0; margin-bottom: 16px; font-weight: 600; letter-spacing: 0.05em; }
         .footer-links-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
         .footer-links-list a { font-size: 0.88rem; color: #D3C5B4; transition: color 0.2s; cursor: pointer; }
         .footer-links-list a:hover { color: var(--brass-light); }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: #A89884; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; font-size: 0.82rem; }
 
         @media(max-width: 900px) {
             nav { display: none; }
             .menu-toggle { display: block; }
-            .product-detail-container { grid-template-columns: 1fr; gap: 20px; padding: 0 12px; margin: 20px auto; }
-            .gallery-main-view { height: 280px; }
-            .prod-info-card { padding: 20px; }
-            .prod-title { font-size: 2rem; }
-            .lightbox-prev { left: 10px; }
-            .lightbox-next { right: 10px; }
-            .form-row-grid { grid-template-columns: 1fr; }
+            .product-detail-container { grid-template-columns: 1fr; gap: 20px; }
+            .related-grid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; gap: 30px; }
             .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
 </head>
-<body>
-
-    <header>
-        <div class="logo-area" onclick="location.href='{% url 'home' %}'">
-            <div class="logo-emblem"></div>
-            <div class="logo-text">BY CHEF <span>SARA</span></div>
-        </div>
-        <nav>
-            <a href="{% url 'home' %}" class="nav-link">Home</a>
-            
-            {% for cat in categories %}
-            <div class="nav-dropdown">
-                <a href="{% url 'category_detail' cat.slug %}" class="nav-link">{{ cat.name }} &#9662;</a>
-                {% if cat.products.all %}
-                <div class="nav-dropdown-content">
-                    <a href="{% url 'category_detail' cat.slug %}" class="dropdown-item" style="font-weight: 600; border-bottom: 1px solid var(--line); color: var(--burgundy);">All {{ cat.name }}</a>
-                    {% for prod in cat.products.all %}
-                    <a href="{% url 'product_detail' prod.slug %}" class="dropdown-item dropdown-sub-item">{{ prod.name }}</a>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-            {% endfor %}
-
-            <a href="{% url 'home' %}#about-section" class="nav-link">Meet the Chef</a>
-            <a href="{% url 'home' %}#catering-section" class="nav-link">Catering Inquiries</a>
-            <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
-        </nav>
-        <div class="header-actions">
-            <button class="cart-btn" onclick="toggleCart()">
-                <span>Cart</span>
-                <span class="cart-badge" id="cart-count">0</span>
-            </button>
-            <button class="menu-toggle" onclick="toggleMobileMenu()">&#9776;</button>
-        </div>
-    </header>
-
-    <!-- Mobile Drawer -->
-    <div class="mobile-drawer" id="mobileDrawer">
-        <div class="mobile-drawer-header">
-            <div class="logo-text" style="color: #fff;">BY CHEF <span>SARA</span></div>
-            <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer;">&times;</button>
-        </div>
-        <a href="{% url 'home' %}" class="mobile-nav-link" onclick="toggleMobileMenu()">Home</a>
-        
-        {% for cat in categories %}
-        <a href="{% url 'category_detail' cat.slug %}" class="mobile-nav-link" onclick="toggleMobileMenu()">{{ cat.name }}</a>
-        {% for prod in cat.products.all %}
-        <a href="{% url 'product_detail' prod.slug %}" class="mobile-nav-link mobile-sub-link" onclick="toggleMobileMenu()">&mdash; {{ prod.name }}</a>
-        {% endfor %}
-        {% endfor %}
-
-        <a href="{% url 'home' %}#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Meet the Chef</a>
-        <a href="{% url 'home' %}#catering-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Catering Inquiries</a>
-        <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
-    </div>
-
-    <div class="product-detail-container">
-        <div class="gallery-wrapper">
-            <div class="gallery-main-view" id="mainView" onclick="openLightbox(currentIndex)">
-                {% if product.gallery_images.all %}
-                    <img id="activeImage" src="{{ product.gallery_images.first.image.url }}" alt="{{ product.name }}">
-                {% else %}
-                    <div class="fallback-tag-box">
-                        <svg width="70" height="85" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
-                        <span>{{ product.get_image_placeholder_tag_display }}</span>
-                    </div>
-                {% endif %}
-            </div>
-
-            {% if product.gallery_images.all %}
-            <div class="thumbnails-row">
-                {% for img in product.gallery_images.all %}
-                <img src="{{ img.image.url }}" class="thumbnail {% if forloop.first %}active{% endif %}" onclick="switchImage('{{ img.image.url }}', {{ forloop.counter0 }})">
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-
-        <div class="prod-info-card">
-            <h1 class="prod-title">{{ product.name }}</h1>
-            <div class="prod-subtitle">{{ product.subtitle }}</div>
-            <div class="prod-price">AED {{ product.price }}</div>
-            <div class="prod-desc">{{ product.description|safe }}</div>
-            <div style="margin-bottom: 20px;">
-                <p style="font-size: 0.85rem; color: var(--wood);">Stock available: {{ product.inventory_stock }} units</p>
-                <a href="{% url 'home' %}#contact-section" class="stock-note-link">Want to order more? Click here to contact us directly &rarr;</a>
-            </div>
-
-            <div class="purchase-row">
-                <div class="qty-box">
-                    <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
-                    <span id="detailQty" style="font-weight: 600;">1</span>
-                    <button type="button" class="qty-btn" onclick="adjustQty(1, {{ product.inventory_stock }})">+</button>
-                </div>
-                <button type="button" class="add-btn" onclick="addCurrentProductToCart('{{ product.name|escapejs }}', {{ product.price }}, {{ product.inventory_stock }})">Add to Order</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sticky Bottom-Right "Your Order" Widget -->
-    <div class="sticky-order-bar" onclick="toggleCart()">
-        🛒 Your Order (<span id="sticky-order-count">0</span>)
-    </div>
-
-    <!-- Cart Drawer -->
-    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-    <div class="cart-drawer" id="cartDrawer">
-        <div class="cart-header">
-            <h3>Your Order</h3>
-            <button class="close-drawer" onclick="toggleCart()">&times;</button>
-        </div>
-        <div class="cart-body" id="cartItemsContainer">
-            <p style="color: var(--wood); text-align: center; margin-top: 40px;">Your cart is empty.</p>
-        </div>
-        <div class="cart-footer">
-            <div id="deliveryNotice" style="font-size: 0.8rem; color: var(--wood); margin-bottom: 10px;">Add AED 650 more for free delivery</div>
-            <div class="subtotal-row"><span>Subtotal</span><span id="cartSubtotal">AED 0</span></div>
-            
-            <div class="terms-title-header">Terms &amp; Conditions</div>
-            <div class="terms-scrollbox" onclick="openTermsModal()">
-                <h4>1. General &amp; Acceptance</h4>
-                <p>By placing an order with BY CHEF SARA, you agree to be bound by these Terms &amp; Conditions in full. Click to view full legal terms.</p>
-            </div>
-            
-            <div class="terms-checkbox-row">
-                <input type="checkbox" id="termsAgreeCheckbox" onchange="toggleCheckoutButton()">
-                <label for="termsAgreeCheckbox">I have read and agree to the <a onclick="openTermsModal()">Terms &amp; Conditions</a>, including the No Return / No Refund policy and COD deposit terms.</label>
-            </div>
-
-            <button type="button" class="checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutModal()" disabled>Proceed to Checkout</button>
-            <div class="checkout-warning" id="checkoutWarningText">Please agree to the Terms &amp; Conditions above to continue.</div>
-        </div>
-    </div>
-
-    <!-- Terms & Conditions Modal -->
-    <div class="terms-modal-overlay" id="termsModalOverlay">
-        <div class="terms-modal-box">
-            <div class="terms-modal-header">
-                <h3>TERMS &amp; CONDITIONS</h3>
-                <button class="close-drawer" onclick="closeTermsModal()">&times;</button>
-            </div>
-            <div class="terms-modal-body">
-                <p><strong>Last Updated:</strong> September 2026<br><strong>Brand:</strong> BY CHEF SARA<br><strong>Jurisdiction:</strong> United Arab Emirates</p>
-                <h4>1. General &amp; Acceptance of Terms</h4>
-                <p>By accessing this website, placing an order, or making payment to BY CHEF SARA, you confirm that you are at least 18 years of age and agree to be bound by these Terms &amp; Conditions in full.</p>
-                <h4>2. Nature of Artisanal Food Products</h4>
-                <p>All products offered by BY CHEF SARA are handcrafted food items prepared fresh in small batches without artificial preservatives. Natural variations in color, texture, shape, and appearance between batches are customary.</p>
-                <h4>3. All Sales Final (No Returns &amp; No Refunds)</h4>
-                <p>All food sales are final. We do not accept returns, cancellations, exchanges, or refund requests once an order has been prepared or dispatched.</p>
-                <h4>4. Transit Damage &amp; Verification Policy</h4>
-                <p>You must report any visible damage within two (2) hours of confirmed delivery via WhatsApp or email at hello@bychefsara.com with high-resolution photographic evidence.</p>
-                <h4>5. Cash on Delivery (COD) &amp; Security Deposits</h4>
-                <p>Orders placed under Cash on Delivery (COD) may require a non-refundable security deposit at checkout to cover preparation and packaging.</p>
-                <h4>6. Pricing, Currency &amp; Availability</h4>
-                <p>All prices are displayed in UAE Dirhams (AED) and include Value Added Tax (VAT) where applicable by UAE law.</p>
-                <h4>7. Delivery &amp; Recipient Availability</h4>
-                <p>Delivery timeframes provided at checkout are estimates. The customer is solely responsible for providing complete and accurate delivery details.</p>
-                <h4>8. Allergen Declaration &amp; Kitchen Notice</h4>
-                <p>Our kitchen prepares items that contain or may come into contact with common allergens including tree nuts, peanuts, dairy, eggs, soy, sesame, and gluten.</p>
-                <h4>9. Intellectual Property</h4>
-                <p>All website content, logos, text, and photography are the exclusive intellectual property of BY CHEF SARA.</p>
-                <h4>10. Governing Law &amp; Dispute Resolution</h4>
-                <p>These Terms &amp; Conditions are governed by the laws of the United Arab Emirates under the exclusive jurisdiction of UAE courts.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Checkout Modal -->
-    <div class="modal-overlay" id="checkoutModalOverlay">
-        <div class="checkout-modal">
-            <div class="modal-header">
-                <h3>Checkout</h3>
-                <button class="close-drawer" onclick="closeCheckoutModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-section-title">Contact &amp; Delivery Details</div>
-                <div class="form-row-grid">
-                    <div class="form-group"><label>Full name</label><input type="text" id="custName" class="form-control" required placeholder="Your name"></div>
-                    <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="custPhone" class="form-control" required placeholder="+971 XX XXX XXXX" oninput="this.value = this.value.replace(/[^0-9+\s-]/g, '')"></div>
-                </div>
-                <div class="form-group"><label>Delivery address</label><textarea id="custAddress" class="form-control" required placeholder="Building, street, area, emirate"></textarea></div>
-
-                <div class="modal-section-title">Payment Method</div>
-                <label class="payment-option">
-                    <input type="radio" name="paymentMethod" value="Cash on Delivery" checked>
-                    <div>
-                        <strong>Cash on Delivery</strong>
-                        <div class="payment-details">A non-refundable deposit is required to confirm COD orders.</div>
-                    </div>
-                </label>
-                <label class="payment-option">
-                    <input type="radio" name="paymentMethod" value="Bank Transfer">
-                    <div>
-                        <strong>Bank Transfer</strong>
-                        <div class="payment-details">Bank details will be sent to complete payment before dispatch.</div>
-                    </div>
-                </label>
-
-                <div class="modal-section-title">Discount Code</div>
-                <div class="promo-input-row">
-                    <input type="text" id="modalPromoInput" class="form-control" placeholder="Enter code">
-                    <button type="button" class="apply-btn" onclick="applyPromoCode()">Apply</button>
-                </div>
-                <div class="promo-msg" id="promoMessage"></div>
-
-                <div class="modal-section-title">Order Summary</div>
-                <div class="summary-box" id="modalSummaryBox"></div>
-
-                <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">Place Order via WhatsApp</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Lightbox Modal -->
-    <div class="lightbox-overlay" id="lightboxModal">
-        <div class="lightbox-content">
-            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-            <button class="lightbox-nav lightbox-prev" onclick="changeSlide(-1)">&#10094;</button>
-            <img id="lightboxImg" src="" alt="Zoomed View">
-            <button class="lightbox-nav lightbox-next" onclick="changeSlide(1)">&#10095;</button>
-        </div>
-    </div>
-
-    <!-- Main Footer -->
-    <footer>
-        <div class="footer-pattern-bar"></div>
-        <div class="footer-grid">
-            <div class="footer-brand-col">
-                <div class="logo-area" style="margin-bottom: 10px;" onclick="location.href='{% url 'home' %}'">
-                    <div class="logo-emblem"></div>
-                    <div class="logo-text" style="color: #FAF3E0;">BY CHEF <span>SARA</span></div>
-                </div>
-                <p>Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Shop</h4>
-                <ul class="footer-links-list">
-                    {% for cat in categories %}
-                    <li><a href="{% url 'category_detail' cat.slug %}">{{ cat.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Company &amp; Policies</h4>
-                <ul class="footer-links-list">
-                    <li><a href="{% url 'home' %}#about-section">Meet the Chef</a></li>
-                    <li><a href="{% url 'home' %}#catering-section">Catering Inquiries</a></li>
-                    <li><a onclick="openTermsModal()">Terms &amp; Conditions</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div>&copy; 2026 By Chef Sara. Handcrafted in the UAE</div>
-            <div>Al Ain, United Arab Emirates</div>
-        </div>
-    </footer>
-
-    <script>
-        const galleryUrls = [{% for img in product.gallery_images.all %}"{{ img.image.url }}"{% if not forloop.last %},{% endif %}{% endfor %}];
-        let currentIndex = 0;
-        let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
-        let appliedDiscountPercent = 0;
-        let appliedPromoName = '';
-
-        document.addEventListener("DOMContentLoaded", function() {
-            updateCartUI();
-            toggleCheckoutButton();
-        });
-
-        function saveCart() { localStorage.setItem('chef_sara_cart', JSON.stringify(cart)); }
-        function toggleMobileMenu() { document.getElementById('mobileDrawer').classList.toggle('open'); }
-        function toggleCart() { let drawer = document.getElementById('cartDrawer'); drawer.classList.toggle('open'); document.getElementById('cartOverlay').style.display = drawer.classList.contains('open') ? 'block' : 'none'; }
-
-        function openTermsModal() { document.getElementById('termsModalOverlay').style.display = 'flex'; }
-        function closeTermsModal() { document.getElementById('termsModalOverlay').style.display = 'none'; }
-
-        function switchImage(url, index) {
-            if (galleryUrls.length === 0) return;
-            currentIndex = index;
-            let imgEl = document.getElementById('activeImage');
-            imgEl.classList.add('fade');
-            setTimeout(() => {
-                imgEl.src = url;
-                imgEl.classList.remove('fade');
-            }, 200);
-
-            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
-                thumb.classList.toggle('active', i === index);
-            });
-        }
-
-        function openLightbox(index) {
-            if (galleryUrls.length === 0) return;
-            currentIndex = index;
-            let lightImg = document.getElementById('lightboxImg');
-            lightImg.src = galleryUrls[currentIndex];
-            document.getElementById('lightboxModal').style.display = 'flex';
-        }
-
-        function closeLightbox() {
-            document.getElementById('lightboxModal').style.display = 'none';
-        }
-
-        function changeSlide(direction) {
-            if (galleryUrls.length === 0) return;
-            currentIndex = (currentIndex + direction + galleryUrls.length) % galleryUrls.length;
-            let lightImg = document.getElementById('lightboxImg');
-            lightImg.src = galleryUrls[currentIndex];
-            switchImage(galleryUrls[currentIndex], currentIndex);
-        }
-
-        function adjustQty(delta, max = 99) {
-            let qtyEl = document.getElementById('detailQty');
-            let val = parseInt(qtyEl.textContent) + delta;
-            if (val >= 1 && val <= max) qtyEl.textContent = val;
-        }
-
-        function addCurrentProductToCart(name, price, maxStock) {
-            let qty = parseInt(document.getElementById('detailQty').textContent);
-            let existing = cart.find(i => i.name === name);
-            if ((existing ? existing.quantity : 0) + qty > maxStock) { alert('Stock limit reached.'); return; }
-            if (existing) existing.quantity += qty; else cart.push({ name, price, quantity: qty });
-            saveCart();
-            updateCartUI();
-            toggleCart();
-        }
-
-        function changeCartItemQty(name, delta) {
-            let item = cart.find(i => i.name === name);
-            if (item) {
-                item.quantity += delta;
-                if (item.quantity <= 0) cart = cart.filter(i => i.name !== name);
-                saveCart();
-                updateCartUI();
-            }
-        }
-
-        function removeFromCart(name) { cart = cart.filter(i => i.name !== name); saveCart(); updateCartUI(); }
-
-        function updateCartUI() {
-            let container = document.getElementById('cartItemsContainer'), count = 0, subtotal = 0;
-            if (cart.length === 0) container.innerHTML = '<p style="color:var(--wood); text-align:center; margin-top:40px;">Your cart is empty.</p>';
-            else {
-                container.innerHTML = '';
-                cart.forEach(item => {
-                    count += item.quantity; subtotal += item.price * item.quantity;
-                    container.innerHTML += `
-                        <div class="cart-item">
-                            <div>
-                                <div><b>${item.name}</b></div>
-                                <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
-                                    <button type="button" onclick="changeCartItemQty('${item.name}', -1)" style="width:18px; height:18px; cursor:pointer;">-</button>
-                                    <span>${item.quantity}</span>
-                                    <button type="button" onclick="changeCartItemQty('${item.name}', 1)" style="width:18px; height:18px; cursor:pointer;">+</button>
-                                    <span style="color:var(--wood); font-size:0.75rem;">/ AED ${item.price}</span>
-                                </div>
-                            </div>
-                            <div class="cart-item-right">
-                                <div class="cart-item-price">AED ${(item.price*item.quantity).toFixed(2)}</div>
-                                <button type="button" class="remove-item" onclick="removeFromCart('${item.name}')">Remove</button>
-                            </div>
-                        </div>`;
-                });
-            }
-            document.getElementById('cart-count').textContent = count;
-            document.getElementById('sticky-order-count').textContent = count;
-            document.getElementById('cartSubtotal').textContent = 'AED ' + subtotal.toFixed(2);
-            document.getElementById('deliveryNotice').textContent = subtotal >= 650 ? '🎉 You qualify for free delivery!' : `Add AED ${(650 - subtotal).toFixed(2)} more for free delivery`;
-        }
-
-        function toggleCheckoutButton() {
-            let isChecked = document.getElementById('termsAgreeCheckbox').checked;
-            let btn = document.getElementById('cartCheckoutBtn');
-            let warning = document.getElementById('checkoutWarningText');
-            if (isChecked) {
-                btn.removeAttribute('disabled');
-                warning.style.display = 'none';
-            } else {
-                btn.setAttribute('disabled', 'true');
-                warning.style.display = 'block';
-            }
-        }
-
-        function openCheckoutModal() { 
-            if (cart.length === 0) return; 
-            if (!document.getElementById('termsAgreeCheckbox').checked) return;
-            toggleCart(); 
-            updateModalSummary();
-            document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
-        }
-
-        function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
-
-        function updateModalSummary() {
-            let box = document.getElementById('modalSummaryBox');
-            let subtotal = 0, html = '';
-            cart.forEach(i => {
-                subtotal += i.price * i.quantity;
-                html += `<div class="summary-item-row"><span>${i.name} x ${i.quantity}</span><span>AED ${(i.price * i.quantity).toFixed(2)}</span></div>`;
-            });
-            html += `<div class="summary-divider"></div>`;
-            html += `<div class="summary-line"><span>Subtotal</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
-            let deliveryFee = subtotal >= 650 ? 0 : 25;
-            html += `<div class="summary-line"><span>Delivery</span><span>${deliveryFee === 0 ? 'Free' : 'AED 25.00'}</span></div>`;
-            let total = subtotal + deliveryFee;
-            html += `<div class="summary-total"><span>Total</span><span>AED ${total.toFixed(2)}</span></div>`;
-            box.innerHTML = html;
-        }
-
-        function placeWhatsAppOrder() {
-            let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, addr = document.getElementById('custAddress').value;
-            if (!name || !phone || !addr) { alert('Please fill in your contact & delivery details.'); return; }
-            let paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-            let subtotal = 0;
-            cart.forEach(i => subtotal += i.price * i.quantity);
-            let deliveryFee = subtotal >= 650 ? 0 : 25;
-            let total = subtotal + deliveryFee;
-
-            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
-            cart.forEach(i => { msg += `- ${i.name} x ${i.quantity} (AED ${(i.price*i.quantity).toFixed(2)})\n`; });
-            msg += `Subtotal: AED ${subtotal.toFixed(2)}\nDelivery: AED ${deliveryFee.toFixed(2)}\nTotal: AED ${total.toFixed(2)}`;
-
-            window.open(`https://wa.me/971500000000?text=${encodeURIComponent(msg)}`, '_blank');
-            cart = []; saveCart(); updateCartUI(); closeCheckoutModal();
-        }
-    </script>
-</body>
-</html>
