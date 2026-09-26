@@ -1,9 +1,13 @@
 from django.contrib import admin
-from .models import Category, Product, ProductImage, PromoCode, HeroSlide, MenuItem, SiteContent, CateringInquiry, ContactInquiry
+from .models import Category, Product, ProductSize, ProductImage, PromoCode, HeroSlide, MenuItem, SiteContent, CateringInquiry, ContactInquiry
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 3
+
+class ProductSizeInline(admin.TabularInline):
+    model = ProductSize
+    extra = 2
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -13,11 +17,11 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price', 'inventory_stock', 'is_bestseller')
+    list_display = ('name', 'category', 'price', 'is_bestseller')
     list_filter = ('category', 'is_bestseller')
     search_fields = ('name', 'description')
     prepopulated_fields = {'slug': ('name',)}
-    inlines = [ProductImageInline]
+    inlines = [ProductSizeInline, ProductImageInline]
 
 @admin.register(HeroSlide)
 class HeroSlideAdmin(admin.ModelAdmin):
