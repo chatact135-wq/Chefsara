@@ -37,45 +37,74 @@
         .mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .mobile-nav-link { font-size: 1.15rem; font-family: 'Cormorant Garamond', serif; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #F5EBE6; display: block; }
 
-        .product-detail-container { max-width: 1100px; width: 100%; margin: 40px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+        /* Main Product Layout */
+        .product-detail-container { max-width: 1100px; width: 100%; margin: 60px auto; padding: 0 4%; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
+        
+        /* Gallery & Lightbox */
         .gallery-wrapper { width: 100%; max-width: 100%; overflow: hidden; }
-        .gallery-main-view { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; width: 100%; height: 420px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 8px 25px rgba(43,29,18,0.08); }
+        .gallery-main-view { background: #fff; border: 1px solid var(--line); border-radius: 10px; width: 100%; height: 480px; display: flex; align-items: center; justify-content: center; position: relative; cursor: zoom-in; overflow: hidden; box-shadow: 0 10px 30px rgba(43,29,18,0.08); }
         .gallery-main-view img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s ease-in-out, transform 0.5s ease; }
+        .gallery-main-view:hover img { transform: scale(1.02); }
         .fallback-tag-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--wood); font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; }
-        .thumbnails-row { display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px; width: 100%; }
-        .thumbnail { width: 75px; height: 75px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; object-fit: cover; flex-shrink: 0; transition: all 0.2s; }
+        
+        .thumbnails-row { display: flex; gap: 12px; margin-top: 15px; overflow-x: auto; padding-bottom: 8px; width: 100%; }
+        .thumbnail { width: 80px; height: 80px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; object-fit: cover; flex-shrink: 0; transition: all 0.2s; background: #fff; }
         .thumbnail.active { border-color: var(--burgundy); box-shadow: 0 4px 12px rgba(122,46,42,0.25); }
 
-        .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 30px; box-shadow: 0 8px 25px rgba(43,29,18,0.06); word-break: break-word; width: 100%; }
-        .prod-title { font-size: 2.5rem; font-weight: 500; margin-bottom: 6px; }
-        .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.1rem; margin-bottom: 15px; }
+        /* Image Lightbox Pop-up */
+        .image-lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 17, 11, 0.9); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); cursor: zoom-out; }
+        .image-lightbox img { max-width: 90%; max-height: 90vh; border-radius: 8px; box-shadow: 0 15px 50px rgba(0,0,0,0.5); border: 1px solid var(--brass); object-fit: contain; }
+        .lightbox-close { position: absolute; top: 25px; right: 35px; color: #fff; font-size: 2.5rem; cursor: pointer; font-family: sans-serif; transition: color 0.2s; }
+        .lightbox-close:hover { color: var(--brass-light); }
+
+        /* Product Info Card */
+        .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 35px; box-shadow: 0 10px 30px rgba(43,29,18,0.06); word-break: break-word; width: 100%; }
+        .prod-title { font-size: 2.5rem; font-weight: 500; margin-bottom: 8px; color: var(--ink); line-height: 1.2; }
+        .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.1rem; margin-bottom: 20px; }
         
-        .product-tabs-container { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 20px; }
+        /* 4 Tabs System */
+        .product-tabs-container { margin-top: 25px; border-top: 1px solid var(--line); padding-top: 25px; }
         .tabs-header-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; background: #EFE4CC; padding: 6px; border-radius: 8px; border: 1px solid var(--line); }
         .tab-btn { background: transparent; border: none; padding: 10px 12px; font-family: 'Jost', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; border-radius: 6px; transition: all 0.2s ease; text-align: center; }
         .tab-btn:hover { color: var(--burgundy); background: rgba(255,255,255,0.5); }
         .tab-btn.active { background-color: var(--burgundy); color: #fff; box-shadow: 0 4px 12px rgba(122,46,42,0.25); }
-        .tab-content-pane { display: none; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.7; background: #fff; padding: 16px; border-radius: 8px; border: 1px solid var(--line); min-height: 110px; }
+        .tab-content-pane { display: none; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.7; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid var(--line); min-height: 120px; }
         .tab-content-pane.active { display: block; }
         .desc-preview { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
-        .read-more-link { background: none; border: none; color: var(--burgundy); font-weight: 600; cursor: pointer; font-size: 0.85rem; padding: 0; margin-top: 8px; text-decoration: underline; display: inline-block; }
+        .read-more-link { background: none; border: none; color: var(--burgundy); font-weight: 600; cursor: pointer; font-size: 0.85rem; padding: 0; margin-top: 10px; text-decoration: underline; display: inline-block; }
 
-        .size-selector-group { margin-top: 20px; margin-bottom: 15px; }
-        .size-label-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--wood); letter-spacing: 0.08em; margin-bottom: 8px; display: block; }
+        /* Sizes & Pricing */
+        .size-selector-group { margin-top: 25px; margin-bottom: 15px; }
+        .size-label-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--wood); letter-spacing: 0.08em; margin-bottom: 10px; display: block; }
         .size-options-row { display: flex; gap: 10px; flex-wrap: wrap; }
-        .size-btn { background: #fff; border: 1px solid var(--line); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.9rem; color: var(--ink); transition: all 0.2s; }
+        .size-btn { background: #fff; border: 1px solid var(--line); padding: 8px 18px; border-radius: 6px; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.9rem; color: var(--ink); transition: all 0.2s; font-weight: 500; }
         .size-btn:hover { border-color: var(--burgundy); }
         .size-btn.active { background-color: var(--burgundy); color: #fff; border-color: var(--burgundy); }
 
-        .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--burgundy); margin-top: 15px; margin-bottom: 15px; }
-        .stock-note-link { font-size: 0.8rem; color: var(--burgundy); text-decoration: underline; margin-top: 15px; display: inline-block; cursor: pointer; }
+        .prod-price { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 600; color: var(--burgundy); margin-top: 15px; margin-bottom: 15px; }
+        .stock-note-link { font-size: 0.85rem; color: var(--burgundy); text-decoration: underline; margin-top: 15px; display: inline-block; cursor: pointer; }
 
-        .purchase-row { display: flex; gap: 15px; align-items: center; border-top: 1px solid var(--line); padding-top: 25px; }
-        .qty-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; gap: 14px; }
-        .qty-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--wood); font-weight: bold; }
-        .add-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; flex-grow: 1; font-size: 1rem; transition: background-color 0.2s; }
-        .add-btn:hover { background-color: #5c221f; }
+        .purchase-row { display: flex; gap: 15px; align-items: center; border-top: 1px solid var(--line); padding-top: 25px; margin-top: 10px; }
+        .qty-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; gap: 15px; }
+        .qty-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--wood); font-weight: bold; width: 20px; text-align: center; }
+        .add-btn { background-color: var(--ink); color: #fff; border: none; padding: 14px 28px; border-radius: 6px; font-weight: 600; cursor: pointer; flex-grow: 1; font-size: 1.05rem; transition: background-color 0.2s; }
+        .add-btn:hover { background-color: var(--burgundy); }
 
+        /* Related Items Section */
+        .related-section { max-width: 1100px; margin: 80px auto; padding: 0 4%; border-top: 1px solid rgba(176,141,79,0.3); padding-top: 60px; }
+        .related-header { text-align: left; margin-bottom: 30px; font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--ink); }
+        .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .related-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer; }
+        .related-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .related-img { height: 180px; background: #fff; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--line); }
+        .related-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .related-card:hover .related-img img { transform: scale(1.05); }
+        .related-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); line-height: 1.2; }
+        .related-price { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--burgundy); font-weight: 600; margin-bottom: 12px; }
+        .related-btn { background: var(--stucco); color: var(--ink); border: 1px solid var(--brass); padding: 10px 12px; border-radius: 4px; font-size: 0.85rem; font-weight: 500; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .related-card:hover .related-btn { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+        /* General Modal, Drawer & Footer Styles */
         .sticky-order-bar { position: fixed; bottom: 24px; right: 24px; background-color: var(--dark-bg); border: 1px solid var(--brass); color: #FAF3E0; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-size: 0.9rem; font-weight: 500; }
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
         .cart-drawer { position: fixed; top: 0; right: -440px; width: 420px; max-width: 100%; height: 100%; background: var(--panel); border-left: 1px solid var(--line); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.3s ease; }
@@ -90,6 +119,7 @@
         .remove-item { background: none; border: none; color: var(--burgundy); font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 4px; }
         .cart-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: var(--stucco); }
         .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-family: 'Cormorant Garamond', serif; font-weight: 600; margin-bottom: 15px; }
+        
         .terms-title-header { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--burgundy); letter-spacing: 0.08em; margin-bottom: 6px; }
         .terms-scrollbox { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); height: 85px; overflow-y: auto; margin-bottom: 12px; line-height: 1.4; cursor: pointer; }
         .terms-checkbox-row { display: flex; align-items: flex-start; gap: 8px; font-size: 0.75rem; color: var(--ink); margin-bottom: 15px; }
@@ -126,17 +156,18 @@
         .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
 
         footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 80px; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; max-width: 1200px; margin-left: auto; margin-right: auto; }
         .footer-col h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #FAF3E0; margin-bottom: 16px; font-weight: 600; letter-spacing: 0.05em; }
         .footer-links-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
         .footer-links-list a { font-size: 0.88rem; color: #D3C5B4; transition: color 0.2s; cursor: pointer; }
         .footer-links-list a:hover { color: var(--brass-light); }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; font-size: 0.82rem; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; font-size: 0.82rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
 
         @media(max-width: 900px) {
             nav { display: none; }
             .menu-toggle { display: block; }
-            .product-detail-container { grid-template-columns: 1fr; gap: 20px; }
+            .product-detail-container { grid-template-columns: 1fr; gap: 30px; }
+            .related-grid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; gap: 30px; }
             .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
         }
@@ -187,8 +218,9 @@
 
     <!-- Product Detail Section -->
     <div class="product-detail-container">
+        <!-- Left Side: Image Gallery -->
         <div class="gallery-wrapper">
-            <div class="gallery-main-view" id="mainView">
+            <div class="gallery-main-view" id="mainView" onclick="openLightbox()">
                 {% if product.gallery_images.all %}
                     <img id="activeImage" src="{{ product.gallery_images.first.image.url }}" alt="{{ product.name }}">
                 {% else %}
@@ -206,6 +238,7 @@
             {% endif %}
         </div>
 
+        <!-- Right Side: Info & Tabs -->
         <div class="prod-info-card">
             <h1 class="prod-title">
                 {% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar }}{% else %}{{ product.name }}{% endif %}
@@ -307,7 +340,7 @@
         <h2 class="related-header">You May Also Like</h2>
         <div class="related-grid">
             {% for rel in related_products %}
-            <div class="related-card">
+            <div class="related-card" onclick="location.href='{% url 'product_detail' rel.slug %}'">
                 <div>
                     <div class="related-img">
                         {% if rel.gallery_images.first %}
@@ -321,12 +354,18 @@
                     </div>
                     <div class="related-price">AED {{ rel.price }}</div>
                 </div>
-                <button type="button" class="related-btn" onclick="location.href='{% url 'product_detail' rel.slug %}'">View Product</button>
+                <button type="button" class="related-btn">View Product</button>
             </div>
             {% endfor %}
         </div>
     </div>
     {% endif %}
+
+    <!-- Image Lightbox Modal -->
+    <div class="image-lightbox" id="imageLightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightboxImgTarget" src="" alt="Zoomed Product Image">
+    </div>
 
     <div class="sticky-order-bar" onclick="toggleCart()">
         🛒 Your Order (<span id="sticky-order-count">0</span>)
@@ -351,7 +390,7 @@
             </div>
             <div class="terms-checkbox-row">
                 <input type="checkbox" id="termsAgreeCheckbox" onchange="toggleCheckoutButton()">
-                <label for="termsAgreeCheckbox">I have read and agree to the <a onclick="openTermsModal()">Terms &amp; Conditions</a>, including the No Return / No Refund policy.</label>
+                <label for="termsAgreeCheckbox">I have read and agree to the <a onclick="openTermsModal()">Terms &amp; Conditions</a>.</label>
             </div>
             <button type="button" class="checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutModal()" disabled>Proceed to Checkout</button>
         </div>
@@ -415,14 +454,14 @@
     </div>
 
     <footer>
-        <div class="footer-pattern-bar"></div>
+        <div class="footer-pattern-bar" style="height: 16px; background: repeating-linear-gradient(45deg, #1A3029, #1A3029 10px, #B08D4F 10px, #B08D4F 20px, #7A2E2A 20px, #7A2E2A 30px); margin-bottom: 50px; border-radius: 2px;"></div>
         <div class="footer-grid">
             <div class="footer-brand-col">
                 <div class="logo-area" style="margin-bottom: 10px;" onclick="location.href='{% url 'home' %}'">
                     <div class="logo-emblem"></div>
                     <div class="logo-text" style="color: #FAF3E0;">BY CHEF <span>SARA</span></div>
                 </div>
-                <p>Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.</p>
+                <p style="font-size: 0.9rem; color: #D3C5B4; margin-top: 10px; line-height: 1.5;">Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.</p>
             </div>
             <div class="footer-col">
                 <h4>Shop</h4>
@@ -465,6 +504,19 @@
             toggleCheckoutButton();
         });
 
+        /* Lightbox Functions */
+        function openLightbox() {
+            let activeImgEl = document.getElementById('activeImage');
+            if(activeImgEl) {
+                document.getElementById('lightboxImgTarget').src = activeImgEl.src;
+                document.getElementById('imageLightbox').style.display = 'flex';
+            }
+        }
+        function closeLightbox() {
+            document.getElementById('imageLightbox').style.display = 'none';
+        }
+
+        /* Tabs & Read More */
         function switchTab(evt, tabId) {
             document.querySelectorAll('.tab-content-pane').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -566,9 +618,9 @@
                             <div>
                                 <div><b>${item.name}</b></div>
                                 <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
-                                    <button type="button" onclick="changeCartItemQty('${item.name}', -1)" style="width:18px; height:18px; cursor:pointer;">-</button>
+                                    <button type="button" onclick="changeCartItemQty('${item.name}', -1)" style="width:18px; height:18px; cursor:pointer; background:#fff; border:1px solid var(--line);"> - </button>
                                     <span>${item.quantity}</span>
-                                    <button type="button" onclick="changeCartItemQty('${item.name}', 1)" style="width:18px; height:18px; cursor:pointer;">+</button>
+                                    <button type="button" onclick="changeCartItemQty('${item.name}', 1)" style="width:18px; height:18px; cursor:pointer; background:#fff; border:1px solid var(--line);"> + </button>
                                     <span style="color:var(--wood); font-size:0.75rem;">/ AED ${item.price}</span>
                                 </div>
                             </div>
