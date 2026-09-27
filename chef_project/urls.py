@@ -15,5 +15,11 @@ urlpatterns = [
     path('', views.home_view, name='home'),
     path('product/<slug:product_slug>/', views.product_detail_view, name='product_detail'),
     path('category/<slug:category_slug>/', views.category_detail_view, name='category_detail'),
+    
+    # --- ADD THESE 3 ZIINA PAYMENT ROUTES HERE ---
+    path('process-ziina-payment/', views.process_ziina_payment, name='process_ziina_payment'),
+    path('payment-success/', views.payment_success, name='payment_success'),
+    path('payment-failure/', views.payment_failure, name='payment_failure'),
+    
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]
