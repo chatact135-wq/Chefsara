@@ -7,7 +7,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCode, CateringInquiry, ContactInquiry
 
 # --- ZIINA API KEY ---
-ZIINA_API_KEY = os.environ.get('ZIINA_API_KEY')
+# This safely checks Railway variables first, but falls back directly to your token so it never fails
+ZIINA_API_KEY = os.environ.get('ZIINA_API_KEY', 'xzgiGo22mBB6vWiileaqWil4youK/pNsUTJ5xoCQs91GPf/vuS0TbODajDt8TyoW')
 
 def home_view(request):
     if request.method == 'POST':
