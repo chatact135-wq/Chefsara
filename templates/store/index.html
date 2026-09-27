@@ -988,69 +988,88 @@
         // ==========================================
         // ZIINA PAYMENT INTEGRATION LOGIC
         // ==========================================
+      // ==========================================
+        // ZIINA PAYMENT INTEGRATION LOGIC
+        // ==========================================
         function placeZiinaOrder() {
-            let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
-            let isAllowed = allowedCountries.some(c => selectedCountry.toLowerCase().includes(c.toLowerCase()));
-            
-            if (!isAllowed) {
-                alert("{% if request.GET.lang == 'ar' %}عذراً، لا يمكننا التوصيل إلى هذا الموقع.{% else %}Sorry, we can't deliver to this location.{% endif %}");
-                return;
-            }
-
-            let name = document.getElementById('custName').value;
-            let phone = document.getElementById('custPhone').value;
-            let addr = document.getElementById('custAddress').value;
-            
-            if (!name || !phone || !addr) { 
-                alert("{% if request.GET.lang == 'ar' %}يرجى ملء تفاصيل الاتصال والتوصيل.{% else %}Please fill in your contact & delivery details.{% endif %}"); 
-                return; 
-            }
-
-            let subtotal = 0;
-            cart.forEach(i => subtotal += i.price * i.quantity);
-            let discountAmount = (subtotal * appliedDiscountPercent) / 100;
-            let deliveryFee = subtotal >= 650 ? 0 : 25;
-            let total = (subtotal - discountAmount) + deliveryFee;
-
-            // Change button state to show processing
-            let btn = document.querySelector('.whatsapp-btn');
-            btn.textContent = "{% if request.GET.lang == 'ar' %}جاري معالجة الدفع...{% else %}Processing Payment...{% endif %}";
-            btn.disabled = true;
-
-            // Send data to Django Backend to create Ziina Payment Intent
-            fetch('/process-ziina-payment/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    total_amount: total,
-                    customer_name: name,
-                    customer_phone: phone,
-                    customer_address: addr,
-                    cart_items: cart
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success && data.redirect_url) {
-                    // Clear cart locally before leaving
-                    cart = []; 
-                    saveCart();
-                    
-                    // Redirect user to Ziina's secure checkout page
-                    window.location.href = data.redirect_url;
-                } else {
-                    alert("Payment gateway error: " + data.error);
-                    btn.textContent = "{% if request.GET.lang == 'ar' %}الدفع بأمان عبر Ziina{% else %}Pay Securely via Ziina{% endif %}";
-                    btn.disabled = false;
+            try {
+                let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
+                let isAllowed = allowedCountries.some(c => selectedCountry.toLowerCase().includes(c.toLowerCase()));
+                
+                if (!isAllowed) {
+                    alert("{% if request.GET.lang == 'ar' %}عذراً، لا يمكننا التوصيل إلى هذا الموقع.{% else %}Sorry, we can't deliver to this location.{% endif %}");
+                    return;
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                btn.textContent = "{% if request.GET.lang == 'ar' %}الدفع بأمان عبر Ziina{% else %}Pay Securely via Ziina{% endif %}";
-                btn.disabled = false;
-            });
+
+                let name = document.getElementById('custName').value;
+                let phone = document.getElementById('custPhone').value;
+                let addr = document.getElementById('custAddress').value;
+                
+                if (!name || !phone || !addr) { 
+                    alert("{% if request.GET.lang == 'ar' %}يرجى ملء تفاصيل الاتصال والتوصيل.{% else %}Please fill in your contact & delivery details.{% endif %}"); 
+                    return; 
+                }
+
+                // Calculate final price
+                let subtotal = 0;
+                cart.forEach(i => subtotal += i.price * i.quantity);
+                let discountAmount = 0;
+                if (typeof appliedDiscountPercent !== 'undefined' && appliedDiscountPercent > 0) {
+                    discountAmount = (subtotal * appliedDiscountPercent) / 100;
+                }
+                let deliveryFee = subtotal >= 650 ? 0 : 25;
+                let total = (subtotal - discountAmount) + deliveryFee;
+
+                // Lock button to show it's working
+                let btn = document.querySelector('.whatsapp-btn');
+                let originalText = btn.textContent;
+                btn.textContent = "{% if request.GET.lang == 'ar' %}جاري معالجة الدفع...{% else %}Processing...{% endif %}";
+                btn.disabled = true;
+
+                // Send to Django backend
+                fetch('/process-ziina-payment/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        total_amount: total,
+                        customer_name: name,
+                        customer_phone: phone,
+                        customer_address: addr,
+                        cart_items: cart
+                    })
+                })
+                .then(response => {
+                    // NEW: Check if the server actually found the URL
+                    if (!response.ok) {
+                        throw new Error(`Server returned status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success && data.redirect_url) {
+                        cart = []; 
+                        saveCart();
+                        window.location.href = data.redirect_url; // Send to Ziina
+                    } else {
+                        alert("Payment gateway error: " + (data.error || "Unknown error"));
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch Error:', error);
+                    // NEW: Alert the user exactly why it failed
+                    alert("Could not connect to the payment server. Ensure Railway has finished deploying the views.py and urls.py files. Error details: " + error.message);
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                });
+
+            } catch (err) {
+                console.error("Browser JS Error: ", err);
+                alert("A technical error occurred in your browser: " + err.message);
+            }
         }
 
         function handleCateringSubmit(event) {
