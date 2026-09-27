@@ -7,7 +7,7 @@ from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCo
 
 # --- ZIINA API KEY ---
 # Replace this with your actual Bearer token from the Ziina Developer Dashboard
-ZIINA_API_KEY = "RJJs/bsayqbAK92Rv+d9T6lj1a71SmBmnLcS4ZZDqfBviRk5hThO/bVJXe/3Zhoc"
+ZIINA_API_KEY = "YOUR_ZIINA_BEARER_TOKEN"
 
 def home_view(request):
     if request.method == 'POST':
@@ -111,14 +111,17 @@ def process_ziina_payment(request):
             
             response = requests.post(url, json=payload, headers=headers)
             
-            if response.status_code == 200:
+            # BULLETPROOF FIX: If Ziina gave us a redirect link, use it immediately.
+            try:
                 response_data = response.json()
-                # Return the Ziina redirect URL back to the frontend
-                return JsonResponse({
-                    'success': True, 
-                    'redirect_url': response_data.get('redirect_url')
-                })
-            else:
+                if 'redirect_url' in response_data:
+                    return JsonResponse({
+                        'success': True, 
+                        'redirect_url': response_data['redirect_url']
+                    })
+                else:
+                    return JsonResponse({'success': False, 'error': response.text})
+            except Exception:
                 return JsonResponse({'success': False, 'error': response.text})
                 
         except Exception as e:
