@@ -1,5 +1,13 @@
+import json
+import requests
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCode, CateringInquiry, ContactInquiry
+
+# --- ZIINA API KEY ---
+# Replace this with your actual Bearer token from the Ziina Developer Dashboard
+ZIINA_API_KEY = "RJJs/bsayqbAK92Rv+d9T6lj1a71SmBmnLcS4ZZDqfBviRk5hThO/bVJXe/3Zhoc"
 
 def home_view(request):
     if request.method == 'POST':
@@ -67,3 +75,61 @@ def category_detail_view(request, category_slug):
         'promo_dict': promo_dict,
     }
     return render(request, 'store/category_detail.html', context)
+
+
+# ==========================================
+# ZIINA PAYMENT INTEGRATION VIEWS
+# ==========================================
+
+@csrf_exempt
+def process_ziina_payment(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            total_amount = float(data.get('total_amount', 0))
+            
+            # Ziina expects the amount in minor units (Fils). AED 1 = 100 Fils.
+            amount_in_fils = int(total_amount * 100)
+
+            # Ziina Payment Intent API Endpoint
+            url = "https://api-v2.ziina.com/api/payment_intent"
+            
+            payload = {
+                "amount": amount_in_fils,
+                "currency_code": "AED",
+                "message": f"Order from BY CHEF SARA - {data.get('customer_name', 'Customer')}",
+                "success_url": request.build_absolute_uri('/payment-success/'),
+                "cancel_url": request.build_absolute_uri('/payment-failure/'),
+                "failure_url": request.build_absolute_uri('/payment-failure/'),
+                "test": True  # Change to False when you are ready to accept real payments
+            }
+            
+            headers = {
+                "Authorization": f"Bearer {ZIINA_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            
+            response = requests.post(url, json=payload, headers=headers)
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                # Return the Ziina redirect URL back to the frontend
+                return JsonResponse({
+                    'success': True, 
+                    'redirect_url': response_data.get('redirect_url')
+                })
+            else:
+                return JsonResponse({'success': False, 'error': response.text})
+                
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+            
+    return JsonResponse({'success': False, 'error': 'Invalid Request'})
+
+def payment_success(request):
+    # Renders a simple success page after Ziina redirects them back
+    return render(request, 'store/success.html', {'message': 'Thank you! Your payment was successful and your order is confirmed.'})
+
+def payment_failure(request):
+    # Renders a failure/cancellation page after Ziina redirects them back
+    return render(request, 'store/failure.html', {'message': 'Your payment was cancelled or failed. Please try again.'})
