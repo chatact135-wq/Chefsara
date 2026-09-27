@@ -7,7 +7,7 @@ from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCo
 
 # --- ZIINA API KEY ---
 # Replace this with your actual Bearer token from the Ziina Developer Dashboard
-ZIINA_API_KEY = "YOUR_ZIINA_BEARER_TOKEN"
+ZIINA_API_KEY = "xzgiGo22mBB6vWiileaqWil4youK/pNsUTJ5xoCQs91GPf/vuS0TbODajDt8TyoW"
 
 def home_view(request):
     if request.method == 'POST':
