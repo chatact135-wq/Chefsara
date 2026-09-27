@@ -8,7 +8,7 @@ from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCo
 
 # --- ZIINA API KEY ---
 # This safely checks Railway variables first, but falls back directly to your token so it never fails
-ZIINA_API_KEY = os.environ.get('ZIINA_API_KEY', 'xzgiGo22mBB6vWiileaqWil4youK/pNsUTJ5xoCQs91GPf/vuS0TbODajDt8TyoW')
+ZIINA_API_KEY = os.environ.get('ZIINA_API_KEY', 'O9Uf/VlL49DsIarGi1UzZA2IwqSEcYNa2EtECMNcJuyjAcSNtY/19FvToVb6831H')
 
 def home_view(request):
     if request.method == 'POST':
