@@ -6,7 +6,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCode, CateringInquiry, ContactInquiry
 
 # --- ZIINA API KEY ---
-# Replace this with your actual Bearer token from the Ziina Developer Dashboard
 ZIINA_API_KEY = "xzgiGo22mBB6vWiileaqWil4youK/pNsUTJ5xoCQs91GPf/vuS0TbODajDt8TyoW"
 
 def home_view(request):
@@ -130,9 +129,7 @@ def process_ziina_payment(request):
     return JsonResponse({'success': False, 'error': 'Invalid Request'})
 
 def payment_success(request):
-    # Renders a simple success page after Ziina redirects them back
     return render(request, 'store/success.html', {'message': 'Thank you! Your payment was successful and your order is confirmed.'})
 
 def payment_failure(request):
-    # Renders a failure/cancellation page after Ziina redirects them back
     return render(request, 'store/failure.html', {'message': 'Your payment was cancelled or failed. Please try again.'})
