@@ -206,7 +206,10 @@
         .summary-total { display: flex; justify-content: space-between; font-size: 1.35rem; font-weight: 700; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 8px; }
         
         .modal-terms-note { background: var(--stucco); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); margin-bottom: 15px; line-height: 1.4; }
-        .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; font-family: inherit;}
+        
+        /* ZIINA CHECKOUT BUTTON UPGRADE */
+        .whatsapp-btn { width: 100%; background-color: #2E7D32; color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; font-family: inherit;}
+        .whatsapp-btn:hover { background-color: #1b5e20; }
         .whatsapp-note { font-size: 0.72rem; color: var(--wood); text-align: center; margin-top: 8px; line-height: 1.4; }
 
         /* Authentic Footer Section */
@@ -556,7 +559,7 @@
         </div>
     </div>
 
-    <!-- Terms & Conditions Modal -->
+    <!-- Terms & Conditions Modal Overlay -->
     <div class="terms-modal-overlay" id="termsModalOverlay">
         <div class="terms-modal-box">
             <div class="terms-modal-header">
@@ -623,7 +626,7 @@
         </div>
     </div>
 
-    <!-- Checkout Modal -->
+    <!-- Checkout Modal with ZIINA Update -->
     <div class="modal-overlay" id="checkoutModalOverlay">
         <div class="checkout-modal">
             <div class="modal-header">
@@ -654,17 +657,10 @@
 
                 <div class="modal-section-title">{% if request.GET.lang == 'ar' %}طريقة الدفع{% else %}Payment Method{% endif %}</div>
                 <label class="payment-option">
-                    <input type="radio" name="paymentMethod" value="Cash on Delivery" checked>
+                    <input type="radio" name="paymentMethod" value="Card Payment" checked>
                     <div>
-                        <strong>{% if request.GET.lang == 'ar' %}الدفع عند الاستلام{% else %}Cash on Delivery{% endif %}</strong>
-                        <div class="payment-details">{% if request.GET.lang == 'ar' %}مطلوب عربون غير مسترد لتأكيد الطلبات الدفع عند الاستلام — سيتم تأكيد التفاصيل معك مباشرة.{% else %}A non-refundable deposit is required to confirm COD orders — details will be confirmed with you directly.{% endif %}</div>
-                    </div>
-                </label>
-                <label class="payment-option">
-                    <input type="radio" name="paymentMethod" value="Bank Transfer">
-                    <div>
-                        <strong>{% if request.GET.lang == 'ar' %}تحويل بنكي{% else %}Bank Transfer{% endif %}</strong>
-                        <div class="payment-details">{% if request.GET.lang == 'ar' %}سيتم إرسال التفاصيل البنكية إليك لإتمام الدفع قبل الإرسال.{% else %}Bank details will be sent to you to complete payment before dispatch.{% endif %}</div>
+                        <strong>{% if request.GET.lang == 'ar' %}الدفع عبر الإنترنت{% else %}Online Payment{% endif %}</strong>
+                        <div class="payment-details">{% if request.GET.lang == 'ar' %}الدفع الآمن باستخدام Apple Pay أو Google Pay أو البطاقة الائتمانية.{% else %}Pay securely with Apple Pay, Google Pay, or Credit/Debit Card.{% endif %}</div>
                     </div>
                 </label>
 
@@ -682,8 +678,17 @@
                     ✓ {% if request.GET.lang == 'ar' %}لقد وافقت على <a onclick="openTermsModal()" style="color:var(--burgundy); text-decoration:underline; cursor:pointer;">الشروط والأحكام</a> الخاصة بنا في سلتك.{% else %}You agreed to our <a onclick="openTermsModal()" style="color:var(--burgundy); text-decoration:underline; cursor:pointer;">Terms &amp; Conditions</a> in your cart.{% endif %}
                 </div>
 
-                <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">{% if request.GET.lang == 'ar' %}إتمام الطلب عبر واتساب{% else %}Place Order via WhatsApp{% endif %}</button>
-                <div class="whatsapp-note">{% if request.GET.lang == 'ar' %}سيتم إرسال تفاصيل طلبك إلى فريق الشيف سارة على واتساب للتأكيد.{% else %}Your order details will be sent to Chef Sara's team on WhatsApp for confirmation. Placing an order does not guarantee acceptance — see Terms &amp; Conditions.{% endif %}</div>
+                <!-- ZIINA CHECKOUT BUTTON UPGRADE -->
+                <button type="button" class="whatsapp-btn" style="background-color: #2E7D32;" onclick="placeZiinaOrder()">
+                    {% if request.GET.lang == 'ar' %}الدفع بأمان عبر Ziina{% else %}Pay Securely via Ziina{% endif %}
+                </button>
+                <div class="whatsapp-note">
+                    {% if request.GET.lang == 'ar' %}
+                        سيتم توجيهك إلى بوابة الدفع الآمنة Ziina لإتمام عملية الدفع.
+                    {% else %}
+                        You will be securely redirected to Ziina to complete your payment.
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -980,32 +985,72 @@
             );
         }
 
-        function placeWhatsAppOrder() {
+        // ==========================================
+        // ZIINA PAYMENT INTEGRATION LOGIC
+        // ==========================================
+        function placeZiinaOrder() {
             let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
             let isAllowed = allowedCountries.some(c => selectedCountry.toLowerCase().includes(c.toLowerCase()));
             
             if (!isAllowed) {
-                alert("Sorry, we can't deliver to this location. Please enter or select a valid address in UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, or Oman.");
+                alert("{% if request.GET.lang == 'ar' %}عذراً، لا يمكننا التوصيل إلى هذا الموقع.{% else %}Sorry, we can't deliver to this location.{% endif %}");
                 return;
             }
 
-            let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, addr = document.getElementById('custAddress').value;
-            if (!name || !phone || !addr) { alert('Please fill in your contact & delivery details.'); return; }
-            let paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            let name = document.getElementById('custName').value;
+            let phone = document.getElementById('custPhone').value;
+            let addr = document.getElementById('custAddress').value;
             
+            if (!name || !phone || !addr) { 
+                alert("{% if request.GET.lang == 'ar' %}يرجى ملء تفاصيل الاتصال والتوصيل.{% else %}Please fill in your contact & delivery details.{% endif %}"); 
+                return; 
+            }
+
             let subtotal = 0;
             cart.forEach(i => subtotal += i.price * i.quantity);
             let discountAmount = (subtotal * appliedDiscountPercent) / 100;
             let deliveryFee = subtotal >= 650 ? 0 : 25;
             let total = (subtotal - discountAmount) + deliveryFee;
 
-            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nLocation: ${selectedCountry}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
-            cart.forEach(i => { msg += `- ${i.name} x ${i.quantity} (AED ${(i.price*i.quantity).toFixed(2)})\n`; });
-            if (appliedDiscountPercent > 0) msg += `Promo Applied: ${appliedPromoName} (-${appliedDiscountPercent}%)\n`;
-            msg += `Subtotal: AED ${subtotal.toFixed(2)}\nDelivery: AED ${deliveryFee.toFixed(2)}\nTotal: AED ${total.toFixed(2)}`;
+            // Change button state to show processing
+            let btn = document.querySelector('.whatsapp-btn');
+            btn.textContent = "{% if request.GET.lang == 'ar' %}جاري معالجة الدفع...{% else %}Processing Payment...{% endif %}";
+            btn.disabled = true;
 
-            window.open(`https://wa.me/971500000000?text=${encodeURIComponent(msg)}`, '_blank');
-            cart = []; saveCart(); updateCartUI(); closeCheckoutModal();
+            // Send data to Django Backend to create Ziina Payment Intent
+            fetch('/process-ziina-payment/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    total_amount: total,
+                    customer_name: name,
+                    customer_phone: phone,
+                    customer_address: addr,
+                    cart_items: cart
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.redirect_url) {
+                    // Clear cart locally before leaving
+                    cart = []; 
+                    saveCart();
+                    
+                    // Redirect user to Ziina's secure checkout page
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert("Payment gateway error: " + data.error);
+                    btn.textContent = "{% if request.GET.lang == 'ar' %}الدفع بأمان عبر Ziina{% else %}Pay Securely via Ziina{% endif %}";
+                    btn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                btn.textContent = "{% if request.GET.lang == 'ar' %}الدفع بأمان عبر Ziina{% else %}Pay Securely via Ziina{% endif %}";
+                btn.disabled = false;
+            });
         }
 
         function handleCateringSubmit(event) {
