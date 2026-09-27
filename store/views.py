@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 from django.http import JsonResponse
@@ -6,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCode, CateringInquiry, ContactInquiry
 
 # --- ZIINA API KEY ---
-ZIINA_API_KEY = "xzgiGo22mBB6vWiileaqWil4youK/pNsUTJ5xoCQs91GPf/vuS0TbODajDt8TyoW"
+ZIINA_API_KEY = os.environ.get('ZIINA_API_KEY')
 
 def home_view(request):
     if request.method == 'POST':
