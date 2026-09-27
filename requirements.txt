@@ -7,3 +7,4 @@ Pillow
 django-ckeditor
 cloudinary
 django-cloudinary-storage
+requests>=2.31.0
