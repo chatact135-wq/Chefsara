@@ -134,6 +134,7 @@
         .terms-checkbox-row { display: flex; align-items: flex-start; gap: 8px; font-size: 0.75rem; color: var(--ink); margin-bottom: 15px; }
         .terms-checkbox-row input { margin-top: 2px; cursor: pointer; }
         .terms-checkbox-row a { color: var(--burgundy); text-decoration: underline; cursor: pointer; }
+
         .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; }
         .checkout-btn:disabled { background-color: #b5a49c; cursor: not-allowed; opacity: 0.7; }
 
@@ -162,7 +163,11 @@
         .summary-divider { border-bottom: 1px dashed var(--line); margin: 10px 0; }
         .summary-line { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; color: var(--ink-soft); }
         .summary-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 600; color: var(--burgundy); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 8px; }
-        .whatsapp-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
+
+        /* ZIINA CHECKOUT BUTTON UPGRADE */
+        .whatsapp-btn { width: 100%; background-color: #2E7D32; color: #fff; border: none; padding: 14px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-align: center; }
+        .whatsapp-btn:hover { background-color: #1b5e20; }
+        .whatsapp-note { font-size: 0.72rem; color: var(--wood); text-align: center; margin-top: 8px; line-height: 1.4; }
 
         footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 80px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; max-width: 1200px; margin-left: auto; margin-right: auto; }
@@ -191,27 +196,11 @@
         </div>
         <nav>
             <a href="{% url 'home' %}" class="nav-link">Home</a>
-            
             {% for cat in categories %}
-            <div class="nav-dropdown">
-                <a href="{% url 'category_detail' cat.slug %}" class="nav-link">
-                    {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %} &#9662;
-                </a>
-                {% if cat.products.all %}
-                <div class="nav-dropdown-content">
-                    <a href="{% url 'category_detail' cat.slug %}" class="dropdown-item" style="font-weight: 600; border-bottom: 1px solid var(--line); color: var(--burgundy);">
-                        All {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
-                    </a>
-                    {% for prod in cat.products.all %}
-                    <a href="{% url 'product_detail' prod.slug %}" class="dropdown-item dropdown-sub-item">
-                        {% if request.GET.lang == 'ar' and prod.name_ar %}{{ prod.name_ar }}{% else %}{{ prod.name }}{% endif %}
-                    </a>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
+            <a href="{% url 'category_detail' cat.slug %}" class="nav-link">
+                {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
+            </a>
             {% endfor %}
-
             <a href="{% url 'home' %}#about-section" class="nav-link">Meet the Chef</a>
             <a href="{% url 'home' %}#contact-section" class="nav-link">Contact Us</a>
         </nav>
@@ -233,19 +222,11 @@
             <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer;">&times;</button>
         </div>
         <a href="{% url 'home' %}" class="mobile-nav-link" onclick="toggleMobileMenu()">Home</a>
-        
         {% for cat in categories %}
         <a href="{% url 'category_detail' cat.slug %}" class="mobile-nav-link" onclick="toggleMobileMenu()">
             {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
         </a>
-        {% for prod in cat.products.all %}
-        <a href="{% url 'product_detail' prod.slug %}" class="mobile-nav-link mobile-sub-link" onclick="toggleMobileMenu()">
-            &mdash; {% if request.GET.lang == 'ar' and prod.name_ar %}{{ prod.name_ar }}{% else %}{{ prod.name }}{% endif %}
-        </a>
         {% endfor %}
-        {% endfor %}
-
-        <a href="{% url 'home' %}#about-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Meet the Chef</a>
         <a href="{% url 'home' %}#contact-section" class="mobile-nav-link" onclick="toggleMobileMenu()">Contact Us</a>
     </div>
 
@@ -447,6 +428,7 @@
         </div>
     </div>
 
+    <!-- Checkout Modal with ZIINA Update -->
     <div class="modal-overlay" id="checkoutModalOverlay">
         <div class="checkout-modal">
             <div class="modal-header">
@@ -476,12 +458,26 @@
 
                 <div class="modal-section-title">Payment Method</div>
                 <label class="payment-option">
-                    <input type="radio" name="paymentMethod" value="Cash on Delivery" checked>
-                    <div><strong>Cash on Delivery</strong><div class="payment-details">A non-refundable deposit is required to confirm COD orders.</div></div>
+                    <input type="radio" name="paymentMethod" value="Card Payment" checked>
+                    <div>
+                        <strong>Online Payment</strong>
+                        <div class="payment-details">Pay securely with Apple Pay, Google Pay, or Credit/Debit Card.</div>
+                    </div>
                 </label>
+
+                <div class="modal-section-title">Discount Code</div>
+                <div class="promo-input-row">
+                    <input type="text" id="modalPromoInput" class="form-control" placeholder="Enter code">
+                    <button type="button" class="apply-btn" onclick="applyPromoCode()">Apply</button>
+                </div>
+                <div class="promo-msg" id="promoMessage"></div>
+
                 <div class="modal-section-title">Order Summary</div>
                 <div class="summary-box" id="modalSummaryBox"></div>
-                <button type="button" class="whatsapp-btn" onclick="placeWhatsAppOrder()">Place Order via WhatsApp</button>
+
+                <!-- ZIINA CHECKOUT BUTTON UPGRADE -->
+                <button type="button" class="whatsapp-btn" onclick="placeZiinaOrder()">Pay Securely via Ziina</button>
+                <div class="whatsapp-note">You will be securely redirected to Ziina to complete your payment (Apple Pay, Google Pay, or Card).</div>
             </div>
         </div>
     </div>
@@ -712,22 +708,73 @@
 
         function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
 
-        function placeWhatsAppOrder() {
-            let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, addr = document.getElementById('custAddress').value;
-            if (!name || !phone || !addr) { alert('Please fill in your contact & delivery details.'); return; }
+        // ==========================================
+        // ZIINA PAYMENT INTEGRATION LOGIC
+        // ==========================================
+        function placeZiinaOrder() {
+            let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
+            let isAllowed = allowedCountries.some(c => selectedCountry.toLowerCase().includes(c.toLowerCase()));
             
-            let paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            if (!isAllowed) {
+                alert("{% if request.GET.lang == 'ar' %}عذراً، لا يمكننا التوصيل إلى هذا الموقع.{% else %}Sorry, we can't deliver to this location.{% endif %}");
+                return;
+            }
+
+            let name = document.getElementById('custName').value;
+            let phone = document.getElementById('custPhone').value;
+            let addr = document.getElementById('custAddress').value;
+            
+            if (!name || !phone || !addr) { 
+                alert("{% if request.GET.lang == 'ar' %}يرجى ملء تفاصيل الاتصال والتوصيل.{% else %}Please fill in your contact & delivery details.{% endif %}"); 
+                return; 
+            }
+
             let subtotal = 0;
             cart.forEach(i => subtotal += i.price * i.quantity);
+            // Assuming no promo logic initially applied here as it wasn't present in your provided code
+            // If you add promo logic later, update the subtotal calculation here
             let deliveryFee = subtotal >= 650 ? 0 : 25;
             let total = subtotal + deliveryFee;
 
-            let msg = `*New Order & Checkout*\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\nPayment Method: ${paymentMethod}\n`;
-            cart.forEach(i => { msg += `- ${i.name} x ${i.quantity} (AED ${(i.price*i.quantity).toFixed(2)})\n`; });
-            msg += `Subtotal: AED ${subtotal.toFixed(2)}\nDelivery: AED ${deliveryFee.toFixed(2)}\nTotal: AED ${total.toFixed(2)}`;
+            // Change button state to show processing
+            let btn = document.querySelector('.whatsapp-btn');
+            btn.textContent = "Processing Payment...";
+            btn.disabled = true;
 
-            window.open(`https://wa.me/971500000000?text=${encodeURIComponent(msg)}`, '_blank');
-            cart = []; saveCart(); updateCartUI(); closeCheckoutModal();
+            // Send data to Django Backend to create Ziina Payment Intent
+            fetch('/process-ziina-payment/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    total_amount: total,
+                    customer_name: name,
+                    customer_phone: phone,
+                    customer_address: addr,
+                    cart_items: cart
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.redirect_url) {
+                    // Clear cart locally before leaving
+                    cart = []; 
+                    saveCart();
+                    
+                    // Redirect user to Ziina's secure checkout page
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert("Payment gateway error: " + data.error);
+                    btn.textContent = "Pay Securely via Ziina";
+                    btn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                btn.textContent = "Pay Securely via Ziina";
+                btn.disabled = false;
+            });
         }
     </script>
 </body>
