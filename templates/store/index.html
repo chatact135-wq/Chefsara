@@ -415,7 +415,7 @@
                     <p class="product-desc">
                         {% if request.GET.lang == 'ar' and product.description_ar %}{{ product.description_ar|striptags|truncatechars:90 }}{% else %}{{ product.description|striptags|truncatechars:90 }}{% endif %}
                     </p>
-                    <p style="font-size:0.75rem; color:var(--wood);">{% if request.GET.lang == 'ar' %}الكمية المتوفرة:{% else %}Stock available:{% endif %} {{ product.inventory_stock }}</p>
+                
                 </div>
                 
                 <div class="product-footer">
