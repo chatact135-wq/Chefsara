@@ -122,9 +122,14 @@
         .subtotal-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; }
         .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; font-family: inherit;}
 
-        footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 40px 6% 30px 6%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 60px; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 30px; max-width: 1100px; margin-left: auto; margin-right: auto; }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; font-size: 0.8rem; max-width: 1100px; margin-left: auto; margin-right: auto; }
+        /* Authentic Footer Section Restored */
+        footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 80px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .footer-col h4 { font-size: 1.1rem; color: #FAF3E0; margin-bottom: 16px; font-weight: 700; letter-spacing: 0.05em; }
+        .footer-links-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-links-list a { font-size: 0.88rem; color: #D3C5B4; transition: color 0.2s; cursor: pointer; }
+        .footer-links-list a:hover { color: var(--brass-light); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; font-size: 0.82rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
 
         /* MOBILE RESPONSIVE FIXES FOR PRODUCT DETAILS */
         @media(max-width: 900px) {
@@ -136,24 +141,24 @@
                 padding: 0 3%; 
             }
             .gallery-main-view { 
-                height: 320px; /* Reduced height on mobile so image isn't overwhelmingly large */
+                height: 320px; 
             }
             .prod-info-card { 
-                padding: 20px 16px; /* Compact padding for mobile screens */
+                padding: 20px 16px; 
             }
             .prod-title { 
-                font-size: 1.8rem; /* Scaled down for mobile viewports */
+                font-size: 1.8rem; 
             }
             .related-grid { 
                 grid-template-columns: 1fr; 
             }
             .footer-grid { 
                 grid-template-columns: 1fr; 
-                gap: 20px; 
+                gap: 30px; 
             }
             .footer-bottom { 
                 flex-direction: column; 
-                gap: 8px; 
+                gap: 10px; 
                 text-align: center; 
             }
         }
@@ -349,14 +354,32 @@
         </div>
     </div>
 
+    <!-- Authentic Footer Section Fully Restored -->
     <footer>
         <div class="footer-grid">
-            <div>
-                <div class="logo-area" style="margin-bottom: 8px;" onclick="location.href='{% url 'home' %}'">
+            <div class="footer-brand-col">
+                <div class="logo-area" style="margin-bottom: 10px;" onclick="location.href='{% url 'home' %}'">
                     <div class="logo-emblem"></div>
                     <div class="logo-text" style="color: #FAF3E0;">BY CHEF <span>SARA</span></div>
                 </div>
-                <p style="font-size: 0.85rem;">{% if request.GET.lang == 'ar' %}كنوز مغربية، مصنوعة يدوياً بكميات صغيرة — العين، الإمارات.{% else %}Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.{% endif %}</p>
+                <p>{% if request.GET.lang == 'ar' %}كنوز مغربية، مصنوعة يدوياً بكميات صغيرة — العين، الإمارات العربية المتحدة.{% else %}Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.{% endif %}</p>
+            </div>
+            <div class="footer-col">
+                <h4>{% if request.GET.lang == 'ar' %}تسوق{% else %}Shop{% endif %}</h4>
+                <ul class="footer-links-list">
+                    {% for cat in categories %}
+                    <li><a href="{% url 'category_detail' cat.slug %}?lang={{ request.GET.lang|default:"en" }}">
+                        {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
+                    </a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>{% if request.GET.lang == 'ar' %}الشركة والسياسات{% else %}Company &amp; Policies{% endif %}</h4>
+                <ul class="footer-links-list">
+                    <li><a href="{% url 'home' %}#about-section">{% if request.GET.lang == 'ar' %}تعرف على الشيف{% else %}Meet the Chef{% endif %}</a></li>
+                    <li><a href="{% url 'home' %}#catering-section">{% if request.GET.lang == 'ar' %}طلبات الحفلات{% else %}Catering Inquiries{% endif %}</a></li>
+                </ul>
             </div>
         </div>
         <div class="footer-bottom">
@@ -411,7 +434,7 @@
             currentSelectedPrice = parseFloat(btn.getAttribute('data-price'));
             currentSelectedSizeLabel = btn.getAttribute('data-size-label');
             currentMaxStock = parseInt(btn.getAttribute('data-stock'));
-            document.getElementById('displayPrice').textContent = '{% if request.GET.lang == "ar" %}' + currentSelectedPrice.toFixed(2) + ' درهم{% else %}AED ' + currentSelectedPrice.toFixed(2) + '{% endif %}';
+            document.getElementById('displayPrice').textContent = '{% if request.GET.lang == 'ar' %}' + currentSelectedPrice.toFixed(2) + ' درهم{% else %}AED ' + currentSelectedPrice.toFixed(2) + '{% endif %}';
             document.getElementById('detailQty').textContent = '1';
         }
 
