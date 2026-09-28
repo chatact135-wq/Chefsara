@@ -64,8 +64,8 @@ def product_detail_view(request, product_slug):
 
 def category_detail_view(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
-    categories = Category.objects.all().order_by('sort_order')
-    products = category.products.all()
+    categories = Category.objects.all().order_by('sort_order') # Loads categories for the navigation bar
+    products = category.products.all() # Pulls all products belonging to this category
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
