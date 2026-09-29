@@ -1,147 +1,38 @@
+{% extends 'store/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="{% if request.GET.lang == 'ar' %}ar{% else %}en{% endif %}" dir="{% if request.GET.lang == 'ar' %}rtl{% else %}ltr{% endif %}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if request.GET.lang == 'ar' and category.name_ar %}{{ category.name_ar }}{% else %}{{ category.name }}{% endif %} — By Chef Sara</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        html { scroll-behavior: smooth; }
-        :root {
-            --ink: #2B1D12; --ink-soft: #4A3620; --wood: #8B5A2B; --brass: #B08D4F; --brass-light: #D9BE85;
-            --stucco: #ECE0C4; --panel: #F6EFDC; --burgundy: #7A2E2A; --dark-bg: #23170F; --line: rgba(43,29,18,0.16);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Jost', sans-serif{% endif %}; 
-            background-color: var(--stucco); color: var(--ink); line-height: 1.6; overflow-x: hidden; 
-        }
-        h1, h2, h3, h4 { 
-            font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; 
-        }
-        a { text-decoration: none; color: inherit; }
 
-        header { position: sticky; top: 0; z-index: 1000; background-color: rgba(236, 224, 196, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; padding: 14px 2%; width: 100%; }
-        .logo-area { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .logo-emblem { width: 34px; height: 34px; border: 1px solid var(--brass); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
-        .logo-emblem::before { content: ""; width: 14px; height: 14px; background-color: var(--burgundy); transform: rotate(45deg); }
-        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 0.12em; }
-        .logo-text span { color: var(--burgundy); }
+{% block title %}{% if request.GET.lang == 'ar' and category.name_ar %}{{ category.name_ar }}{% else %}{{ category.name }}{% endif %} — By Chef Sara{% endblock %}
 
-        nav { display: flex; align-items: center; gap: 14px; }
-        .nav-link { font-size: 0.85rem; font-weight: 500; color: var(--ink); transition: color 0.2s; padding: 8px 0; white-space: nowrap; }
-        .nav-link:hover { color: var(--burgundy); }
+{% block extra_css %}
+<style>
+    /* === CATEGORY PAGE ONLY STYLES === */
+    .category-container { max-width: 1200px; width: 100%; margin: 60px auto; padding: 0 4%; }
+    .category-header-title { font-size: 3rem; font-weight: 600; color: var(--ink); margin-bottom: 10px; text-align: center; }
+    .category-header-desc { text-align: center; color: var(--wood); font-size: 1.1rem; margin-bottom: 50px; max-width: 700px; margin-left: auto; margin-right: auto; }
 
-        /* Dropdown Navigation Styles */
-        .nav-dropdown { position: relative; display: inline-block; }
-        .nav-dropdown-content { display: none; position: absolute; top: 100%; {% if request.GET.lang == 'ar' %}right: 0;{% else %}left: 0;{% endif %} background-color: var(--panel); min-width: 230px; box-shadow: 0 12px 30px rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 6px; z-index: 2000; padding: 8px 0; }
-        .nav-dropdown:hover .nav-dropdown-content { display: block; }
-        .dropdown-item { color: var(--ink); padding: 9px 16px; font-size: 0.85rem; display: block; transition: background 0.2s, color 0.2s; white-space: nowrap;}
-        .dropdown-item:hover { background-color: var(--stucco); color: var(--burgundy); }
-        .dropdown-sub-item { padding: 0 26px; font-size: 0.82rem; color: var(--ink-soft); }
+    .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+    .product-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(43,29,18,0.1); }
+    .product-img-box { height: 240px; background: #fff; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--line); }
+    .product-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .product-card:hover .product-img-box img { transform: scale(1.05); }
+    
+    .product-title { font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; font-size: 1.5rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
+    .product-subtitle { font-size: 0.9rem; color: var(--wood); font-style: italic; margin-bottom: 12px; }
+    .product-price { font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; font-size: 1.25rem; color: var(--burgundy); font-weight: 600; margin-bottom: 15px; }
+    
+    .view-prod-btn { background: var(--stucco); color: var(--ink); border: 1px solid var(--brass); padding: 12px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; text-align: center; cursor: pointer; transition: all 0.2s; font-family: inherit; width: 100%; }
+    .product-card:hover .view-prod-btn { background: var(--ink); color: #fff; border-color: var(--ink); }
 
-        .header-actions { display: flex; align-items: center; gap: 12px; }
-        .cart-btn { background: none; border: 1px solid var(--brass); color: var(--ink); padding: 7px 14px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-family: inherit;}
-        .cart-badge { background-color: var(--burgundy); color: #fff; border-radius: 50%; padding: 1px 5px; font-size: 0.7rem; }
-        .menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--ink); }
+    @media(max-width: 900px) {
+        .products-grid { grid-template-columns: 1fr; }
+        .category-header-title { font-size: 2.2rem; }
+        .category-container { margin: 30px auto; }
+    }
+</style>
+{% endblock %}
 
-        /* Category Page Content Layout */
-        .category-container { max-width: 1200px; width: 100%; margin: 60px auto; padding: 0 4%; }
-        .category-header-title { font-size: 3rem; font-weight: 600; color: var(--ink); margin-bottom: 10px; text-align: center; }
-        .category-header-desc { text-align: center; color: var(--wood); font-size: 1.1rem; margin-bottom: 50px; max-width: 700px; margin-left: auto; margin-right: auto; }
-
-        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        .product-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(43,29,18,0.1); }
-        .product-img-box { height: 240px; background: #fff; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--line); }
-        .product-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-        .product-card:hover .product-img-box img { transform: scale(1.05); }
-        
-        .product-title { font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; font-size: 1.5rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
-        .product-subtitle { font-size: 0.9rem; color: var(--wood); font-style: italic; margin-bottom: 12px; }
-        .product-price { font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; font-size: 1.25rem; color: var(--burgundy); font-weight: 600; margin-bottom: 15px; }
-        .view-prod-btn { background: var(--stucco); color: var(--ink); border: 1px solid var(--brass); padding: 12px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; text-align: center; cursor: pointer; transition: all 0.2s; font-family: inherit; width: 100%; }
-        .product-card:hover .view-prod-btn { background: var(--ink); color: #fff; border-color: var(--ink); }
-
-        /* Cart & Sticky Bar Styles */
-        .sticky-order-bar { position: fixed; bottom: 24px; {% if request.GET.lang == 'ar' %}left: 24px;{% else %}right: 24px;{% endif %} background-color: var(--dark-bg); border: 1px solid var(--brass); color: #FAF3E0; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-size: 0.9rem; font-weight: 500; }
-        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(43, 29, 18, 0.4); backdrop-filter: blur(2px); z-index: 2000; display: none; }
-        .cart-drawer { position: fixed; top: 0; {% if request.GET.lang == 'ar' %}left: -440px; border-right: 1px solid var(--line);{% else %}right: -440px; border-left: 1px solid var(--line);{% endif %} width: 420px; max-width: 100%; height: 100%; background: var(--panel); z-index: 2100; box-shadow: -5px 0 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: all 0.3s ease; }
-        .cart-drawer.open { {% if request.GET.lang == 'ar' %}left: 0;{% else %}right: 0;{% endif %} }
-        .cart-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-        .close-drawer { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ink); }
-        .cart-body { padding: 20px 24px; flex-grow: 1; overflow-y: auto; }
-        .cart-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
-        .cart-item-right { text-align: {% if request.GET.lang == 'ar' %}left;{% else %}right;{% endif %} }
-        .cart-item-price { font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; font-size: 1.1rem; font-weight: 600; color: var(--burgundy); }
-        .remove-item { background: none; border: none; color: var(--burgundy); font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 4px; font-family: inherit;}
-        .cart-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: var(--stucco); }
-        .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; }
-        .checkout-btn { width: 100%; background-color: var(--burgundy); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: center; font-family: inherit;}
-
-        footer { background-color: var(--dark-bg); color: #D3C5B4; padding: 60px 8% 40px 8%; border-top: 1px solid rgba(176,141,79,0.2); margin-top: 80px; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; max-width: 1200px; margin-left: auto; margin-right: auto; }
-        .footer-col h4 { font-size: 1.1rem; color: #FAF3E0; margin-bottom: 16px; font-weight: 700; }
-        .footer-links-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-        .footer-links-list a { font-size: 0.88rem; color: #D3C5B4; transition: color 0.2s; cursor: pointer; }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; font-size: 0.82rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
-
-        @media(max-width: 900px) {
-            nav { display: none; }
-            .menu-toggle { display: block; }
-            .products-grid { grid-template-columns: 1fr; }
-            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Header Navigation -->
-    <header>
-        <div class="logo-area" onclick="location.href='{% url 'home' %}?lang={{ request.GET.lang|default:"en" }}'">
-            <div class="logo-emblem"></div>
-            <div class="logo-text">BY CHEF <span>SARA</span></div>
-        </div>
-        <nav>
-            <a href="{% url 'home' %}?lang={{ request.GET.lang|default:"en" }}" class="nav-link">{% if request.GET.lang == 'ar' %}الرئيسية{% else %}Home{% endif %}</a>
-            
-            {% for cat in categories %}
-            <div class="nav-dropdown">
-                <a href="{% url 'category_detail' cat.slug %}?lang={{ request.GET.lang|default:"en" }}" class="nav-link">
-                    {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %} &#9662;
-                </a>
-                {% if cat.products.all %}
-                <div class="nav-dropdown-content">
-                    <a href="{% url 'category_detail' cat.slug %}?lang={{ request.GET.lang|default:"en" }}" class="dropdown-item" style="font-weight: 600; border-bottom: 1px solid var(--line); color: var(--burgundy);">
-                        {% if request.GET.lang == 'ar' %}عرض الكل{% else %}All{% endif %} {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
-                    </a>
-                    {% for prod in cat.products.all %}
-                    <a href="{% url 'product_detail' prod.slug %}?lang={{ request.GET.lang|default:"en" }}" class="dropdown-item dropdown-sub-item">
-                        {% if request.GET.lang == 'ar' and prod.name_ar %}{{ prod.name_ar }}{% else %}{{ prod.name }}{% endif %}
-                    </a>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-            {% endfor %}
-
-            <a href="{% url 'home' %}#about-section" class="nav-link">{% if request.GET.lang == 'ar' %}تعرف على الشيف{% else %}Meet the Chef{% endif %}</a>
-            <a href="{% url 'home' %}#contact-section" class="nav-link">{% if request.GET.lang == 'ar' %}اتصل بنا{% else %}Contact Us{% endif %}</a>
-        </nav>
-        <div class="header-actions">
-            <a href="?lang={% if request.GET.lang == 'ar' %}en{% else %}ar{% endif %}" style="font-size:0.85rem; font-weight:600; color:var(--burgundy); border:1px solid var(--brass); padding:5px 10px; border-radius:4px;">
-                {% if request.GET.lang == 'ar' %}English{% else %}العربية{% endif %}
-            </a>
-            <button class="cart-btn" onclick="toggleCart()">
-                <span>{% if request.GET.lang == 'ar' %}السلة{% else %}Cart{% endif %}</span>
-                <span class="cart-badge" id="cart-count">0</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Category Products Display Section -->
+{% block content %}
     <div class="category-container">
         <h1 class="category-header-title">
             {% if request.GET.lang == 'ar' and category.name_ar %}{{ category.name_ar }}{% else %}{{ category.name }}{% endif %}
@@ -159,7 +50,9 @@
                         {% if prod.gallery_images.first %}
                         <img src="{{ prod.gallery_images.first.image.url }}" alt="{{ prod.name }}">
                         {% else %}
-                        <div style="color: var(--wood); font-family: 'Cormorant Garamond', serif;">{% if request.GET.lang == 'ar' and prod.name_ar %}{{ prod.name_ar }}{% else %}{{ prod.name }}{% endif %}</div>
+                        <div style="color: var(--wood); font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;">
+                            {% if request.GET.lang == 'ar' and prod.name_ar %}{{ prod.name_ar }}{% else %}{{ prod.name }}{% endif %}
+                        </div>
                         {% endif %}
                     </div>
                     <div class="product-title">
@@ -184,78 +77,4 @@
         </p>
         {% endif %}
     </div>
-
-    <!-- Sticky Order Bar -->
-    <div class="sticky-order-bar" onclick="toggleCart()">
-        🛒 {% if request.GET.lang == 'ar' %}طلبك{% else %}Your Order{% endif %} (<span id="sticky-order-count">0</span>)
-    </div>
-
-    <!-- Cart Drawer -->
-    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-    <div class="cart-drawer" id="cartDrawer">
-        <div class="cart-header">
-            <h3>{% if request.GET.lang == 'ar' %}طلبك{% else %}Your Order{% endif %}</h3>
-            <button class="close-drawer" onclick="toggleCart()">&times;</button>
-        </div>
-        <div class="cart-body" id="cartItemsContainer">
-            <p style="color: var(--wood); text-align: center; margin-top: 40px;">{% if request.GET.lang == 'ar' %}السلة فارغة.{% else %}Your cart is empty.{% endif %}</p>
-        </div>
-        <div class="cart-footer">
-            <div id="deliveryNotice" style="font-size: 0.8rem; color: var(--wood); margin-bottom: 10px;">{% if request.GET.lang == 'ar' %}أضف 650 درهم للحصول على توصيل مجاني{% else %}Add AED 650 more for free delivery{% endif %}</div>
-            <div class="subtotal-row"><span>{% if request.GET.lang == 'ar' %}المجموع{% else %}Subtotal{% endif %}</span><span id="cartSubtotal">AED 0</span></div>
-            <button type="button" class="checkout-btn" onclick="location.href='{% url 'home' %}?open_checkout=true'">{% if request.GET.lang == 'ar' %}إتمام الطلب{% else %}Proceed to Checkout{% endif %}</button>
-        </div>
-    </div>
-
-    <!-- Footer Section -->
-    <footer>
-        <div class="footer-grid">
-            <div>
-                <div class="logo-area" style="margin-bottom: 10px;" onclick="location.href='{% url 'home' %}'">
-                    <div class="logo-emblem"></div>
-                    <div class="logo-text" style="color: #FAF3E0;">BY CHEF <span>SARA</span></div>
-                </div>
-                <p>{% if request.GET.lang == 'ar' %}كنوز مغربية، مصنوعة يدوياً بكميات صغيرة — العين، الإمارات العربية المتحدة.{% else %}Moroccan treasures, handcrafted in small batches &mdash; Al Ain, UAE.{% endif %}</p>
-            </div>
-            <div class="footer-col">
-                <h4>{% if request.GET.lang == 'ar' %}تسوق{% else %}Shop{% endif %}</h4>
-                <ul class="footer-links-list">
-                    {% for cat in categories %}
-                    <li><a href="{% url 'category_detail' cat.slug %}?lang={{ request.GET.lang|default:"en" }}">
-                        {% if request.GET.lang == 'ar' and cat.name_ar %}{{ cat.name_ar }}{% else %}{{ cat.name }}{% endif %}
-                    </a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div>&copy; 2026 By Chef Sara. Handcrafted in the UAE</div>
-            <div>Al Ain, United Arab Emirates</div>
-        </div>
-    </footer>
-
-    <script>
-        let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
-        document.addEventListener("DOMContentLoaded", function() { updateCartUI(); });
-        function toggleCart() { 
-            let drawer = document.getElementById('cartDrawer'); 
-            drawer.classList.toggle('open'); 
-            document.getElementById('cartOverlay').style.display = drawer.classList.contains('open') ? 'block' : 'none'; 
-        }
-        function updateCartUI() {
-            let container = document.getElementById('cartItemsContainer'), count = 0, subtotal = 0;
-            if (cart.length === 0) container.innerHTML = '<p style="color:var(--wood); text-align:center; margin-top:40px;">{% if request.GET.lang == "ar" %}السلة فارغة.{% else %}Your cart is empty.{% endif %}</p>';
-            else {
-                container.innerHTML = '';
-                cart.rows ? cart.forEach(item => {}) : cart.forEach(item => {
-                    count += item.quantity; subtotal += item.price * item.quantity;
-                    container.innerHTML += `<div class="cart-item"><div><div><b>${item.name}</b></div><div style="color:var(--wood); font-size:0.75rem;">Qty: ${item.quantity} / AED ${item.price}</div></div><div class="cart-item-right"><div class="cart-item-price">AED ${(item.price*item.quantity).toFixed(2)}</div></div></div>`;
-                });
-            }
-            document.getElementById('cart-count').textContent = count;
-            document.getElementById('sticky-order-count').textContent = count;
-            document.getElementById('cartSubtotal').textContent = 'AED ' + subtotal.toFixed(2);
-        }
-    </script>
-</body>
-</html>
+{% endblock %}
