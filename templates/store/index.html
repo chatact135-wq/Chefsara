@@ -5,30 +5,25 @@
 <style>
     /* === HOME PAGE ONLY STYLES === */
    /* === HOME PAGE ONLY STYLES === */
-    .hero-slider { background-color: transparent; position: relative; min-height: 480px; overflow: hidden; display: flex; align-items: center; }
-    .slide { display: none; width: 100%; height: 100%; align-items: center; justify-content: space-between; padding: 60px 8%; opacity: 0; transition: opacity 0.5s ease-in-out; }
-    .slide.active { display: flex; opacity: 1; }
-    .slide-content { max-width: 550px; }
-    
-    /* Make the text dark and readable */
-    .slide-kicker { color: var(--wood); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; font-weight: bold; }
-    .slide h1 { font-size: 3rem; font-weight: {% if request.GET.lang == 'ar' %}700{% else %}500{% endif %}; line-height: 1.15; margin-bottom: 16px; color: var(--ink); }
-    .slide p { color: var(--ink-soft); font-size: 1rem; margin-bottom: 24px; line-height: 1.6; }
-    .slide-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 4px; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: inline-block; font-family: inherit; transition: background 0.2s;}
-    .slide-btn:hover { background-color: var(--ink); }
-    
-    .slide-graphic { display: flex; align-items: center; justify-content: center; width: 300px; height: 300px; }
-    .slide-graphic img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--brass); }
+   .hero-slider { background-color: var(--dark-bg); color: #F5EBE6; position: relative; min-height: 480px; overflow: hidden; display: flex; align-items: center; }
+        .slide { display: none; width: 100%; height: 100%; align-items: center; justify-content: space-between; padding: 60px 8%; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        .slide.active { display: flex; opacity: 1; }
+        .slide-content { max-width: 550px; }
+        .slide-kicker { color: var(--brass-light); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; font-weight: bold; }
+        .slide h1 { font-size: 3rem; font-weight: {% if request.GET.lang == 'ar' %}700{% else %}400{% endif %}; line-height: 1.15; margin-bottom: 16px; color: #FAF3E0; }
+        .slide p { color: #D3C5B4; font-size: 0.95rem; margin-bottom: 24px; line-height: 1.6; }
+        .slide-btn { background-color: var(--burgundy); color: #fff; border: none; padding: 12px 24px; border-radius: 4px; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: inline-block; font-family: inherit;}
+        .slide-graphic { display: flex; align-items: center; justify-content: center; width: 300px; height: 300px; }
+        .slide-graphic img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--brass); }
 
-    /* Make the arrows and dots visible on light background */
-    .slider-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: #fff; border: 1px solid var(--line); color: var(--ink); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.2s; }
-    .slider-arrow:hover { background: var(--stucco); color: var(--burgundy); }
-    .prev-arrow { {% if request.GET.lang == 'ar' %}right: 20px;{% else %}left: 20px;{% endif %} }
-    .next-arrow { {% if request.GET.lang == 'ar' %}left: 20px;{% else %}right: 20px;{% endif %} }
+        .slider-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; }
+        .prev-arrow { {% if request.GET.lang == 'ar' %}right: 20px;{% else %}left: 20px;{% endif %} }
+        .next-arrow { {% if request.GET.lang == 'ar' %}left: 20px;{% else %}right: 20px;{% endif %} }
+        .slider-dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; }
+        .dot.active { background: var(--brass-light); }
+
     
-    .slider-dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brass-light); cursor: pointer; opacity: 0.5; }
-    .dot.active { background: var(--burgundy); opacity: 1; }
     .category-grid-section { padding: 80px 8%; background-color: var(--dark-bg); border-top: 1px solid rgba(176,141,79,0.2); }
     .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
     .cat-card-modern { position: relative; border-radius: 12px; overflow: hidden; height: 280px; cursor: pointer; border: 1px solid rgba(176,141,79,0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; }
