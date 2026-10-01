@@ -4,7 +4,7 @@ import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCode, CateringInquiry, ContactInquiry
+from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCode, CateringInquiry, ContactInquiry, ShippingRate
 
 # --- ZIINA API KEY ---
 # This safely checks Railway variables first, but falls back directly to your token so it never fails
@@ -33,13 +33,21 @@ def home_view(request):
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
+    # Pull dynamic shipping rates and convert to JSON for JavaScript
+    shipping_rates = ShippingRate.objects.filter(is_active=True)
+    shipping_dict = json.dumps({sr.location_name.lower(): float(sr.shipping_fee) for sr in shipping_rates})
+    default_shipping = 25.00
+
     context = {
         'slides': slides,
         'categories': categories,
         'products': products,
         'promo_dict': promo_dict,
+        'shipping_dict': shipping_dict,
+        'default_shipping': default_shipping,
     }
     return render(request, 'store/index.html', context)
+
 
 def product_detail_view(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
@@ -54,13 +62,21 @@ def product_detail_view(request, product_slug):
         fallback_products = list(Product.objects.exclude(id__in=existing_ids).order_by('?')[:needed])
         related_products.extend(fallback_products)
 
+    # Pull dynamic shipping rates
+    shipping_rates = ShippingRate.objects.filter(is_active=True)
+    shipping_dict = json.dumps({sr.location_name.lower(): float(sr.shipping_fee) for sr in shipping_rates})
+    default_shipping = 25.00
+
     context = {
         'product': product,
         'categories': categories,
         'promo_dict': promo_dict,
         'related_products': related_products,
+        'shipping_dict': shipping_dict,
+        'default_shipping': default_shipping,
     }
     return render(request, 'store/product_detail.html', context)
+
 
 def category_detail_view(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
@@ -69,11 +85,18 @@ def category_detail_view(request, category_slug):
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
+    # Pull dynamic shipping rates
+    shipping_rates = ShippingRate.objects.filter(is_active=True)
+    shipping_dict = json.dumps({sr.location_name.lower(): float(sr.shipping_fee) for sr in shipping_rates})
+    default_shipping = 25.00
+
     context = {
         'category': category,
         'categories': categories,
         'products': products,
         'promo_dict': promo_dict,
+        'shipping_dict': shipping_dict,
+        'default_shipping': default_shipping,
     }
     return render(request, 'store/category_detail.html', context)
 
