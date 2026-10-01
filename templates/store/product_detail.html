@@ -1,202 +1,3 @@
-{% extends 'store/base.html' %}
-{% load static %}
-
-{% block title %}{% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar }}{% else %}{{ product.name }}{% endif %} — By Chef Sara{% endblock %}
-
-{% block extra_css %}
-    /* === PRODUCT DETAIL PAGE STYLES === */
-    .product-detail-container { max-width: 1100px; width: 100%; margin: 40px auto; padding: 0 4%; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
-
-    .gallery-wrapper { width: 100%; }
-    .gallery-main-view { background: #fff; border: 1px solid var(--line); border-radius: 8px; width: 100%; height: 420px; display: flex; align-items: center; justify-content: center; position: relative; cursor: zoom-in; overflow: hidden; box-shadow: 0 8px 25px rgba(43,29,18,0.06); }
-    .gallery-main-view img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-    .gallery-main-view:hover img { transform: scale(1.02); }
-
-    .thumbnails-row { display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; width: 100%; }
-    .thumbnail { width: 70px; height: 70px; border-radius: 6px; border: 2px solid transparent; cursor: pointer; object-fit: cover; flex-shrink: 0; background: #fff; }
-    .thumbnail.active { border-color: var(--burgundy); }
-
-    .image-lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 17, 11, 0.9); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); cursor: zoom-out; }
-    .image-lightbox img { max-width: 90%; max-height: 90vh; border-radius: 8px; border: 1px solid var(--brass); object-fit: contain; }
-    .lightbox-close { position: absolute; top: 25px; right: 35px; color: #fff; font-size: 2.5rem; cursor: pointer; }
-
-    .prod-info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 30px; box-shadow: 0 8px 25px rgba(43,29,18,0.05); width: 100%; }
-    .prod-title { font-size: 2.5rem; font-weight: 500; margin-bottom: 4px; color: var(--ink); line-height: 1.15; }
-    .prod-subtitle { font-style: italic; color: var(--wood); font-size: 1.05rem; margin-bottom: 20px; }
-
-    .product-tabs-container { margin-top: 25px; border-top: 1px solid var(--line); padding-top: 25px; }
-    .tabs-header-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 12px; background: #EFE4CC; padding: 5px; border-radius: 6px; border: 1px solid var(--line); }
-    .tab-btn { background: transparent; border: none; padding: 9px 10px; font-family: inherit; font-size: 0.82rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; border-radius: 4px; text-align: center; transition: all 0.2s; }
-    .tab-btn:hover { color: var(--burgundy); }
-    .tab-btn.active { background-color: var(--burgundy); color: #fff; }
-    .tab-content-pane { display: none; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.6; background: #fff; padding: 18px; border-radius: 6px; border: 1px solid var(--line); min-height: 110px; }
-    .tab-content-pane.active { display: block; }
-    .desc-preview { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
-    .read-more-link { background: none; border: none; color: var(--burgundy); font-weight: 600; cursor: pointer; font-size: 0.82rem; margin-top: 8px; text-decoration: underline; display: inline-block; font-family: inherit;}
-
-    .size-selector-group { margin-top: 20px; margin-bottom: 15px; }
-    .size-label-title { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--wood); letter-spacing: 0.08em; margin-bottom: 8px; display: block; }
-    .size-options-row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .size-btn { background: #fff; border: 1px solid var(--line); padding: 8px 16px; border-radius: 5px; cursor: pointer; font-family: inherit; font-size: 0.9rem; color: var(--ink); font-weight: 500; transition: border-color 0.2s; }
-    .size-btn:hover { border-color: var(--burgundy); }
-    .size-btn.active { background-color: var(--burgundy); color: #fff; border-color: var(--burgundy); }
-
-    .prod-price { font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; font-size: 2.2rem; font-weight: 600; color: var(--burgundy); margin: 15px 0; }
-    .stock-note-link { font-size: 0.85rem; color: var(--burgundy); text-decoration: underline; margin-top: 12px; display: inline-block; }
-
-    .purchase-row { display: flex; gap: 15px; align-items: center; border-top: 1px solid var(--line); padding-top: 20px; margin-top: 15px; }
-    .qty-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; gap: 15px; }
-    .qty-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--wood); font-weight: bold; width: 20px; text-align: center; }
-    .add-btn { background-color: var(--ink); color: #fff; border: none; padding: 14px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; flex-grow: 1; font-size: 1.05rem; transition: background-color 0.2s; font-family: inherit;}
-    .add-btn:hover { background-color: var(--burgundy); }
-
-    /* Related Items Section */
-    .related-section { max-width: 1100px; margin: 60px auto; padding: 0 4%; border-top: 1px solid rgba(176,141,79,0.3); padding-top: 50px; }
-    .related-header { text-align: left; margin-bottom: 25px; font-size: 2.2rem; color: var(--ink); }
-    .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
-    .related-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
-    .related-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-    .related-img { height: 180px; background: #fff; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--line); }
-    .related-img img { width: 100%; height: 100%; object-fit: cover; }
-    .related-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
-    .related-price { font-size: 1.1rem; color: var(--burgundy); font-weight: 600; margin-bottom: 12px; }
-    .related-btn { background: var(--stucco); color: var(--ink); border: 1px solid var(--brass); padding: 10px 14px; border-radius: 4px; font-size: 0.88rem; font-weight: 500; text-align: center; cursor: pointer; transition: all 0.2s; font-family: inherit;}
-    .related-card:hover .related-btn { background: var(--ink); color: #fff; border-color: var(--ink); }
-
-    @media(max-width: 900px) {
-        .product-detail-container { grid-template-columns: 1fr; gap: 25px; margin: 20px auto; padding: 0 4%; }
-        .gallery-main-view { height: 340px; }
-        .prod-info-card { padding: 20px; }
-        .prod-title { font-size: 2rem; }
-        .related-grid { grid-template-columns: 1fr; }
-    }
-{% endblock %}
-
-{% block content %}
-    <!-- Product Detail Section -->
-    <div class="product-detail-container">
-        <div class="gallery-wrapper">
-            <div class="gallery-main-view" id="mainView" onclick="openLightbox()">
-                {% if product.gallery_images.all %}
-                    <img id="activeImage" src="{{ product.gallery_images.first.image.url }}" alt="{{ product.name }}">
-                {% else %}
-                    <div class="fallback-tag-box" style="color:var(--wood); font-family:'Cormorant Garamond',serif; font-size:1.3rem;">
-                        <span>{{ product.name }}</span>
-                    </div>
-                {% endif %}
-            </div>
-            {% if product.gallery_images.all %}
-            <div class="thumbnails-row">
-                {% for img in product.gallery_images.all %}
-                <img src="{{ img.image.url }}" class="thumbnail {% if forloop.first %}active{% endif %}" onclick="switchImage('{{ img.image.url }}', {{ forloop.counter0 }})">
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-
-        <div class="prod-info-card">
-            <h1 class="prod-title">
-                {% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar }}{% else %}{{ product.name }}{% endif %}
-            </h1>
-            <div class="prod-subtitle">
-                {% if request.GET.lang == 'ar' and product.subtitle_ar %}{{ product.subtitle_ar }}{% else %}{{ product.subtitle }}{% endif %}
-            </div>
-
-            <div class="prod-price" id="displayPrice">{% if request.GET.lang == 'ar' %}{{ product.price }} درهم{% else %}AED {{ product.price }}{% endif %}</div>
-
-            {% if product.sizes.all %}
-            <div class="size-selector-group">
-                <label class="size-label-title">{% if request.GET.lang == 'ar' %}اختر الحجم:{% else %}Select Size:{% endif %}</label>
-                <div class="size-options-row">
-                    {% for s in product.sizes.all %}
-                    <button type="button" class="size-btn {% if forloop.first %}active{% endif %}" 
-                            data-size-id="{{ s.id }}" 
-                            data-size-label="{% if request.GET.lang == 'ar' and s.size_label_ar %}{{ s.size_label_ar }}{% else %}{{ s.size_label }}{% endif %}" 
-                            data-price="{{ s.price }}" 
-                            data-stock="{{ s.inventory_stock }}" 
-                            onclick="selectSize(this)">
-                        {% if request.GET.lang == 'ar' and s.size_label_ar %}{{ s.size_label_ar }}{% else %}{{ s.size_label }}{% endif %}
-                    </button>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            <div class="purchase-row">
-                <div class="qty-box">
-                    <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
-                    <span id="detailQty" style="font-weight: 600;">1</span>
-                    <button type="button" class="qty-btn" onclick="adjustQty(1)">+</button>
-                </div>
-                <button type="button" class="add-btn" onclick="addSelectedProductToCart()">
-                    {% if request.GET.lang == 'ar' %}أضف للطلب{% else %}Add to Order{% endif %}
-                </button>
-            </div>
-
-            <div class="product-tabs-container">
-                <div class="tabs-header-row">
-                    <button type="button" class="tab-btn active" onclick="switchTab(event, 'tabDesc')">{% if request.GET.lang == 'ar' %}الوصف{% else %}Description{% endif %}</button>
-                    <button type="button" class="tab-btn" onclick="switchTab(event, 'tabShipping')">{% if request.GET.lang == 'ar' %}الشحن{% else %}Shipping{% endif %}</button>
-                    <button type="button" class="tab-btn" onclick="switchTab(event, 'tabCare')">{% if request.GET.lang == 'ar' %}العناية{% else %}Care{% endif %}</button>
-                    <button type="button" class="tab-btn" onclick="switchTab(event, 'tabIngr')">{% if request.GET.lang == 'ar' %}المكونات{% else %}Ingredients{% endif %}</button>
-                </div>
-
-                <div id="tabDesc" class="tab-content-pane active">
-                    <div id="descTextContainer" class="desc-preview">
-                        {% if request.GET.lang == 'ar' and product.description_ar %}{{ product.description_ar|safe }}{% else %}{{ product.description|safe }}{% endif %}
-                    </div>
-                    <button type="button" id="readMoreBtn" class="read-more-link" onclick="toggleReadMore()">{% if request.GET.lang == 'ar' %}قراءة المزيد{% else %}Read More{% endif %}</button>
-                </div>
-
-                <div id="tabShipping" class="tab-content-pane">
-                    {% if request.GET.lang == 'ar' and product.shipping_info_ar %}{{ product.shipping_info_ar|safe }}{% elif product.shipping_info %}{{ product.shipping_info|safe }}{% else %}Standard refrigerated shipping across supported GCC countries.{% endif %}
-                </div>
-
-                <div id="tabCare" class="tab-content-pane">
-                    {% if request.GET.lang == 'ar' and product.care_instructions_ar %}{{ product.care_instructions_ar|safe }}{% elif product.care_instructions %}{{ product.care_instructions|safe }}{% else %}Store in a cool, dry place away from direct sunlight.{% endif %}
-                </div>
-
-                <div id="tabIngr" class="tab-content-pane">
-                    {% if request.GET.lang == 'ar' and product.ingredients_allergy_ar %}{{ product.ingredients_allergy_ar|safe }}{% elif product.ingredients_allergy %}{{ product.ingredients_allergy|safe }}{% else %}Handcrafted in a facility processing nuts and dairy.{% endif %}
-                </div>
-            </div>
-
-            <div style="margin-top: 15px;">
-                <a href="{% url 'home' %}#contact-section" class="stock-note-link">{% if request.GET.lang == 'ar' %}هل ترغب بطلب كمية أكبر؟ تواصل معنا مباشرة &larr;{% else %}Want to order more? Contact us directly &rarr;{% endif %}</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Related Items Section -->
-    {% if related_products %}
-    <div class="related-section">
-        <h2 class="related-header">{% if request.GET.lang == 'ar' %}قد يعجبك أيضاً{% else %}You May Also Like{% endif %}</h2>
-        <div class="related-grid">
-            {% for rel in related_products %}
-            <div class="related-card" onclick="location.href='{% url 'product_detail' rel.slug %}?lang={{ request.GET.lang|default:"en" }}'">
-                <div class="related-img">
-                    {% if rel.gallery_images.first %}
-                    <img src="{{ rel.gallery_images.first.image.url }}" alt="{{ rel.name }}">
-                    {% else %}
-                    <div style="color:var(--wood); font-family:'Cormorant Garamond',serif;">{{ rel.name }}</div>
-                    {% endif %}
-                </div>
-                <div class="related-title">{% if request.GET.lang == 'ar' and rel.name_ar %}{{ rel.name_ar }}{% else %}{{ rel.name }}{% endif %}</div>
-                <div class="related-price">{% if request.GET.lang == 'ar' %}{{ rel.price }} درهم{% else %}AED {{ rel.price }}{% endif %}</div>
-                <button type="button" class="related-btn" style="margin-top:auto;">{% if request.GET.lang == 'ar' %}عرض المنتج{% else %}View Product{% endif %}</button>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- Lightbox -->
-    <div class="image-lightbox" id="imageLightbox" onclick="closeLightbox()">
-        <span class="lightbox-close">&times;</span>
-        <img id="lightboxImgTarget" src="" alt="Zoomed">
-    </div>
-{% endblock %}
-
 {% block extra_js %}
 <script>
     let currentSelectedPrice = {{ product.price|default:"0" }};
@@ -262,23 +63,23 @@
         let baseName = "{% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar|escapejs }}{% else %}{{ product.name|escapejs }}{% endif %}";
         let displayName = currentSelectedSizeLabel ? `${baseName} (${currentSelectedSizeLabel})` : baseName;
         
-        // Use window.cart from base.html
-        let existing = window.cart.find(i => i.name === displayName);
+        // Directly reference the global cart array loaded from base.html
+        let existing = cart.find(i => i.name === displayName);
 
         if (existing) {
             if (existing.quantity + qty > currentMaxStock) {
-                alert('{% if request.GET.lang == 'ar' %}الحد الأقصى للمخزون{% else %}Stock limit reached{% endif %}');
+                alert("{% if request.GET.lang == 'ar' %}الحد الأقصى للمخزون{% else %}Stock limit reached{% endif %}");
                 return;
             }
             existing.quantity += qty;
         } else {
-            window.cart.push({ name: displayName, price: currentSelectedPrice, quantity: qty });
+            cart.push({ name: displayName, price: currentSelectedPrice, quantity: qty });
         }
         
-        // Call the save and update functions from base.html
-        if (typeof saveCart === "function") saveCart();
-        if (typeof updateCartUI === "function") updateCartUI();
-        if (typeof toggleCart === "function") toggleCart();
+        // Call the save and update functions shared globally from base.html
+        saveCart();
+        updateCartUI();
+        toggleCart();
     }
 </script>
 {% endblock %}
