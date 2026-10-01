@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from ckeditor.fields import RichTextField
 
@@ -35,7 +36,6 @@ class Product(models.Model):
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     
-    # English & Arabic fields
     name = models.CharField(max_length=150)
     name_ar = models.CharField(max_length=150, blank=True, null=True, help_text="Product Name in Arabic")
     slug = models.SlugField(unique=True, blank=True, null=True)
@@ -169,7 +169,6 @@ class PromoCode(models.Model):
     def __str__(self):
         return f"{self.code} ({self.discount_percentage}% off)"
 
-# --- NEW SHIPPING MODEL ---
 class ShippingRate(models.Model):
     location_name = models.CharField(max_length=150, unique=True, help_text="e.g. United Arab Emirates, Dubai, Al Ain, Riyadh")
     location_name_ar = models.CharField(max_length=150, blank=True, null=True, help_text="اسم الموقع بالعربية")
@@ -181,15 +180,20 @@ class ShippingRate(models.Model):
 
     def __str__(self):
         return f"{self.location_name} - AED {self.shipping_fee}"
-# --- NEW SHIPPING MODEL ---
-class ShippingRate(models.Model):
-    location_name = models.CharField(max_length=150, unique=True, help_text="e.g. United Arab Emirates, Dubai, Al Ain, Riyadh")
-    location_name_ar = models.CharField(max_length=150, blank=True, null=True, help_text="اسم الموقع بالعربية")
-    shipping_fee = models.DecimalField(max_digits=6, decimal_places=2, default=25.00)
-    is_active = models.BooleanField(default=True)
+
+# --- NEW ORDER TRACKING MODEL ---
+class Order(models.Model):
+    order_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    customer_name = models.CharField(max_length=150)
+    customer_phone = models.CharField(max_length=50)
+    customer_address = models.TextField()
+    cart_summary = models.TextField(help_text="Items ordered")
+    total_amount = models.DecimalField(max_digits=8, decimal_places=2)
+    is_paid = models.BooleanField(default=False, help_text="Checked automatically if Ziina payment is successful")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name_plural = "Shipping Rates"
+        ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.location_name} - AED {self.shipping_fee}"
+        return f"Order: {self.customer_name} - AED {self.total_amount} (Paid: {self.is_paid})"
