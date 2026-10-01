@@ -4,7 +4,6 @@
 {% block title %}{% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar }}{% else %}{{ product.name }}{% endif %} — By Chef Sara{% endblock %}
 
 {% block extra_css %}
-<style>
     /* === PRODUCT DETAIL PAGE STYLES === */
     .product-detail-container { max-width: 1100px; width: 100%; margin: 40px auto; padding: 0 4%; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
 
@@ -71,7 +70,6 @@
         .prod-title { font-size: 2rem; }
         .related-grid { grid-template-columns: 1fr; }
     }
-</style>
 {% endblock %}
 
 {% block content %}
@@ -249,7 +247,7 @@
         currentSelectedPrice = parseFloat(btn.getAttribute('data-price'));
         currentSelectedSizeLabel = btn.getAttribute('data-size-label');
         currentMaxStock = parseInt(btn.getAttribute('data-stock'));
-        document.getElementById('displayPrice').textContent = '{% if request.GET.lang == 'ar' %}' + currentSelectedPrice.toFixed(2) + ' درهم{% else %}AED ' + currentSelectedPrice.toFixed(2) + '{% endif %}';
+        document.getElementById('displayPrice').textContent = '{% if request.GET.lang == "ar" %}' + currentSelectedPrice.toFixed(2) + ' درهم{% else %}AED ' + currentSelectedPrice.toFixed(2) + '{% endif %}';
         document.getElementById('detailQty').textContent = '1';
     }
 
@@ -263,6 +261,8 @@
         let qty = parseInt(document.getElementById('detailQty').textContent);
         let baseName = "{% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar|escapejs }}{% else %}{{ product.name|escapejs }}{% endif %}";
         let displayName = currentSelectedSizeLabel ? `${baseName} (${currentSelectedSizeLabel})` : baseName;
+        
+        // Use window.cart from base.html
         let existing = window.cart.find(i => i.name === displayName);
 
         if (existing) {
@@ -274,7 +274,9 @@
         } else {
             window.cart.push({ name: displayName, price: currentSelectedPrice, quantity: qty });
         }
-        localStorage.setItem('chef_sara_cart', JSON.stringify(window.cart));
+        
+        // Call the save and update functions from base.html
+        if (typeof saveCart === "function") saveCart();
         if (typeof updateCartUI === "function") updateCartUI();
         if (typeof toggleCart === "function") toggleCart();
     }
