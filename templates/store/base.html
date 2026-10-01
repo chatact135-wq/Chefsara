@@ -423,6 +423,10 @@
     <!-- GLOBALLY SHARED JAVASCRIPT LOGIC -->
     <script>
         const activePromos = {{ promo_dict|safe|default:"{}" }};
+        const adminShippingRates = {{ shipping_dict|safe|default:"{}" }};
+        const defaultShippingFee = {{ default_shipping|default:25.00 }};
+        let currentShippingFee = defaultShippingFee;
+
         let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
         let appliedDiscountPercent = 0;
         let appliedPromoName = '';
@@ -543,6 +547,21 @@
             document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
         }
 
+        /* --- DYNAMIC SHIPPING CALCULATION --- */
+        function calculateShippingForLocation(locationString) {
+            let locLower = locationString.toLowerCase();
+            currentShippingFee = defaultShippingFee; // Reset to default first
+
+            // Check if any admin-configured shipping location matches the searched string
+            for (let key in adminShippingRates) {
+                if (locLower.includes(key)) {
+                    currentShippingFee = adminShippingRates[key];
+                    break;
+                }
+            }
+            updateModalSummary(); // Refresh checkout prices
+        }
+
         function updateModalSummary() {
             let box = document.getElementById('modalSummaryBox');
             let subtotal = 0;
@@ -560,8 +579,9 @@
                 html += `<div class="summary-line" style="color:#2E7D32;"><span>{% if request.GET.lang == 'ar' %}خصم{% else %}Discount{% endif %} (${appliedPromoName} - ${appliedDiscountPercent}%)</span><span>- AED ${discountAmount.toFixed(2)}</span></div>`;
             }
 
-            let deliveryFee = subtotal >= 650 ? 0 : 25;
-            html += `<div class="summary-line"><span>{% if request.GET.lang == 'ar' %}التوصيل{% else %}Delivery{% endif %}</span><span>${deliveryFee === 0 ? '{% if request.GET.lang == 'ar' %}مجاني{% else %}Free{% endif %}' : 'AED 25.00'}</span></div>`;
+            // Dynamic Delivery Fee checking subtotal threshold or admin shipping rate
+            let deliveryFee = subtotal >= 650 ? 0 : currentShippingFee;
+            html += `<div class="summary-line"><span>{% if request.GET.lang == 'ar' %}التوصيل{% else %}Delivery{% endif %}</span><span>${deliveryFee === 0 ? '{% if request.GET.lang == 'ar' %}مجاني{% else %}Free{% endif %}' : 'AED ' + deliveryFee.toFixed(2)}</span></div>`;
             
             let total = (subtotal - discountAmount) + deliveryFee;
             html += `<div class="summary-total"><span>{% if request.GET.lang == 'ar' %}الإجمالي{% else %}Total{% endif %}</span><span>AED ${total.toFixed(2)}</span></div>`;
@@ -588,6 +608,9 @@
                             selectedCountry = results[0].display_name;
                             statusEl.style.color = 'var(--burgundy)';
                             statusEl.innerHTML = `<strong>Verified Location:</strong> ${results[0].display_name} ✅ (Eligible for GCC Delivery)`;
+                            
+                            // Call dynamic shipping check
+                            calculateShippingForLocation(selectedCountry);
                         } else {
                             selectedCountry = '';
                             statusEl.style.color = '#7A2E2A';
@@ -630,12 +653,16 @@
                         .then(res => res.json())
                         .then(data => {
                             let country = data.address && data.address.country ? data.address.country : '';
+                            let fullLocation = data.display_name || country;
                             let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
                             
                             if (allowedCountries.includes(country)) {
-                                selectedCountry = country;
+                                selectedCountry = fullLocation;
                                 statusEl.style.color = 'var(--burgundy)';
                                 statusEl.innerHTML = `<strong>Detected GPS Location:</strong> ${country} ✅`;
+                                
+                                // Call dynamic shipping check
+                                calculateShippingForLocation(selectedCountry);
                             } else {
                                 selectedCountry = '';
                                 statusEl.style.color = '#7A2E2A';
@@ -676,7 +703,9 @@
                 if (typeof appliedDiscountPercent !== 'undefined' && appliedDiscountPercent > 0) {
                     discountAmount = (subtotal * appliedDiscountPercent) / 100;
                 }
-                let deliveryFee = subtotal >= 650 ? 0 : 25;
+                
+                // Use dynamic shipping fee logic here as well
+                let deliveryFee = subtotal >= 650 ? 0 : currentShippingFee;
                 let total = (subtotal - discountAmount) + deliveryFee;
 
                 let btn = document.querySelector('.whatsapp-btn');
