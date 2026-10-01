@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, ProductSize, ProductImage, PromoCode, HeroSlide, MenuItem, SiteContent, CateringInquiry, ContactInquiry, ShippingRate
+from .models import Category, Product, ProductSize, ProductImage, PromoCode, HeroSlide, MenuItem, SiteContent, CateringInquiry, ContactInquiry, ShippingRate, Order
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
@@ -58,10 +58,18 @@ class PromoCodeAdmin(admin.ModelAdmin):
     list_filter = ('is_active',)
     search_fields = ('code',)
 
-# --- NEW SHIPPING RATE ADMIN ---
 @admin.register(ShippingRate)
 class ShippingRateAdmin(admin.ModelAdmin):
     list_display = ('location_name', 'shipping_fee', 'is_active')
     list_filter = ('is_active',)
     search_fields = ('location_name', 'location_name_ar')
     list_editable = ('shipping_fee', 'is_active')
+
+# --- NEW ORDER ADMIN ---
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('customer_name', 'customer_phone', 'total_amount', 'is_paid', 'created_at')
+    list_filter = ('is_paid', 'created_at')
+    search_fields = ('customer_name', 'customer_phone', 'customer_address')
+    readonly_fields = ('order_id', 'created_at', 'cart_summary')
+    list_editable = ('is_paid',)  # Lets you manually toggle "Paid" from the main list just in case!
