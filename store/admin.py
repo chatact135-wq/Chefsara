@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, ProductSize, ProductImage, PromoCode, HeroSlide, MenuItem, SiteContent, CateringInquiry, ContactInquiry
+from .models import Category, Product, ProductSize, ProductImage, PromoCode, HeroSlide, MenuItem, SiteContent, CateringInquiry, ContactInquiry, ShippingRate
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
@@ -57,3 +57,11 @@ class PromoCodeAdmin(admin.ModelAdmin):
     list_display = ('code', 'discount_percentage', 'is_active')
     list_filter = ('is_active',)
     search_fields = ('code',)
+
+# --- NEW SHIPPING RATE ADMIN ---
+@admin.register(ShippingRate)
+class ShippingRateAdmin(admin.ModelAdmin):
+    list_display = ('location_name', 'shipping_fee', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('location_name', 'location_name_ar')
+    list_editable = ('shipping_fee', 'is_active')
