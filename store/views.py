@@ -4,13 +4,12 @@ import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCode, CateringInquiry, ContactInquiry, ShippingRate
+from .models import Product, Category, HeroSlide, MenuItem, SiteContent, PromoCode, CateringInquiry, ContactInquiry, ShippingRate, Order
 
 # --- ZIINA API KEY ---
 ZIINA_API_KEY = os.environ.get('ZIINA_API_KEY', 'O9Uf/VlL49DsIarGi1UzZA2IwqSEcYNa2EtECMNcJuyjAcSNtY/19FvToVb6831H')
 
 def get_smart_shipping_dict():
-    """Helper function to extract comma-separated English & Arabic keywords for smart matching"""
     shipping_rates = ShippingRate.objects.filter(is_active=True)
     rates_list = []
     for sr in shipping_rates:
@@ -19,10 +18,9 @@ def get_smart_shipping_dict():
             keys.extend([k.strip().lower() for k in sr.location_name.split(',')])
         if sr.location_name_ar:
             keys.extend([k.strip().lower() for k in sr.location_name_ar.split(',')])
-        
         rates_list.append({
             'fee': float(sr.shipping_fee),
-            'keywords': [k for k in keys if k] # Remove any accidental empty strings
+            'keywords': [k for k in keys if k]
         })
     return json.dumps(rates_list)
 
@@ -99,8 +97,9 @@ def category_detail_view(request, category_slug):
     }
     return render(request, 'store/category_detail.html', context)
 
+
 # ==========================================
-# ZIINA PAYMENT INTEGRATION VIEWS
+# ZIINA PAYMENT INTEGRATION & ORDER TRACKING
 # ==========================================
 @csrf_exempt
 def process_ziina_payment(request):
@@ -110,12 +109,26 @@ def process_ziina_payment(request):
             total_amount = float(data.get('total_amount', 0))
             amount_in_fils = int(total_amount * 100)
 
+            # 1. Store the Order Details to the Database FIRST
+            cart_items = data.get('cart_items', [])
+            cart_text = "\n".join([f"{item['quantity']}x {item['name']} (AED {item['price']})" for item in cart_items])
+            
+            new_order = Order.objects.create(
+                customer_name=data.get('customer_name', 'Unknown'),
+                customer_phone=data.get('customer_phone', 'Unknown'),
+                customer_address=data.get('customer_address', 'Unknown'),
+                cart_summary=cart_text,
+                total_amount=total_amount,
+                is_paid=False
+            )
+
+            # 2. Tell Ziina to process the payment and return the Order ID if successful
             url = "https://api-v2.ziina.com/api/payment_intent"
             payload = {
                 "amount": amount_in_fils,
                 "currency_code": "AED",
-                "message": f"Order from BY CHEF SARA - {data.get('customer_name', 'Customer')}",
-                "success_url": request.build_absolute_uri('/payment-success/'),
+                "message": f"Order from BY CHEF SARA - {new_order.customer_name}",
+                "success_url": request.build_absolute_uri(f'/payment-success/?ref={new_order.order_id}'),
                 "cancel_url": request.build_absolute_uri('/payment-failure/'),
                 "failure_url": request.build_absolute_uri('/payment-failure/'),
                 "test": True  
@@ -142,6 +155,16 @@ def process_ziina_payment(request):
     return JsonResponse({'success': False, 'error': 'Invalid Request'})
 
 def payment_success(request):
+    # If the payment succeeds, grab the secure reference ID and mark it as Paid!
+    ref = request.GET.get('ref')
+    if ref:
+        try:
+            order = Order.objects.get(order_id=ref)
+            order.is_paid = True
+            order.save()
+        except Exception:
+            pass
+
     return render(request, 'store/success.html', {'message': 'Thank you! Your payment was successful and your order is confirmed.'})
 
 def payment_failure(request):
