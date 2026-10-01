@@ -423,7 +423,7 @@
     <!-- GLOBALLY SHARED JAVASCRIPT LOGIC -->
     <script>
         const activePromos = {{ promo_dict|safe|default:"{}" }};
-        const adminShippingRates = {{ shipping_dict|safe|default:"{}" }};
+        const adminShippingRates = {{ shipping_dict|safe|default:"[]" }};
         const defaultShippingFee = {{ default_shipping|default:25.00 }};
         let currentShippingFee = defaultShippingFee;
 
@@ -547,17 +547,29 @@
             document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
         }
 
-        /* --- DYNAMIC SHIPPING CALCULATION --- */
+        /* --- SMART DYNAMIC SHIPPING CALCULATION --- */
         function calculateShippingForLocation(locationString) {
-            let locLower = locationString.toLowerCase();
-            currentShippingFee = defaultShippingFee; // Reset to default first
+            // 1. Convert user map result to lowercase
+            // 2. Remove dashes, underscores, and extra spaces so "Al-Ain" becomes "al ain"
+            let locNormalized = locationString.toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
+            currentShippingFee = defaultShippingFee; // Reset to default
 
-            // Check if any admin-configured shipping location matches the searched string
-            for (let key in adminShippingRates) {
-                if (locLower.includes(key)) {
-                    currentShippingFee = adminShippingRates[key];
-                    break;
+            // 3. Loop through the admin shipping rates
+            for (let rateObj of adminShippingRates) {
+                let matched = false;
+                
+                // 4. Check against all comma-separated keywords (English & Arabic)
+                for (let keyword of rateObj.keywords) {
+                    if (!keyword) continue;
+                    let kwNorm = keyword.replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
+                    
+                    if (locNormalized.includes(kwNorm)) {
+                        currentShippingFee = rateObj.fee;
+                        matched = true;
+                        break; 
+                    }
                 }
+                if (matched) break; // Stop checking other locations if we found a match
             }
             updateModalSummary(); // Refresh checkout prices
         }
@@ -609,7 +621,7 @@
                             statusEl.style.color = 'var(--burgundy)';
                             statusEl.innerHTML = `<strong>Verified Location:</strong> ${results[0].display_name} ✅ (Eligible for GCC Delivery)`;
                             
-                            // Call dynamic shipping check
+                            // Call smart dynamic shipping check
                             calculateShippingForLocation(selectedCountry);
                         } else {
                             selectedCountry = '';
@@ -661,7 +673,7 @@
                                 statusEl.style.color = 'var(--burgundy)';
                                 statusEl.innerHTML = `<strong>Detected GPS Location:</strong> ${country} ✅`;
                                 
-                                // Call dynamic shipping check
+                                // Call smart dynamic shipping check
                                 calculateShippingForLocation(selectedCountry);
                             } else {
                                 selectedCountry = '';
