@@ -168,3 +168,16 @@ class PromoCode(models.Model):
 
     def __str__(self):
         return f"{self.code} ({self.discount_percentage}% off)"
+
+# --- NEW SHIPPING MODEL ---
+class ShippingRate(models.Model):
+    location_name = models.CharField(max_length=150, unique=True, help_text="e.g. United Arab Emirates, Dubai, Al Ain, Riyadh")
+    location_name_ar = models.CharField(max_length=150, blank=True, null=True, help_text="اسم الموقع بالعربية")
+    shipping_fee = models.DecimalField(max_digits=6, decimal_places=2, default=25.00)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name_plural = "Shipping Rates"
+
+    def __str__(self):
+        return f"{self.location_name} - AED {self.shipping_fee}"
