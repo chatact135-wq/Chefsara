@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}BY CHEF SARA — {% if request.GET.lang == 'ar' %}أصالة المطبخ المغربي{% else %}Handcrafted Moroccan Pantry & Catering{% endif %}{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Interactive Map Support (Leaflet) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <style>
         /* === GLOBAL STYLES === */
         html { scroll-behavior: smooth; }
@@ -333,18 +338,16 @@
                 </div>
                 <div class="form-group"><label>{% if request.GET.lang == 'ar' %}عنوان التوصيل{% else %}Delivery address{% endif %}</label><textarea id="custAddress" class="form-control" required placeholder="{% if request.GET.lang == 'ar' %}المبنى، الشارع، المنطقة، الإمارة{% else %}Building, street, area, emirate{% endif %}"></textarea></div>
 
-                <!-- Google Maps Block -->
+                <!-- Interactive Pin-Drop Delivery Map -->
                 <div class="form-group">
-                    <label>{% if request.GET.lang == 'ar' %}حدد موقع التوصيل (دول الخليج فقط){% else %}Select Delivery Location (GCC Delivery Only){% endif %}</label>
+                    <label>{% if request.GET.lang == 'ar' %}حدد موقع التوصيل بدقة (انقر على الخريطة لتثبيت الدبوس 📍){% else %}Pinpoint Delivery Location (Click map or drag pin 📍){% endif %}</label>
                     <div style="display: flex; gap: 6px; margin-bottom: 8px;">
-                        <input type="text" id="mapSearchInput" class="form-control" placeholder="{% if request.GET.lang == 'ar' %}ابحث عن شارع، منطقة، أو مدينة...{% else %}Search street, area, or city (e.g. Dubai, Riyadh, Doha)...{% endif %}" style="flex-grow: 1;">
-                        <button type="button" onclick="searchGoogleLocation()" style="background: var(--burgundy); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: inherit;">{% if request.GET.lang == 'ar' %}بحث{% else %}Search{% endif %}</button>
+                        <input type="text" id="mapSearchInput" class="form-control" placeholder="{% if request.GET.lang == 'ar' %}ابحث عن شارع، منطقة، أو مدينة...{% else %}Search street, area, or city (e.g. Dubai, Riyadh, Al Ain)...{% endif %}" style="flex-grow: 1;">
+                        <button type="button" onclick="searchLocation()" style="background: var(--burgundy); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: inherit;">{% if request.GET.lang == 'ar' %}بحث{% else %}Search{% endif %}</button>
                         <button type="button" onclick="detectUserGPS()" title="Use My Current GPS Location" style="background: var(--wood); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; font-family: inherit;">📍 GPS</button>
                     </div>
-                    <div style="width: 100%; height: 220px; border-radius: 4px; border: 1px solid var(--line); overflow: hidden; margin-bottom: 6px;">
-                        <iframe id="googleMapFrame" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" src="https://maps.google.com/maps?q=United%20Arab%20Emirates&t=&z=6&ie=UTF8&iwloc=&output=embed"></iframe>
-                    </div>
-                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">{% if request.GET.lang == 'ar' %}ابحث عن موقعك أو انقر على GPS للتحقق من التوصيل داخل الخليج.{% else %}Search your location or click 'GPS' to auto-verify your GCC delivery zone.{% endif %}</small>
+                    <div id="deliveryMap" style="width: 100%; height: 230px; border-radius: 4px; border: 1px solid var(--line); margin-bottom: 6px; z-index: 1;"></div>
+                    <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">{% if request.GET.lang == 'ar' %}انقر أو اسحب الدبوس لتحديد موقع بيتك بدقة.{% else %}Click on the map or drag the pin to mark your exact doorstep.{% endif %}</small>
                 </div>
 
                 <div class="modal-section-title">{% if request.GET.lang == 'ar' %}طريقة الدفع{% else %}Payment Method{% endif %}</div>
@@ -431,6 +434,11 @@
         let appliedDiscountPercent = 0;
         let appliedPromoName = '';
         let selectedCountry = 'United Arab Emirates';
+
+        // Interactive Map Variables
+        let leafletMap = null;
+        let deliveryMarker = null;
+        const DEFAULT_COORDS = [24.2075, 55.7447]; // Al Ain default coordinates
         
         document.addEventListener("DOMContentLoaded", function() {
             updateCartUI();
@@ -545,33 +553,145 @@
             toggleCart(); 
             updateModalSummary();
             document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
+            
+            // Initialize or recalculate map dimensions when modal opens
+            setTimeout(initOrRefreshMap, 200);
+        }
+
+        /* --- LEAFLET INTERACTIVE PIN-DROP MAP --- */
+        function initOrRefreshMap() {
+            if (!leafletMap) {
+                leafletMap = L.map('deliveryMap').setView(DEFAULT_COORDS, 11);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors',
+                    maxZoom: 19
+                }).addTo(leafletMap);
+
+                // Add draggable marker
+                deliveryMarker = L.marker(DEFAULT_COORDS, { draggable: true }).addTo(leafletMap);
+
+                // Update location on pin drag
+                deliveryMarker.on('dragend', function(e) {
+                    let pos = e.target.getLatLng();
+                    reverseGeocodeCoordinates(pos.lat, pos.lng);
+                });
+
+                // Move pin on map click
+                leafletMap.on('click', function(e) {
+                    deliveryMarker.setLatLng(e.latlng);
+                    reverseGeocodeCoordinates(e.latlng.lat, e.latlng.lng);
+                });
+            } else {
+                leafletMap.invalidateSize();
+            }
+        }
+
+        function setMapPin(lat, lng, zoomLevel = 15) {
+            if (!leafletMap) return;
+            leafletMap.setView([lat, lng], zoomLevel);
+            if (deliveryMarker) {
+                deliveryMarker.setLatLng([lat, lng]);
+            }
+        }
+
+        function reverseGeocodeCoordinates(lat, lng) {
+            let statusEl = document.getElementById('mapCountryStatus');
+            statusEl.style.color = 'var(--wood)';
+            statusEl.innerHTML = `Pin dropped: locating exact address (${lat.toFixed(4)}, ${lng.toFixed(4)})...`;
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        let country = data.address && data.address.country ? data.address.country : '';
+                        let allowed = ['united arab emirates', 'saudi arabia', 'qatar', 'bahrain', 'kuwait', 'oman', 'uae', 'ksa'];
+                        let isGcc = allowed.some(c => (country.toLowerCase() || data.display_name.toLowerCase()).includes(c));
+
+                        if (isGcc) {
+                            selectedCountry = data.display_name;
+                            document.getElementById('custAddress').value = data.display_name;
+                            statusEl.style.color = 'var(--burgundy)';
+                            statusEl.innerHTML = `📍 <strong>Selected Location:</strong> ${data.display_name.substring(0, 75)}... ✅`;
+                            calculateShippingForLocation(selectedCountry);
+                        } else {
+                            selectedCountry = '';
+                            statusEl.style.color = '#7A2E2A';
+                            statusEl.innerHTML = `<strong>Sorry, outside GCC zone (${country || 'Unknown'})</strong> ❌.`;
+                        }
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+
+        function searchLocation() {
+            let query = document.getElementById('mapSearchInput').value.trim();
+            if (!query) return;
+
+            let statusEl = document.getElementById('mapCountryStatus');
+            statusEl.style.color = 'var(--wood)';
+            statusEl.innerHTML = `Searching for "${query}"...`;
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(results => {
+                    if (results && results.length > 0) {
+                        let lat = parseFloat(results[0].lat);
+                        let lon = parseFloat(results[0].lon);
+                        setMapPin(lat, lon, 15);
+                        reverseGeocodeCoordinates(lat, lon);
+                    } else {
+                        statusEl.style.color = '#7A2E2A';
+                        statusEl.innerHTML = "Location not found. Please click directly on the map.";
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+
+        function detectUserGPS() {
+            if (!navigator.geolocation) {
+                alert("Geolocation is not supported by your browser");
+                return;
+            }
+            
+            let statusEl = document.getElementById('mapCountryStatus');
+            statusEl.style.color = 'var(--wood)';
+            statusEl.innerHTML = "Detecting your exact GPS location...";
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    let lat = position.coords.latitude;
+                    let lng = position.coords.longitude;
+                    setMapPin(lat, lng, 16);
+                    reverseGeocodeCoordinates(lat, lng);
+                },
+                function(error) {
+                    alert("Unable to retrieve GPS coordinates. Please click on the map directly.");
+                    statusEl.innerHTML = "GPS detection failed. Click anywhere on the map to pin your location.";
+                },
+                { timeout: 10000, enableHighAccuracy: true }
+            );
         }
 
         /* --- SMART DYNAMIC SHIPPING CALCULATION --- */
         function calculateShippingForLocation(locationString) {
-            // 1. Convert user map result to lowercase
-            // 2. Remove dashes, underscores, and extra spaces so "Al-Ain" becomes "al ain"
             let locNormalized = locationString.toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
-            currentShippingFee = defaultShippingFee; // Reset to default
+            currentShippingFee = defaultShippingFee;
 
-            // 3. Loop through the admin shipping rates
             for (let rateObj of adminShippingRates) {
                 let matched = false;
-                
-                // 4. Check against all comma-separated keywords (English & Arabic)
                 for (let keyword of rateObj.keywords) {
                     if (!keyword) continue;
                     let kwNorm = keyword.replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
-                    
                     if (locNormalized.includes(kwNorm)) {
                         currentShippingFee = rateObj.fee;
                         matched = true;
                         break; 
                     }
                 }
-                if (matched) break; // Stop checking other locations if we found a match
+                if (matched) break;
             }
-            updateModalSummary(); // Refresh checkout prices
+            updateModalSummary();
         }
 
         function updateModalSummary() {
@@ -591,7 +711,6 @@
                 html += `<div class="summary-line" style="color:#2E7D32;"><span>{% if request.GET.lang == 'ar' %}خصم{% else %}Discount{% endif %} (${appliedPromoName} - ${appliedDiscountPercent}%)</span><span>- AED ${discountAmount.toFixed(2)}</span></div>`;
             }
 
-            // Dynamic Delivery Fee checking subtotal threshold or admin shipping rate
             let deliveryFee = subtotal >= 650 ? 0 : currentShippingFee;
             html += `<div class="summary-line"><span>{% if request.GET.lang == 'ar' %}التوصيل{% else %}Delivery{% endif %}</span><span>${deliveryFee === 0 ? '{% if request.GET.lang == 'ar' %}مجاني{% else %}Free{% endif %}' : 'AED ' + deliveryFee.toFixed(2)}</span></div>`;
             
@@ -601,94 +720,6 @@
         }
 
         function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
-
-        /* Map Logic Functions */
-        function verifyAndSetCountry(queryOrLatLon) {
-            let statusEl = document.getElementById('mapCountryStatus');
-            statusEl.style.color = 'var(--burgundy)';
-            statusEl.innerHTML = `Verifying delivery zone for "${queryOrLatLon}"...`;
-
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(queryOrLatLon)}`)
-                .then(res => res.json())
-                .then(results => {
-                    if (results && results.length > 0) {
-                        let displayName = results[0].display_name.toLowerCase();
-                        let allowed = ['united arab emirates', 'saudi arabia', 'qatar', 'bahrain', 'kuwait', 'oman', 'uae', 'ksa'];
-                        
-                        let found = allowed.some(c => displayName.includes(c));
-                        if (found) {
-                            selectedCountry = results[0].display_name;
-                            statusEl.style.color = 'var(--burgundy)';
-                            statusEl.innerHTML = `<strong>Verified Location:</strong> ${results[0].display_name} ✅ (Eligible for GCC Delivery)`;
-                            
-                            // Call smart dynamic shipping check
-                            calculateShippingForLocation(selectedCountry);
-                        } else {
-                            selectedCountry = '';
-                            statusEl.style.color = '#7A2E2A';
-                            statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
-                        }
-                    }
-                }).catch(err => { console.error(err); });
-        }
-
-        function searchGoogleLocation() {
-            let query = document.getElementById('mapSearchInput').value;
-            if (!query) return;
-
-            let iframe = document.getElementById('googleMapFrame');
-            iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
-            
-            document.getElementById('custAddress').value = query;
-            verifyAndSetCountry(query);
-        }
-
-        function detectUserGPS() {
-            if (!navigator.geolocation) {
-                alert("Geolocation is not supported by your browser");
-                return;
-            }
-            
-            let statusEl = document.getElementById('mapCountryStatus');
-            statusEl.style.color = 'var(--wood)';
-            statusEl.innerHTML = "Detecting your exact GPS location...";
-
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    let lat = position.coords.latitude;
-                    let lng = position.coords.longitude;
-                    
-                    let iframe = document.getElementById('googleMapFrame');
-                    iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-
-                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            let country = data.address && data.address.country ? data.address.country : '';
-                            let fullLocation = data.display_name || country;
-                            let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
-                            
-                            if (allowedCountries.includes(country)) {
-                                selectedCountry = fullLocation;
-                                statusEl.style.color = 'var(--burgundy)';
-                                statusEl.innerHTML = `<strong>Detected GPS Location:</strong> ${country} ✅`;
-                                
-                                // Call smart dynamic shipping check
-                                calculateShippingForLocation(selectedCountry);
-                            } else {
-                                selectedCountry = '';
-                                statusEl.style.color = '#7A2E2A';
-                                statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location (${country || 'Unknown'})</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
-                            }
-                        });
-                },
-                function(error) {
-                    alert("Unable to retrieve your location. Please type your area in the search box.");
-                    statusEl.innerHTML = "GPS detection failed. Please search manually.";
-                },
-                { timeout: 10000, enableHighAccuracy: true }
-            );
-        }
 
         function placeZiinaOrder() {
             try {
@@ -716,7 +747,6 @@
                     discountAmount = (subtotal * appliedDiscountPercent) / 100;
                 }
                 
-                // Use dynamic shipping fee logic here as well
                 let deliveryFee = subtotal >= 650 ? 0 : currentShippingFee;
                 let total = (subtotal - discountAmount) + deliveryFee;
 
