@@ -109,20 +109,30 @@ def process_ziina_payment(request):
             total_amount = float(data.get('total_amount', 0))
             amount_in_fils = int(total_amount * 100)
 
-            # 1. Store the Order Details to the Database FIRST
+            # 1. Format the Cart Items
             cart_items = data.get('cart_items', [])
             cart_text = "\n".join([f"{item['quantity']}x {item['name']} (AED {item['price']})" for item in cart_items])
             
+            # 2. Extract Location and append Google Maps Link
+            raw_address = data.get('customer_address', 'Unknown')
+            lat = data.get('latitude', '')
+            lng = data.get('longitude', '')
+            
+            final_address = raw_address
+            if lat and lng:
+                final_address += f"\n\n--- EXACT MAP PIN ---\nCoordinates: {lat}, {lng}\nGoogle Maps: https://maps.google.com/?q={lat},{lng}"
+
+            # 3. Store Order in DB
             new_order = Order.objects.create(
                 customer_name=data.get('customer_name', 'Unknown'),
                 customer_phone=data.get('customer_phone', 'Unknown'),
-                customer_address=data.get('customer_address', 'Unknown'),
+                customer_address=final_address,
                 cart_summary=cart_text,
                 total_amount=total_amount,
                 is_paid=False
             )
 
-            # 2. Tell Ziina to process the payment and return the Order ID if successful
+            # 4. Trigger Ziina Intent
             url = "https://api-v2.ziina.com/api/payment_intent"
             payload = {
                 "amount": amount_in_fils,
@@ -155,7 +165,6 @@ def process_ziina_payment(request):
     return JsonResponse({'success': False, 'error': 'Invalid Request'})
 
 def payment_success(request):
-    # If the payment succeeds, grab the secure reference ID and mark it as Paid!
     ref = request.GET.get('ref')
     if ref:
         try:
@@ -164,7 +173,6 @@ def payment_success(request):
             order.save()
         except Exception:
             pass
-
     return render(request, 'store/success.html', {'message': 'Thank you! Your payment was successful and your order is confirmed.'})
 
 def payment_failure(request):
