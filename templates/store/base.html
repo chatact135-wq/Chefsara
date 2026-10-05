@@ -67,7 +67,7 @@
         .cart-item-price { font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %}; font-size: 1.1rem; font-weight: 600; color: var(--burgundy); }
         .remove-item { background: none; border: none; color: var(--burgundy); font-size: 0.75rem; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 4px; font-family: inherit;}
         .cart-footer { padding: 20px 24px; border-top: 1px solid var(--line); background: var(--stucco); }
-        .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; }
+        .subtotal-row { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 600; margin-bottom: 5px; }
         .terms-title-header { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--burgundy); letter-spacing: 0.08em; margin-bottom: 6px; }
         .terms-scrollbox { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; font-size: 0.75rem; color: var(--ink-soft); height: 85px; overflow-y: auto; margin-bottom: 12px; line-height: 1.4; cursor: pointer; }
         .terms-scrollbox h4 { font-size: 0.8rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
@@ -234,6 +234,7 @@
         <div class="cart-footer">
             <div id="deliveryNotice" style="font-size: 0.8rem; color: var(--wood); margin-bottom: 10px;"></div>
             <div class="subtotal-row"><span>{% if request.GET.lang == 'ar' %}المجموع{% else %}Subtotal{% endif %}</span><span id="cartSubtotal">AED 0</span></div>
+            <div style="font-size: 0.75rem; color: var(--wood); text-align: {% if request.GET.lang == 'ar' %}left{% else %}right{% endif %}; margin-top: -5px; margin-bottom: 15px;">{% if request.GET.lang == 'ar' %}الضرائب والتوصيل تحسب في الدفع{% else %}Taxes & shipping calculated at checkout{% endif %}</div>
             
             <div class="terms-title-header">{% if request.GET.lang == 'ar' %}الشروط والأحكام{% else %}Terms &amp; Conditions{% endif %}</div>
             <div class="terms-scrollbox" onclick="openTermsModal()">
@@ -425,7 +426,9 @@
         const activePromos = {{ promo_dict|safe|default:"{}" }};
         const adminShippingRates = {{ shipping_dict|safe|default:"[]" }};
         const defaultShippingFee = {{ default_shipping|default:25.00 }};
+        
         let currentShippingFee = defaultShippingFee;
+        let currentVatRate = 0.05; // Default to UAE VAT rate
 
         let cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
         let appliedDiscountPercent = 0;
@@ -477,102 +480,16 @@
                 }
                 saveCart();
                 updateCartUI();
-            }
-        }
+            To add the dynamic VAT calculation, we only need to update two JavaScript functions inside your **`store/templates/store/base.html`** file. 
 
-        function removeFromCart(name) { cart = cart.filter(i => i.name !== name); saveCart(); updateCartUI(); }
-        
-        function updateCartUI() {
-            let container = document.getElementById('cartItemsContainer'), count = 0, subtotal = 0;
-            if (cart.length === 0) container.innerHTML = '<p style="color:var(--wood); text-align:center; margin-top:40px;">{% if request.GET.lang == 'ar' %}السلة فارغة.{% else %}Your cart is empty.{% endif %}</p>';
-            else {
-                container.innerHTML = '';
-                cart.forEach(item => {
-                    count += item.quantity; subtotal += item.price * item.quantity;
-                    container.innerHTML += `
-                        <div class="cart-item">
-                            <div class="cart-item-details">
-                                <div>${item.name}</div>
-                                <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
-                                    <button type="button" onclick="changeCartItemQty('${item.name}', -1)" style="background:#fff; border:1px solid var(--line); width:18px; height:18px; cursor:pointer; font-weight:bold;">-</button>
-                                    <span style="font-size:0.85rem; font-weight:600;">${item.quantity}</span>
-                                    <button type="button" onclick="changeCartItemQty('${item.name}', 1)" style="background:#fff; border:1px solid var(--line); width:18px; height:18px; cursor:pointer; font-weight:bold;">+</button>
-                                    <span style="color:var(--wood); font-size:0.75rem;">/ AED ${item.price}</span>
-                                </div>
-                            </div>
-                            <div class="cart-item-right">
-                                <div class="cart-item-price">AED ${(item.price*item.quantity).toFixed(2)}</div>
-                                <button type="button" class="remove-item" onclick="removeFromCart('${item.name}')">{% if request.GET.lang == 'ar' %}إزالة{% else %}Remove{% endif %}</button>
-                            </div>
-                        </div>`;
-                });
-            }
-            document.getElementById('cart-count').textContent = count;
-            document.getElementById('sticky-order-count').textContent = count;
-            document.getElementById('cartSubtotal').textContent = 'AED ' + subtotal.toFixed(2);
-            document.getElementById('deliveryNotice').textContent = subtotal >= 650 ? '{% if request.GET.lang == 'ar' %}🎉 مؤهل لتوصيل مجاني!{% else %}🎉 You qualify for free delivery!{% endif %}' : `{% if request.GET.lang == 'ar' %}أضف AED ${(650 - subtotal).toFixed(2)} للحصول على توصيل مجاني{% else %}Add AED ${(650 - subtotal).toFixed(2)} more for free delivery{% endif %}`;
-        }
+By updating these functions, the cart will automatically detect the user's country from the map selection, calculate either 5% (UAE) or 15% (other GCC countries) on top of the subtotal and delivery fee, and instantly display it as a line item in both English and Arabic.
 
-        function toggleCheckoutButton() {
-            let isChecked = document.getElementById('termsAgreeCheckbox').checked;
-            let btn = document.getElementById('cartCheckoutBtn');
-            let warning = document.getElementById('checkoutWarningText');
-            if (isChecked) {
-                btn.removeAttribute('disabled');
-                warning.style.display = 'none';
-            } else {
-                btn.setAttribute('disabled', 'true');
-                warning.style.display = 'block';
-            }
-        }
+Scroll down to the `<script>` section at the bottom of your **`base.html`** file and replace the existing `updateModalSummary()` and `placeZiinaOrder()` functions with these updated versions:
 
-        function applyPromoCode() {
-            let codeInput = document.getElementById('modalPromoInput').value.trim().toUpperCase();
-            let msgEl = document.getElementById('promoMessage');
-            if (activePromos.hasOwnProperty(codeInput)) {
-                appliedDiscountPercent = activePromos[codeInput];
-                appliedPromoName = codeInput;
-                msgEl.style.color = '#2E7D32';
-                msgEl.textContent = `{% if request.GET.lang == 'ar' %}تم تطبيق خصم{% else %}Success! Discount applied:{% endif %} ${appliedDiscountPercent}%`;
-                updateModalSummary();
-            } else {
-                appliedDiscountPercent = 0;
-                appliedPromoName = '';
-                msgEl.style.color = '#C62828';
-                msgEl.textContent = '{% if request.GET.lang == 'ar' %}كود غير صالح{% else %}Invalid or inactive promo code.{% endif %}';
-                updateModalSummary();
-            }
-        }
+### 1. Replace `updateModalSummary()`
+This updates the visual checkout receipt to show the exact VAT percentage and amount.
 
-        function openCheckoutModal() { 
-            if (cart.length === 0) return; 
-            if (!document.getElementById('termsAgreeCheckbox').checked) return;
-            toggleCart(); 
-            updateModalSummary();
-            document.getElementById('checkoutModalOverlay').style.display = 'flex'; 
-        }
-
-        /* --- SMART DYNAMIC SHIPPING CALCULATION --- */
-        function calculateShippingForLocation(locationString) {
-            let locNormalized = locationString.toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
-            currentShippingFee = defaultShippingFee;
-
-            for (let rateObj of adminShippingRates) {
-                let matched = false;
-                for (let keyword of rateObj.keywords) {
-                    if (!keyword) continue;
-                    let kwNorm = keyword.replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
-                    if (locNormalized.includes(kwNorm)) {
-                        currentShippingFee = rateObj.fee;
-                        matched = true;
-                        break; 
-                    }
-                }
-                if (matched) break;
-            }
-            updateModalSummary();
-        }
-
+```javascript
         function updateModalSummary() {
             let box = document.getElementById('modalSummaryBox');
             let subtotal = 0;
@@ -582,7 +499,7 @@
                 html += `<div class="summary-item-row"><span>${i.name} x ${i.quantity}</span><span>AED ${(i.price * i.quantity).toFixed(2)}</span></div>`;
             });
             html += `<div class="summary-divider"></div>`;
-            html += `<div class="summary-line"><span>{% if request.GET.lang == 'ar' %}المجموع{% else %}Subtotal{% endif %}</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
+            html += `<div class="summary-line"><span>{% if request.GET.lang == 'ar' %}المجموع الفرعي{% else %}Subtotal{% endif %}</span><span>AED ${subtotal.toFixed(2)}</span></div>`;
 
             let discountAmount = 0;
             if (appliedDiscountPercent > 0) {
@@ -593,211 +510,25 @@
             let deliveryFee = subtotal >= 650 ? 0 : currentShippingFee;
             html += `<div class="summary-line"><span>{% if request.GET.lang == 'ar' %}التوصيل{% else %}Delivery{% endif %}</span><span>${deliveryFee === 0 ? '{% if request.GET.lang == 'ar' %}مجاني{% else %}Free{% endif %}' : 'AED ' + deliveryFee.toFixed(2)}</span></div>`;
             
-            let total = (subtotal - discountAmount) + deliveryFee;
+            // --- NEW DYNAMIC VAT CALCULATION ---
+            let vatRate = 0.05; // Default 5%
+            if (selectedCountry) {
+                let lowerCountry = selectedCountry.toLowerCase();
+                if (lowerCountry.includes('saudi arabia') || lowerCountry.includes('ksa') || 
+                    lowerCountry.includes('qatar') || lowerCountry.includes('bahrain') || 
+                    lowerCountry.includes('kuwait') || lowerCountry.includes('oman')) {
+                    vatRate = 0.15; // 15% for other GCC countries
+                } else {
+                    vatRate = 0.05; // 5% for UAE
+                }
+            }
+            
+            let taxableAmount = (subtotal - discountAmount) + deliveryFee;
+            let vatAmount = taxableAmount * vatRate;
+            
+            html += `<div class="summary-line"><span>{% if request.GET.lang == 'ar' %}الضريبة{% else %}VAT{% endif %} (${vatRate * 100}%)</span><span>AED ${vatAmount.toFixed(2)}</span></div>`;
+
+            let total = taxableAmount + vatAmount;
             html += `<div class="summary-total"><span>{% if request.GET.lang == 'ar' %}الإجمالي{% else %}Total{% endif %}</span><span>AED ${total.toFixed(2)}</span></div>`;
             box.innerHTML = html;
         }
-
-        function closeCheckoutModal() { document.getElementById('checkoutModalOverlay').style.display = 'none'; }
-
-        /* Map Logic Functions */
-        function searchGoogleLocation() {
-            let query = document.getElementById('mapSearchInput').value;
-            if (!query) return;
-
-            let statusEl = document.getElementById('mapCountryStatus');
-            statusEl.style.color = 'var(--wood)';
-            statusEl.innerHTML = `Verifying delivery zone for "${query}"...`;
-
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-                .then(res => res.json())
-                .then(results => {
-                    if (results && results.length > 0) {
-                        let lat = results[0].lat;
-                        let lon = results[0].lon;
-                        let displayName = results[0].display_name.toLowerCase();
-                        let allowed = ['united arab emirates', 'saudi arabia', 'qatar', 'bahrain', 'kuwait', 'oman', 'uae', 'ksa'];
-                        
-                        let found = allowed.some(c => displayName.includes(c));
-                        if (found) {
-                            // Lock it in!
-                            locationVerified = true;
-                            selectedLat = lat;
-                            selectedLng = lon;
-                            selectedCountry = results[0].display_name;
-                            
-                            // Update Visuals
-                            let iframe = document.getElementById('googleMapFrame');
-                            iframe.src = `https://maps.google.com/maps?q=${lat},${lon}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-                            document.getElementById('custAddress').value = query;
-                            
-                            statusEl.style.color = 'var(--burgundy)';
-                            statusEl.innerHTML = `<strong>Verified Location:</strong> ${results[0].display_name} ✅ (Eligible for GCC Delivery)`;
-                            
-                            calculateShippingForLocation(selectedCountry);
-                        } else {
-                            locationVerified = false;
-                            selectedCountry = '';
-                            statusEl.style.color = '#7A2E2A';
-                            statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
-                        }
-                    } else {
-                        locationVerified = false;
-                        statusEl.style.color = '#7A2E2A';
-                        statusEl.innerHTML = "Location not found. Please try another search term.";
-                    }
-                }).catch(err => { console.error(err); });
-        }
-
-        function detectUserGPS() {
-            if (!navigator.geolocation) {
-                alert("Geolocation is not supported by your browser");
-                return;
-            }
-            
-            let statusEl = document.getElementById('mapCountryStatus');
-            statusEl.style.color = 'var(--wood)';
-            statusEl.innerHTML = "Detecting your exact GPS location...";
-
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    let lat = position.coords.latitude;
-                    let lng = position.coords.longitude;
-                    
-                    let iframe = document.getElementById('googleMapFrame');
-                    iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-
-                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            let country = data.address && data.address.country ? data.address.country : '';
-                            let fullLocation = data.display_name || country;
-                            let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
-                            
-                            if (allowedCountries.includes(country) || allowedCountries.includes(fullLocation)) {
-                                // Lock it in!
-                                locationVerified = true;
-                                selectedLat = lat;
-                                selectedLng = lng;
-                                selectedCountry = fullLocation;
-                                
-                                document.getElementById('custAddress').value = fullLocation;
-                                statusEl.style.color = 'var(--burgundy)';
-                                statusEl.innerHTML = `<strong>Detected GPS Location:</strong> ${country} ✅`;
-                                
-                                calculateShippingForLocation(selectedCountry);
-                            } else {
-                                locationVerified = false;
-                                selectedCountry = '';
-                                statusEl.style.color = '#7A2E2A';
-                                statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location (${country || 'Unknown'})</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
-                            }
-                        });
-                },
-                function(error) {
-                    locationVerified = false;
-                    alert("Unable to retrieve your location. Please type your area in the search box.");
-                    statusEl.innerHTML = "GPS detection failed. Please search manually.";
-                },
-                { timeout: 10000, enableHighAccuracy: true }
-            );
-        }
-
-        function placeZiinaOrder() {
-            try {
-                // Check if map location is verified first!
-                if (!locationVerified || !selectedLat || !selectedLng) {
-                    // Show the exact bilingual message requested
-                    alert("{% if request.GET.lang == 'ar' %}يرجى تحديد الموقع من الخريطة.{% else %}Please select the location from the map.{% endif %}");
-                    
-                    // Briefly highlight the map search box in red to guide them
-                    let mapInput = document.getElementById('mapSearchInput');
-                    mapInput.style.border = "2px solid #7A2E2A";
-                    setTimeout(() => { mapInput.style.border = "1px solid var(--line)"; }, 3000);
-                    return; // Stop the checkout process here
-                }
-
-                let allowedCountries = ['United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Kuwait', 'Oman'];
-                let isAllowed = allowedCountries.some(c => selectedCountry.toLowerCase().includes(c.toLowerCase()));
-                
-                if (!isAllowed) {
-                    alert("{% if request.GET.lang == 'ar' %}عذراً، لا يمكننا التوصيل إلى هذا الموقع.{% else %}Sorry, we can't deliver to this location.{% endif %}");
-                    return;
-                }
-
-                let name = document.getElementById('custName').value;
-                let phone = document.getElementById('custPhone').value;
-                let addr = document.getElementById('custAddress').value;
-                
-                if (!name || !phone || !addr) { 
-                    alert("{% if request.GET.lang == 'ar' %}يرجى ملء تفاصيل الاتصال والتوصيل.{% else %}Please fill in your contact & delivery details.{% endif %}"); 
-                    return; 
-                }
-
-                let subtotal = 0;
-                cart.forEach(i => subtotal += i.price * i.quantity);
-                let discountAmount = 0;
-                if (typeof appliedDiscountPercent !== 'undefined' && appliedDiscountPercent > 0) {
-                    discountAmount = (subtotal * appliedDiscountPercent) / 100;
-                }
-                
-                let deliveryFee = subtotal >= 650 ? 0 : currentShippingFee;
-                let total = (subtotal - discountAmount) + deliveryFee;
-
-                let btn = document.querySelector('.whatsapp-btn');
-                let originalText = btn.textContent;
-                btn.textContent = "{% if request.GET.lang == 'ar' %}جاري معالجة الدفع...{% else %}Processing...{% endif %}";
-                btn.disabled = true;
-
-                // Send the cart data AND the exact GPS coordinates to the backend
-                fetch('/process-ziina-payment/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        total_amount: total,
-                        customer_name: name,
-                        customer_phone: phone,
-                        customer_address: addr,
-                        latitude: selectedLat,
-                        longitude: selectedLng,
-                        cart_items: cart
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Server returned status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success && data.redirect_url) {
-                        cart = []; 
-                        saveCart();
-                        window.location.href = data.redirect_url;
-                    } else {
-                        alert("Payment gateway error: " + (data.error || "Unknown error"));
-                        btn.textContent = originalText;
-                        btn.disabled = false;
-                    }
-                })
-                .catch(error => {
-                    console.error('Fetch Error:', error);
-                    alert("Could not connect to the payment server. Ensure Railway has finished deploying the views.py and urls.py files. Error details: " + error.message);
-                    btn.textContent = originalText;
-                    btn.disabled = false;
-                });
-
-            } catch (err) {
-                console.error("Browser JS Error: ", err);
-                alert("A technical error occurred in your browser: " + err.message);
-            }
-        }
-    </script>
-
-    <!-- CHILD TEMPLATES WILL INJECT THEIR SPECIFIC JS HERE -->
-    {% block extra_js %}{% endblock %}
-
-</body>
-</html>
