@@ -59,6 +59,10 @@ class Product(models.Model):
     inventory_stock = models.PositiveIntegerField(default=10, help_text="Base inventory if no sizes specified")
     is_bestseller = models.BooleanField(default=False)
     show_on_home = models.BooleanField(default=True, help_text="Check to display this product on the home page.")
+    
+    # --- NEW FEATURE: UAE ONLY CHECKBOX ---
+    uae_only = models.BooleanField(default=False, help_text="Tick to restrict delivery of this item to the UAE only.")
+    
     image_placeholder_tag = models.CharField(max_length=50, choices=IMAGE_CHOICES, default='khlii')
 
     def __str__(self):
@@ -181,7 +185,6 @@ class ShippingRate(models.Model):
     def __str__(self):
         return f"{self.location_name} - AED {self.shipping_fee}"
 
-# --- NEW ORDER TRACKING MODEL ---
 class Order(models.Model):
     order_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     customer_name = models.CharField(max_length=150)
