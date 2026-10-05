@@ -261,9 +261,6 @@
                 <button class="close-drawer" onclick="closeTermsModal()">&times;</button>
             </div>
             <div class="terms-modal-body">
-                <!-- ========================================== -->
-                <!-- REPASTE YOUR ORIGINAL TERMS TEXT HERE      -->
-                <!-- ========================================== -->
                 <p><strong>Last Updated:</strong> September 2026<br><strong>Brand:</strong> BY CHEF SARA<br><strong>Jurisdiction:</strong> United Arab Emirates</p>
                 
                 <h4>1. General &amp; Acceptance of Terms</h4>
@@ -319,8 +316,6 @@
 
                 <h4>18. Amendments &amp; Customer Support</h4>
                 <p>We reserve the right to revise or update these Terms &amp; Conditions at our discretion. For questions regarding our products, orders, or these Terms &amp; Conditions, please contact us at hello@bychefsara.com.</p>
-                <!-- ========================================== -->
-                
             </div>
         </div>
     </div>
@@ -349,7 +344,6 @@
                         <button type="button" onclick="detectUserGPS()" title="Use My Current GPS Location" style="background: var(--wood); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; font-family: inherit;">📍 GPS</button>
                     </div>
                     <div style="width: 100%; height: 220px; border-radius: 4px; border: 1px solid var(--line); overflow: hidden; margin-bottom: 6px;">
-                        <!-- Safe Google Maps Embed (No API Key Required) -->
                         <iframe id="googleMapFrame" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=United%20Arab%20Emirates&z=6&output=embed"></iframe>
                     </div>
                     <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">{% if request.GET.lang == "ar" %}ابحث عن موقعك أو انقر على GPS للتحقق من التوصيل داخل الخليج.{% else %}Search your location or click 'GPS' to auto-verify your GCC delivery zone.{% endif %}</small>
@@ -433,9 +427,12 @@
         const activePromos = {{ promo_dict|safe|default:"{}" }};
         const adminShippingRates = {{ shipping_dict|safe|default:"[]" }};
         const defaultShippingFee = {{ default_shipping|default:25.00 }};
+        
+        // --- NEW: Load the array of UAE-only product names from the backend ---
+        const uaeOnlyNames = {{ uae_only_names|safe|default:"[]" }}; 
+        
         let currentShippingFee = defaultShippingFee;
 
-        // Wrapped in try/catch to prevent page crash if localstorage gets corrupted
         let cart = [];
         try {
             cart = JSON.parse(localStorage.getItem('chef_sara_cart')) || [];
@@ -463,7 +460,6 @@
         function openTermsModal() { document.getElementById('termsModalOverlay').style.display = 'flex'; }
         function closeTermsModal() { document.getElementById('termsModalOverlay').style.display = 'none'; }
 
-        /* Shared Product Grid Quantity Adjustments */
         function decreaseQty(btn) { 
             let span = btn.parentElement.querySelector('.qty-num'); 
             let val = parseInt(span.textContent);
@@ -507,10 +503,14 @@
                 container.innerHTML = '';
                 cart.forEach(item => {
                     count += item.quantity; subtotal += item.price * item.quantity;
+                    
+                    // Add a tiny UAE ONLY badge directly in the cart next to restricted items
+                    let uaeBadge = uaeOnlyNames.includes(item.name) ? `<span style="font-size:0.65rem; background:#FFEBEE; color:#C62828; padding:2px 6px; border-radius:3px; margin-left:6px; font-weight:600;">{% if request.GET.lang == 'ar' %}توصيل الإمارات فقط{% else %}UAE ONLY{% endif %}</span>` : '';
+
                     container.innerHTML += `
                         <div class="cart-item">
                             <div class="cart-item-details">
-                                <div>${item.name}</div>
+                                <div>${item.name} ${uaeBadge}</div>
                                 <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
                                     <button type="button" onclick="changeCartItemQty('${item.name}', -1)" style="background:#fff; border:1px solid var(--line); width:18px; height:18px; cursor:pointer; font-weight:bold;">-</button>
                                     <span style="font-size:0.85rem; font-weight:600;">${item.quantity}</span>
@@ -532,6 +532,8 @@
             let freeDeliveryMsg = "{% if request.GET.lang == 'ar' %}🎉 مؤهل لتوصيل مجاني!{% else %}🎉 You qualify for free delivery!{% endif %}";
             let addMoreMsg = `{% if request.GET.lang == 'ar' %}أضف AED ${(650 - subtotal).toFixed(2)} للحصول على توصيل مجاني{% else %}Add AED ${(650 - subtotal).toFixed(2)} more for free delivery{% endif %}`;
             document.getElementById('deliveryNotice').textContent = subtotal >= 650 ? freeDeliveryMsg : addMoreMsg;
+            
+            updateModalSummary(); // Refresh checkout screen if an item is modified
         }
 
         function toggleCheckoutButton() {
@@ -613,16 +615,13 @@
             let deliveryFee = subtotal >= 650 ? 0 : currentShippingFee;
             html += `<div class="summary-line"><span>{% if request.GET.lang == 'ar' %}التوصيل{% else %}Delivery{% endif %}</span><span>${deliveryFee === 0 ? '{% if request.GET.lang == 'ar' %}مجاني{% else %}Free{% endif %}' : 'AED ' + deliveryFee.toFixed(2)}</span></div>`;
             
-            // --- NEW DYNAMIC VAT CALCULATION ---
-            let vatRate = 0.05; // Default 5%
+            let vatRate = 0.05; 
+            let isUae = true;
             if (selectedCountry) {
                 let lowerCountry = selectedCountry.toLowerCase();
-                if (lowerCountry.includes('saudi arabia') || lowerCountry.includes('ksa') || 
-                    lowerCountry.includes('qatar') || lowerCountry.includes('bahrain') || 
-                    lowerCountry.includes('kuwait') || lowerCountry.includes('oman')) {
+                isUae = lowerCountry.includes('united arab emirates') || lowerCountry.includes('uae');
+                if (!isUae) {
                     vatRate = 0.15; // 15% for other GCC countries
-                } else {
-                    vatRate = 0.05; // 5% for UAE
                 }
             }
             
@@ -633,6 +632,16 @@
 
             let total = taxableAmount + vatAmount;
             html += `<div class="summary-total"><span>{% if request.GET.lang == 'ar' %}الإجمالي{% else %}Total{% endif %}</span><span>AED ${total.toFixed(2)}</span></div>`;
+            
+            // --- NEW: UAE ONLY VISUAL WARNING ---
+            let hasUaeOnlyItem = cart.some(item => uaeOnlyNames.includes(item.name));
+            if (hasUaeOnlyItem && selectedCountry && !isUae) {
+                html += `<div style="background-color: #FFEBEE; border: 1px solid #EF9A9A; border-radius: 4px; padding: 12px; margin-top: 15px; color: #C62828; font-size: 0.8rem; text-align: center; line-height: 1.4;">
+                            <strong>{% if request.GET.lang == 'ar' %}تنبيه التوصيل:{% else %}Delivery Warning:{% endif %}</strong><br>
+                            {% if request.GET.lang == 'ar' %}تحتوي سلتك على منتجات (قابلة للكسر/التلف) متوفرة للتوصيل داخل الإمارات فقط. يرجى إزالة هذه المنتجات من السلة لمتابعة الشحن الدولي.{% else %}Your cart contains items (fragile/perishable) that are available for UAE delivery only. Please remove them from your cart to proceed with international shipping.{% endif %}
+                         </div>`;
+            }
+
             box.innerHTML = html;
         }
 
@@ -675,6 +684,7 @@
                             selectedCountry = '';
                             statusEl.style.color = '#7A2E2A';
                             statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
+                            updateModalSummary(); 
                         }
                     } else {
                         locationVerified = false;
@@ -725,6 +735,7 @@
                                 selectedCountry = '';
                                 statusEl.style.color = '#7A2E2A';
                                 statusEl.innerHTML = `<strong>Sorry, we can't deliver to this location (${country || 'Unknown'})</strong> ❌. We only deliver to UAE, Saudi Arabia, Qatar, Bahrain, Kuwait, and Oman.`;
+                                updateModalSummary();
                             }
                         });
                 },
@@ -755,6 +766,14 @@
                     alert("{% if request.GET.lang == 'ar' %}عذراً، لا يمكننا التوصيل إلى هذا الموقع.{% else %}Sorry, we can't deliver to this location.{% endif %}");
                     return;
                 }
+                
+                // --- NEW: HARD BLOCK CHECKOUT FOR UAE ONLY ITEMS ---
+                let hasUaeOnlyItem = cart.some(item => uaeOnlyNames.includes(item.name));
+                let isUae = selectedCountry.toLowerCase().includes('united arab emirates') || selectedCountry.toLowerCase().includes('uae');
+                if (hasUaeOnlyItem && !isUae) {
+                    alert("{% if request.GET.lang == 'ar' %}خطأ: تحتوي سلتك على منتجات قابلة للتوصيل داخل الإمارات فقط. يرجى تعديل السلة لمتابعة الدفع.{% else %}Error: Your cart contains items restricted to UAE delivery only. Please remove them to proceed with payment.{% endif %}");
+                    return;
+                }
 
                 let name = document.getElementById('custName').value;
                 let phone = document.getElementById('custPhone').value;
@@ -774,7 +793,6 @@
                 
                 let deliveryFee = subtotal >= 650 ? 0 : currentShippingFee;
                 
-                // --- APPLY VAT TO ZIINA TOTAL ---
                 let vatRate = 0.05;
                 let lowerCountry = selectedCountry.toLowerCase();
                 if (lowerCountry.includes('saudi arabia') || lowerCountry.includes('ksa') || 
