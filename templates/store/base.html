@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}BY CHEF SARA — {% if request.GET.lang == "ar" %}أصالة المطبخ المغربي{% else %}Handcrafted Moroccan Pantry & Catering{% endif %}{% endblock %}</title>
-    <link href="[https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&family=Tajawal:wght@400;500;700&display=swap](https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&family=Tajawal:wght@400;500;700&display=swap)" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         /* === GLOBAL STYLES === */
         html { scroll-behavior: smooth; }
@@ -261,6 +261,9 @@
                 <button class="close-drawer" onclick="closeTermsModal()">&times;</button>
             </div>
             <div class="terms-modal-body">
+                <!-- ========================================== -->
+                <!-- REPASTE YOUR ORIGINAL TERMS TEXT HERE      -->
+                <!-- ========================================== -->
                 <p><strong>Last Updated:</strong> September 2026<br><strong>Brand:</strong> BY CHEF SARA<br><strong>Jurisdiction:</strong> United Arab Emirates</p>
                 
                 <h4>1. General &amp; Acceptance of Terms</h4>
@@ -316,6 +319,8 @@
 
                 <h4>18. Amendments &amp; Customer Support</h4>
                 <p>We reserve the right to revise or update these Terms &amp; Conditions at our discretion. For questions regarding our products, orders, or these Terms &amp; Conditions, please contact us at hello@bychefsara.com.</p>
+                <!-- ========================================== -->
+                
             </div>
         </div>
     </div>
@@ -344,7 +349,8 @@
                         <button type="button" onclick="detectUserGPS()" title="Use My Current GPS Location" style="background: var(--wood); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; font-family: inherit;">📍 GPS</button>
                     </div>
                     <div style="width: 100%; height: 220px; border-radius: 4px; border: 1px solid var(--line); overflow: hidden; margin-bottom: 6px;">
-                        <iframe id="googleMapFrame" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" src="[https://maps.google.com/maps?q=United%20Arab%20Emirates&t=&z=6&ie=UTF8&iwloc=&output=embed](https://maps.google.com/maps?q=United%20Arab%20Emirates&t=&z=6&ie=UTF8&iwloc=&output=embed)"></iframe>
+                        <!-- Safe Google Maps Embed (No API Key Required) -->
+                        <iframe id="googleMapFrame" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=United%20Arab%20Emirates&z=6&output=embed"></iframe>
                     </div>
                     <small style="color: var(--wood); font-size: 0.75rem;" id="mapCountryStatus">{% if request.GET.lang == "ar" %}ابحث عن موقعك أو انقر على GPS للتحقق من التوصيل داخل الخليج.{% else %}Search your location or click 'GPS' to auto-verify your GCC delivery zone.{% endif %}</small>
                 </div>
@@ -640,7 +646,7 @@
             statusEl.style.color = 'var(--wood)';
             statusEl.innerHTML = `Verifying delivery zone for "${query}"...`;
 
-            fetch(`[https://nominatim.openstreetmap.org/search?format=json&q=$](https://nominatim.openstreetmap.org/search?format=json&q=$){encodeURIComponent(query)}&email=hello@bychefsara.com`)
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&email=hello@bychefsara.com`)
                 .then(res => res.json())
                 .then(results => {
                     if (results && results.length > 0) {
@@ -657,7 +663,7 @@
                             selectedCountry = results[0].display_name;
                             
                             let iframe = document.getElementById('googleMapFrame');
-                            iframe.src = `[https://maps.google.com/maps?q=$](https://maps.google.com/maps?q=$){lat},${lon}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+                            iframe.src = "https://maps.google.com/maps?q=" + lat + "," + lon + "&z=15&output=embed";
                             document.getElementById('custAddress').value = query;
                             
                             statusEl.style.color = 'var(--burgundy)';
@@ -694,9 +700,9 @@
                     let lng = position.coords.longitude;
                     
                     let iframe = document.getElementById('googleMapFrame');
-                    iframe.src = `[https://maps.google.com/maps?q=$](https://maps.google.com/maps?q=$){lat},${lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+                    iframe.src = "https://maps.google.com/maps?q=" + lat + "," + lng + "&z=15&output=embed";
 
-                    fetch(`[https://nominatim.openstreetmap.org/reverse?format=json&lat=$](https://nominatim.openstreetmap.org/reverse?format=json&lat=$){lat}&lon=${lng}&email=hello@bychefsara.com`)
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&email=hello@bychefsara.com`)
                         .then(res => res.json())
                         .then(data => {
                             let country = data.address && data.address.country ? data.address.country : '';
