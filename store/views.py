@@ -24,6 +24,15 @@ def get_smart_shipping_dict():
         })
     return json.dumps(rates_list)
 
+# --- NEW: Fetch UAE Only item names ---
+def get_uae_only_names():
+    names = []
+    for p in Product.objects.filter(uae_only=True):
+        names.append(p.name)
+        if p.name_ar:
+            names.append(p.name_ar)
+    return json.dumps(names)
+
 def home_view(request):
     if request.method == 'POST':
         if 'catering_submit' in request.POST:
@@ -54,6 +63,7 @@ def home_view(request):
         'promo_dict': promo_dict,
         'shipping_dict': get_smart_shipping_dict(),
         'default_shipping': 25.00,
+        'uae_only_names': get_uae_only_names(), # Added here
     }
     return render(request, 'store/index.html', context)
 
@@ -77,6 +87,7 @@ def product_detail_view(request, product_slug):
         'related_products': related_products,
         'shipping_dict': get_smart_shipping_dict(),
         'default_shipping': 25.00,
+        'uae_only_names': get_uae_only_names(), # Added here
     }
     return render(request, 'store/product_detail.html', context)
 
@@ -94,13 +105,11 @@ def category_detail_view(request, category_slug):
         'promo_dict': promo_dict,
         'shipping_dict': get_smart_shipping_dict(),
         'default_shipping': 25.00,
+        'uae_only_names': get_uae_only_names(), # Added here
     }
     return render(request, 'store/category_detail.html', context)
 
 
-# ==========================================
-# ZIINA PAYMENT INTEGRATION & ORDER TRACKING
-# ==========================================
 @csrf_exempt
 def process_ziina_payment(request):
     if request.method == 'POST':
@@ -109,11 +118,9 @@ def process_ziina_payment(request):
             total_amount = float(data.get('total_amount', 0))
             amount_in_fils = int(total_amount * 100)
 
-            # 1. Format the Cart Items
             cart_items = data.get('cart_items', [])
             cart_text = "\n".join([f"{item['quantity']}x {item['name']} (AED {item['price']})" for item in cart_items])
             
-            # 2. Extract Location and append Google Maps Link
             raw_address = data.get('customer_address', 'Unknown')
             lat = data.get('latitude', '')
             lng = data.get('longitude', '')
@@ -122,7 +129,6 @@ def process_ziina_payment(request):
             if lat and lng:
                 final_address += f"\n\n--- EXACT MAP PIN ---\nCoordinates: {lat}, {lng}\nGoogle Maps: https://maps.google.com/?q={lat},{lng}"
 
-            # 3. Store Order in DB
             new_order = Order.objects.create(
                 customer_name=data.get('customer_name', 'Unknown'),
                 customer_phone=data.get('customer_phone', 'Unknown'),
@@ -132,7 +138,6 @@ def process_ziina_payment(request):
                 is_paid=False
             )
 
-            # 4. Trigger Ziina Intent
             url = "https://api-v2.ziina.com/api/payment_intent"
             payload = {
                 "amount": amount_in_fils,
