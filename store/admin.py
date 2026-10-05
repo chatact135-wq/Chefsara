@@ -17,8 +17,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price', 'is_bestseller')
-    list_filter = ('category', 'is_bestseller')
+    # Added uae_only here so you can easily toggle it!
+    list_display = ('name', 'category', 'price', 'is_bestseller', 'uae_only')
+    list_filter = ('category', 'is_bestseller', 'uae_only')
+    list_editable = ('is_bestseller', 'uae_only')
     search_fields = ('name', 'description')
     prepopulated_fields = {'slug': ('name',)}
     inlines = [ProductSizeInline, ProductImageInline]
@@ -65,11 +67,10 @@ class ShippingRateAdmin(admin.ModelAdmin):
     search_fields = ('location_name', 'location_name_ar')
     list_editable = ('shipping_fee', 'is_active')
 
-# --- NEW ORDER ADMIN ---
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('customer_name', 'customer_phone', 'total_amount', 'is_paid', 'created_at')
     list_filter = ('is_paid', 'created_at')
     search_fields = ('customer_name', 'customer_phone', 'customer_address')
     readonly_fields = ('order_id', 'created_at', 'cart_summary')
-    list_editable = ('is_paid',)  # Lets you manually toggle "Paid" from the main list just in case!
+    list_editable = ('is_paid',)
