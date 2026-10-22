@@ -146,7 +146,7 @@ def process_ziina_payment(request):
                 "success_url": request.build_absolute_uri(f'/payment-success/?ref={new_order.order_id}'),
                 "cancel_url": request.build_absolute_uri('/payment-failure/'),
                 "failure_url": request.build_absolute_uri('/payment-failure/'),
-                "test": True  
+                "test": False  
             }
             headers = {
                 "Authorization": f"Bearer {ZIINA_API_KEY}",
