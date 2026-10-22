@@ -1,0 +1,20 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{% if request.GET.lang == 'ar' %}فشل الدفع{% else %}Payment Failed{% endif %} — BY CHEF SARA{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 120px 8%; min-height: 50vh; background-color: var(--panel);">
+    <div style="max-width: 600px; margin: 0 auto; background: #fff; padding: 50px 30px; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+        <div style="font-size: 4rem; color: #C62828; margin-bottom: 10px;">✕</div>
+        <h1 style="color: var(--ink); margin-bottom: 20px; font-family: {% if request.GET.lang == 'ar' %}'Tajawal', sans-serif{% else %}'Cormorant Garamond', serif{% endif %};">
+            {% if request.GET.lang == 'ar' %}حدث خطأ في الدفع{% else %}Payment Unsuccessful{% endif %}
+        </h1>
+        <p style="color: var(--ink-soft); font-size: 1.1rem; margin-bottom: 40px; line-height: 1.6;">
+            {{ message }}
+        </p>
+        <a href="{% url 'home' %}?lang={{ request.GET.lang|default:'en' }}" style="background-color: var(--ink); color: #fff; padding: 12px 30px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; font-family: inherit;">
+            {% if request.GET.lang == 'ar' %}حاول مرة أخرى{% else %}Try Again{% endif %}
+        </a>
+    </div>
+</div>
+{% endblock %}
