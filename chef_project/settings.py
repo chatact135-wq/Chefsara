@@ -44,6 +44,9 @@ STORAGES = {
     },
 }
 
+# Added back to prevent Cloudinary collectstatic check crash in newer Django versions
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
