@@ -75,8 +75,8 @@
 {% block content %}
     <!-- Product Detail Section -->
     <div class="product-detail-container">
-        <!-- Fades gallery if unpublished -->
-        <div class="gallery-wrapper {% if not product.is_published %}opacity-70 grayscale-[50%] pointer-events-none{% endif %}">
+        <!-- Fades gallery slightly if unpublished -->
+        <div class="gallery-wrapper {% if not product.is_published %}opacity-70 pointer-events-none{% endif %}">
             <div class="gallery-main-view" id="mainView" onclick="openLightbox()">
                 {% if product.gallery_images.all %}
                     <img id="activeImage" src="{{ product.gallery_images.first.image.url }}" alt="{{ product.name }}">
@@ -86,10 +86,10 @@
                     </div>
                 {% endif %}
                 
-                <!-- PREMIUM Coming Soon Badge for main image -->
+                <!-- NEW: Transparent Full-Image Overlay for main image -->
                 {% if not product.is_published %}
-                <div class="premium-coming-soon-badge" style="font-size: 1.1rem; padding: 14px 30px;">
-                    {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
+                <div class="coming-soon-image-overlay">
+                    <img src="{% static 'images/coming_soon_overlay.png' %}" alt="Coming Soon" class="overlay-graphic">
                 </div>
                 {% endif %}
             </div>
@@ -188,8 +188,8 @@
         <h2 class="related-header">{% if request.GET.lang == 'ar' %}قد يعجبك أيضاً{% else %}You May Also Like{% endif %}</h2>
         <div class="related-grid">
             {% for rel in related_products %}
-            <!-- Fades related card and disables click if unpublished -->
-            <div class="related-card {% if not rel.is_published %}opacity-70 grayscale-[50%] pointer-events-none{% endif %}" 
+            <!-- Fades related card slightly if unpublished -->
+            <div class="related-card {% if not rel.is_published %}opacity-70 pointer-events-none{% endif %}" 
                  {% if rel.is_published %}onclick="location.href='{% url 'product_detail' rel.slug %}?lang={{ request.GET.lang|default:"en" }}'"{% endif %}>
                 <div class="related-img">
                     {% if rel.gallery_images.first %}
@@ -198,17 +198,16 @@
                     <div style="color:var(--wood); font-family:'Cormorant Garamond',serif;">{{ rel.name }}</div>
                     {% endif %}
                     
-                    <!-- PREMIUM Coming Soon Badge for related image -->
+                    <!-- NEW: Transparent Full-Image Overlay for related image -->
                     {% if not rel.is_published %}
-                    <div class="premium-coming-soon-badge">
-                        {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
+                    <div class="coming-soon-image-overlay">
+                        <img src="{% static 'images/coming_soon_overlay.png' %}" alt="Coming Soon" class="overlay-graphic">
                     </div>
                     {% endif %}
                 </div>
                 <div class="related-title">{% if request.GET.lang == 'ar' and rel.name_ar %}{{ rel.name_ar }}{% else %}{{ rel.name }}{% endif %}</div>
                 <div class="related-price">{% if request.GET.lang == 'ar' %}{{ rel.price }} درهم{% else %}AED {{ rel.price }}{% endif %}</div>
                 
-                <!-- PREMIUM disabled button style -->
                 <button type="button" class="related-btn {% if not rel.is_published %}btn-disabled-fancy{% endif %}" {% if not rel.is_published %}disabled{% endif %} style="margin-top:auto;">
                     {% if not rel.is_published %}
                         {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
