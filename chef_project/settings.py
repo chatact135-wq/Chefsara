@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.sitemaps',  # Added for Google Sitemaps
-    'django.contrib.staticfiles',  # MUST be before cloudinary_storage when using local WhiteNoise static files
+    'django.contrib.staticfiles',
     'cloudinary_storage',
     'cloudinary',
     'ckeditor',
@@ -34,22 +34,21 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'yPnjRdRZRbEpqEVJgTiBBHvKFGE'),
 }
 
-# Modern Django 5.x Storage Backend Configuration
+# Use native Django FileSystemStorage for staticfiles so collectstatic successfully copies app assets
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.StaticFilesStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.FileSystemStorage",
     },
 }
 
-# Compatibility line for older Cloudinary checks
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.FileSystemStorage'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # <--- Must be right below SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
