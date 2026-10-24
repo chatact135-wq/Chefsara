@@ -42,8 +42,8 @@
         {% if products %}
         <div class="products-grid">
             {% for prod in products %}
-            <!-- ADDED LOGIC: Fades card and disables click if unpublished -->
-            <div class="product-card {% if not prod.is_published %}opacity-60 grayscale pointer-events-none{% endif %}" 
+            <!-- Fades card and disables click if unpublished -->
+            <div class="product-card {% if not prod.is_published %}opacity-70 grayscale-[50%] pointer-events-none{% endif %}" 
                  {% if prod.is_published %}onclick="location.href='{% url 'product_detail' prod.slug %}?lang={{ request.GET.lang|default:"en" }}'"{% endif %}>
                 <div>
                     <div class="product-img-box">
@@ -55,9 +55,9 @@
                         </div>
                         {% endif %}
                         
-                        <!-- ADDED LOGIC: Coming Soon Badge overlay -->
+                        <!-- PREMIUM Coming Soon Badge overlay -->
                         {% if not prod.is_published %}
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--ink); color: #fff; padding: 8px 16px; border-radius: 4px; z-index: 20; font-weight: bold; letter-spacing: 1px; width: max-content;">
+                        <div class="premium-coming-soon-badge">
                             {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
                         </div>
                         {% endif %}
@@ -72,8 +72,8 @@
                         {% if request.GET.lang == 'ar' %}{{ prod.price }} درهم{% else %}AED {{ prod.price }}{% endif %}
                     </div>
                 </div>
-                <!-- ADDED LOGIC: Changes button text and color if unpublished -->
-                <button type="button" class="view-prod-btn" {% if not prod.is_published %}disabled style="background:gray; color:white; border-color:gray;"{% endif %}>
+                <!-- PREMIUM disabled button style -->
+                <button type="button" class="view-prod-btn {% if not prod.is_published %}btn-disabled-fancy{% endif %}" {% if not prod.is_published %}disabled{% endif %}>
                     {% if not prod.is_published %}
                         {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
                     {% else %}
