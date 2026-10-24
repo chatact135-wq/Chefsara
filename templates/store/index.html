@@ -191,8 +191,8 @@
         </div>
         <div class="product-grid">
             {% for product in products %}
-            <!-- ADDED LOGIC: Fades card and blocks clicking if unpublished -->
-            <div class="product-card {% if not product.is_published %}opacity-60 grayscale pointer-events-none{% endif %}" data-stock="{{ product.inventory_stock }}">
+            <!-- Fades card and blocks clicking if unpublished -->
+            <div class="product-card {% if not product.is_published %}opacity-70 grayscale-[50%] pointer-events-none{% endif %}" data-stock="{{ product.inventory_stock }}">
                 {% if product.is_bestseller %}<span class="badge-bestseller">{% if request.GET.lang == 'ar' %}الأكثر مبيعاً{% else %}Best Seller{% endif %}</span>{% endif %}
                 
                 <div class="product-img-placeholder" onclick="location.href='{% url 'product_detail' product.slug %}?lang={{ request.GET.lang|default:"en" }}'">
@@ -202,9 +202,9 @@
                         <svg width="70" height="90" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
                     {% endif %}
                     
-                    <!-- ADDED LOGIC: Coming Soon Badge overlay -->
+                    <!-- PREMIUM Coming Soon Badge overlay -->
                     {% if not product.is_published %}
-                    <div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); background: var(--ink); color: #fff; padding: 8px 16px; border-radius: 4px; z-index: 20; font-weight: bold; letter-spacing: 1px; width: max-content;">
+                    <div class="premium-coming-soon-badge">
                         {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
                     </div>
                     {% endif %}
@@ -230,9 +230,9 @@
                             <span class="qty-num">1</span>
                             <button type="button" class="qty-btn" onclick="increaseQty(this, {{ product.inventory_stock }})">+</button>
                         </div>
-                        <!-- ADDED LOGIC: Changes button text and color if unpublished -->
-                        <button type="button" class="add-to-order-btn" 
-                                {% if not product.is_published %}disabled style="background:gray;"{% endif %}
+                        <!-- PREMIUM disabled button style -->
+                        <button type="button" class="add-to-order-btn {% if not product.is_published %}btn-disabled-fancy{% endif %}" 
+                                {% if not product.is_published %}disabled{% endif %}
                                 onclick="addToCart('{% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar|escapejs }}{% else %}{{ product.name|escapejs }}{% endif %}', {{ product.price }}, {{ product.inventory_stock }}, this)">
                             {% if not product.is_published %}
                                 {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
