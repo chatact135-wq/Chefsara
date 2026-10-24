@@ -17,10 +17,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    # Added uae_only here so you can easily toggle it!
-    list_display = ('name', 'category', 'price', 'is_bestseller', 'uae_only')
-    list_filter = ('category', 'is_bestseller', 'uae_only')
-    list_editable = ('is_bestseller', 'uae_only')
+    # Added uae_only and is_published here so you can easily toggle them!
+    list_display = ('name', 'category', 'price', 'is_bestseller', 'uae_only', 'is_published')
+    list_filter = ('category', 'is_bestseller', 'uae_only', 'is_published')
+    list_editable = ('is_bestseller', 'uae_only', 'is_published')
     search_fields = ('name', 'description')
     prepopulated_fields = {'slug': ('name',)}
     inlines = [ProductSizeInline, ProductImageInline]
