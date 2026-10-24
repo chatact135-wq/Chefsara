@@ -27,7 +27,8 @@ def get_smart_shipping_dict():
 # --- NEW: Fetch UAE Only item names ---
 def get_uae_only_names():
     names = []
-    for p in Product.objects.filter(uae_only=True):
+    # Updated to only fetch published items
+    for p in Product.objects.filter(uae_only=True, is_published=True):
         names.append(p.name)
         if p.name_ar:
             names.append(p.name_ar)
@@ -52,7 +53,10 @@ def home_view(request):
 
     slides = HeroSlide.objects.all()
     categories = Category.objects.all().order_by('sort_order')
-    products = Product.objects.filter(show_on_home=True)
+    
+    # Updated to hide unpublished products from the home page
+    products = Product.objects.filter(show_on_home=True, is_published=True)
+    
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
@@ -63,21 +67,23 @@ def home_view(request):
         'promo_dict': promo_dict,
         'shipping_dict': get_smart_shipping_dict(),
         'default_shipping': 25.00,
-        'uae_only_names': get_uae_only_names(), # Added here
+        'uae_only_names': get_uae_only_names(),
     }
     return render(request, 'store/index.html', context)
 
 def product_detail_view(request, product_slug):
-    product = get_object_or_404(Product, slug=product_slug)
+    # Updated to block direct links to unpublished products
+    product = get_object_or_404(Product, slug=product_slug, is_published=True)
     categories = Category.objects.all().order_by('sort_order')
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
     
-    related_products = list(Product.objects.filter(category=product.category).exclude(id=product.id)[:3])
+    # Updated to hide unpublished items from the related products section
+    related_products = list(Product.objects.filter(category=product.category, is_published=True).exclude(id=product.id)[:3])
     if len(related_products) < 3:
         needed = 3 - len(related_products)
         existing_ids = [product.id] + [p.id for p in related_products]
-        fallback_products = list(Product.objects.exclude(id__in=existing_ids).order_by('?')[:needed])
+        fallback_products = list(Product.objects.filter(is_published=True).exclude(id__in=existing_ids).order_by('?')[:needed])
         related_products.extend(fallback_products)
 
     context = {
@@ -87,14 +93,17 @@ def product_detail_view(request, product_slug):
         'related_products': related_products,
         'shipping_dict': get_smart_shipping_dict(),
         'default_shipping': 25.00,
-        'uae_only_names': get_uae_only_names(), # Added here
+        'uae_only_names': get_uae_only_names(),
     }
     return render(request, 'store/product_detail.html', context)
 
 def category_detail_view(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     categories = Category.objects.all().order_by('sort_order') 
-    products = category.products.all() 
+    
+    # Updated to hide unpublished items from the category listing pages
+    products = category.products.filter(is_published=True) 
+    
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
@@ -105,7 +114,7 @@ def category_detail_view(request, category_slug):
         'promo_dict': promo_dict,
         'shipping_dict': get_smart_shipping_dict(),
         'default_shipping': 25.00,
-        'uae_only_names': get_uae_only_names(), # Added here
+        'uae_only_names': get_uae_only_names(),
     }
     return render(request, 'store/category_detail.html', context)
 
