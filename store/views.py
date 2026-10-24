@@ -24,11 +24,9 @@ def get_smart_shipping_dict():
         })
     return json.dumps(rates_list)
 
-# --- NEW: Fetch UAE Only item names ---
 def get_uae_only_names():
     names = []
-    # Updated to only fetch published items
-    for p in Product.objects.filter(uae_only=True, is_published=True):
+    for p in Product.objects.filter(uae_only=True):
         names.append(p.name)
         if p.name_ar:
             names.append(p.name_ar)
@@ -53,10 +51,7 @@ def home_view(request):
 
     slides = HeroSlide.objects.all()
     categories = Category.objects.all().order_by('sort_order')
-    
-    # Updated to hide unpublished products from the home page
-    products = Product.objects.filter(show_on_home=True, is_published=True)
-    
+    products = Product.objects.filter(show_on_home=True)
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
@@ -72,18 +67,16 @@ def home_view(request):
     return render(request, 'store/index.html', context)
 
 def product_detail_view(request, product_slug):
-    # Updated to block direct links to unpublished products
-    product = get_object_or_404(Product, slug=product_slug, is_published=True)
+    product = get_object_or_404(Product, slug=product_slug)
     categories = Category.objects.all().order_by('sort_order')
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
     
-    # Updated to hide unpublished items from the related products section
-    related_products = list(Product.objects.filter(category=product.category, is_published=True).exclude(id=product.id)[:3])
+    related_products = list(Product.objects.filter(category=product.category).exclude(id=product.id)[:3])
     if len(related_products) < 3:
         needed = 3 - len(related_products)
         existing_ids = [product.id] + [p.id for p in related_products]
-        fallback_products = list(Product.objects.filter(is_published=True).exclude(id__in=existing_ids).order_by('?')[:needed])
+        fallback_products = list(Product.objects.exclude(id__in=existing_ids).order_by('?')[:needed])
         related_products.extend(fallback_products)
 
     context = {
@@ -100,10 +93,7 @@ def product_detail_view(request, product_slug):
 def category_detail_view(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     categories = Category.objects.all().order_by('sort_order') 
-    
-    # Updated to hide unpublished items from the category listing pages
-    products = category.products.filter(is_published=True) 
-    
+    products = category.products.all() 
     promo_codes = PromoCode.objects.filter(is_active=True)
     promo_dict = {p.code.upper(): p.discount_percentage for p in promo_codes}
 
@@ -117,7 +107,6 @@ def category_detail_view(request, category_slug):
         'uae_only_names': get_uae_only_names(),
     }
     return render(request, 'store/category_detail.html', context)
-
 
 @csrf_exempt
 def process_ziina_payment(request):
