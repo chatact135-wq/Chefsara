@@ -12,7 +12,7 @@
     .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
     .product-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
     .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(43,29,18,0.1); }
-    .product-img-box { height: 240px; background: #fff; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--line); }
+    .product-img-box { height: 240px; background: #fff; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--line); position: relative; }
     .product-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
     .product-card:hover .product-img-box img { transform: scale(1.05); }
     
@@ -42,7 +42,9 @@
         {% if products %}
         <div class="products-grid">
             {% for prod in products %}
-            <div class="product-card" onclick="location.href='{% url 'product_detail' prod.slug %}?lang={{ request.GET.lang|default:"en" }}'">
+            <!-- ADDED LOGIC: Fades card and disables click if unpublished -->
+            <div class="product-card {% if not prod.is_published %}opacity-60 grayscale pointer-events-none{% endif %}" 
+                 {% if prod.is_published %}onclick="location.href='{% url 'product_detail' prod.slug %}?lang={{ request.GET.lang|default:"en" }}'"{% endif %}>
                 <div>
                     <div class="product-img-box">
                         {% if prod.gallery_images.first %}
@@ -50,6 +52,13 @@
                         {% else %}
                         <div style="color: var(--wood); font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;">
                             {% if request.GET.lang == 'ar' and prod.name_ar %}{{ prod.name_ar }}{% else %}{{ prod.name }}{% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- ADDED LOGIC: Coming Soon Badge overlay -->
+                        {% if not prod.is_published %}
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--ink); color: #fff; padding: 8px 16px; border-radius: 4px; z-index: 20; font-weight: bold; letter-spacing: 1px; width: max-content;">
+                            {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
                         </div>
                         {% endif %}
                     </div>
@@ -63,8 +72,13 @@
                         {% if request.GET.lang == 'ar' %}{{ prod.price }} درهم{% else %}AED {{ prod.price }}{% endif %}
                     </div>
                 </div>
-                <button type="button" class="view-prod-btn">
-                    {% if request.GET.lang == 'ar' %}عرض المنتج{% else %}View Product{% endif %}
+                <!-- ADDED LOGIC: Changes button text and color if unpublished -->
+                <button type="button" class="view-prod-btn" {% if not prod.is_published %}disabled style="background:gray; color:white; border-color:gray;"{% endif %}>
+                    {% if not prod.is_published %}
+                        {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
+                    {% else %}
+                        {% if request.GET.lang == 'ar' %}عرض المنتج{% else %}View Product{% endif %}
+                    {% endif %}
                 </button>
             </div>
             {% endfor %}
