@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <g transform="translate(400, 400) rotate(-15)">
+    <!-- Outer decorative ring -->
+    <circle cx="0" cy="0" r="180" fill="rgba(26, 17, 11, 0.65)" stroke="#B08D4F" stroke-width="2" />
+    <circle cx="0" cy="0" r="165" fill="none" stroke="#B08D4F" stroke-width="1" stroke-dasharray="8 4" />
+    
+    <!-- Text Elements -->
+    <text x="0" y="-15" font-family="&#39;Cormorant Garamond&#39;, serif, Arial" font-size="42" font-weight="bold" fill="#F5EBE6" text-anchor="middle" letter-spacing="4">
+      COMING
+    </text>
+    <text x="0" y="35" font-family="&#39;Cormorant Garamond&#39;, serif, Arial" font-size="42" font-weight="bold" fill="#F5EBE6" text-anchor="middle" letter-spacing="4">
+      SOON
+    </text>
+    
+    <!-- Small decorative stars -->
+    <path d="M-90,65 L-95,75 L-85,75 Z" fill="#B08D4F" />
+    <path d="M90,65 L85,75 L95,75 Z" fill="#B08D4F" />
+    <path d="M-90,-65 L-95,-55 L-85,-55 Z" fill="#B08D4F" />
+    <path d="M90,-65 L85,-55 L95,-55 Z" fill="#B08D4F" />
+  </g>
+</svg>
