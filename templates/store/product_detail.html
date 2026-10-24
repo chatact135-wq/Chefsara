@@ -7,7 +7,7 @@
     /* === PRODUCT DETAIL PAGE STYLES === */
     .product-detail-container { max-width: 1100px; width: 100%; margin: 40px auto; padding: 0 4%; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
 
-    .gallery-wrapper { width: 100%; }
+    .gallery-wrapper { width: 100%; transition: all 0.3s ease; }
     .gallery-main-view { background: #fff; border: 1px solid var(--line); border-radius: 8px; width: 100%; height: 420px; display: flex; align-items: center; justify-content: center; position: relative; cursor: zoom-in; overflow: hidden; box-shadow: 0 8px 25px rgba(43,29,18,0.06); }
     .gallery-main-view img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
     .gallery-main-view:hover img { transform: scale(1.02); }
@@ -56,7 +56,8 @@
     .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
     .related-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
     .related-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-    .related-img { height: 180px; background: #fff; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--line); }
+    /* Added position: relative to related-img for the badge */
+    .related-img { position: relative; height: 180px; background: #fff; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--line); }
     .related-img img { width: 100%; height: 100%; object-fit: cover; }
     .related-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
     .related-price { font-size: 1.1rem; color: var(--burgundy); font-weight: 600; margin-bottom: 12px; }
@@ -75,7 +76,8 @@
 {% block content %}
     <!-- Product Detail Section -->
     <div class="product-detail-container">
-        <div class="gallery-wrapper">
+        <!-- ADDED LOGIC: Fades gallery if unpublished -->
+        <div class="gallery-wrapper {% if not product.is_published %}opacity-60 grayscale pointer-events-none{% endif %}">
             <div class="gallery-main-view" id="mainView" onclick="openLightbox()">
                 {% if product.gallery_images.all %}
                     <img id="activeImage" src="{{ product.gallery_images.first.image.url }}" alt="{{ product.name }}">
@@ -83,6 +85,13 @@
                     <div class="fallback-tag-box" style="color:var(--wood); font-family:'Cormorant Garamond',serif; font-size:1.3rem;">
                         <span>{{ product.name }}</span>
                     </div>
+                {% endif %}
+                
+                <!-- ADDED LOGIC: Coming Soon Badge for main image -->
+                {% if not product.is_published %}
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--ink); color: #fff; padding: 12px 24px; border-radius: 4px; z-index: 20; font-weight: bold; letter-spacing: 1px; font-size: 1.2rem; width: max-content;">
+                    {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
+                </div>
                 {% endif %}
             </div>
             {% if product.gallery_images.all %}
@@ -123,13 +132,20 @@
             {% endif %}
 
             <div class="purchase-row">
-                <div class="qty-box">
+                <!-- ADDED LOGIC: Fades quantity box if unpublished -->
+                <div class="qty-box {% if not product.is_published %}opacity-50 pointer-events-none{% endif %}">
                     <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
                     <span id="detailQty" style="font-weight: 600;">1</span>
                     <button type="button" class="qty-btn" onclick="adjustQty(1)">+</button>
                 </div>
-                <button type="button" class="add-btn" onclick="addSelectedProductToCart()">
-                    {% if request.GET.lang == 'ar' %}أضف للطلب{% else %}Add to Order{% endif %}
+                <!-- ADDED LOGIC: Changes button text and disables it if unpublished -->
+                <button type="button" class="add-btn" 
+                        {% if not product.is_published %}disabled style="background:gray; cursor:not-allowed;"{% else %}onclick="addSelectedProductToCart()"{% endif %}>
+                    {% if not product.is_published %}
+                        {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
+                    {% else %}
+                        {% if request.GET.lang == 'ar' %}أضف للطلب{% else %}Add to Order{% endif %}
+                    {% endif %}
                 </button>
             </div>
 
@@ -173,17 +189,34 @@
         <h2 class="related-header">{% if request.GET.lang == 'ar' %}قد يعجبك أيضاً{% else %}You May Also Like{% endif %}</h2>
         <div class="related-grid">
             {% for rel in related_products %}
-            <div class="related-card" onclick="location.href='{% url 'product_detail' rel.slug %}?lang={{ request.GET.lang|default:"en" }}'">
+            <!-- ADDED LOGIC: Fades related card and disables click if unpublished -->
+            <div class="related-card {% if not rel.is_published %}opacity-60 grayscale pointer-events-none{% endif %}" 
+                 {% if rel.is_published %}onclick="location.href='{% url 'product_detail' rel.slug %}?lang={{ request.GET.lang|default:"en" }}'"{% endif %}>
                 <div class="related-img">
                     {% if rel.gallery_images.first %}
                     <img src="{{ rel.gallery_images.first.image.url }}" alt="{{ rel.name }}">
                     {% else %}
                     <div style="color:var(--wood); font-family:'Cormorant Garamond',serif;">{{ rel.name }}</div>
                     {% endif %}
+                    
+                    <!-- ADDED LOGIC: Coming Soon Badge for related image -->
+                    {% if not rel.is_published %}
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--ink); color: #fff; padding: 8px 16px; border-radius: 4px; z-index: 20; font-weight: bold; letter-spacing: 1px; width: max-content;">
+                        {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="related-title">{% if request.GET.lang == 'ar' and rel.name_ar %}{{ rel.name_ar }}{% else %}{{ rel.name }}{% endif %}</div>
                 <div class="related-price">{% if request.GET.lang == 'ar' %}{{ rel.price }} درهم{% else %}AED {{ rel.price }}{% endif %}</div>
-                <button type="button" class="related-btn" style="margin-top:auto;">{% if request.GET.lang == 'ar' %}عرض المنتج{% else %}View Product{% endif %}</button>
+                
+                <!-- ADDED LOGIC: Changes button text and color if unpublished -->
+                <button type="button" class="related-btn" style="margin-top:auto; {% if not rel.is_published %}background:gray; color:white; border-color:gray;{% endif %}" {% if not rel.is_published %}disabled{% endif %}>
+                    {% if not rel.is_published %}
+                        {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
+                    {% else %}
+                        {% if request.GET.lang == 'ar' %}عرض المنتج{% else %}View Product{% endif %}
+                    {% endif %}
+                </button>
             </div>
             {% endfor %}
         </div>
