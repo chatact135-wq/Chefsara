@@ -20,8 +20,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.sitemaps',  # Added for Google Sitemaps
+    'django.contrib.staticfiles',  # MUST be before cloudinary_storage when using local WhiteNoise static files
     'cloudinary_storage',
-    'django.contrib.staticfiles',
     'cloudinary',
     'ckeditor',
     'store',
@@ -44,7 +44,7 @@ STORAGES = {
     },
 }
 
-# Added back to prevent Cloudinary collectstatic check crash in newer Django versions
+# Compatibility line for older Cloudinary checks
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 MIDDLEWARE = [
@@ -103,7 +103,6 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Explicit finders to ensure Django scans installed apps (like admin) for static assets
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
