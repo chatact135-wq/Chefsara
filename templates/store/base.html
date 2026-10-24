@@ -123,7 +123,52 @@
         .footer-links-list a { font-size: 0.88rem; color: #D3C5B4; transition: color 0.2s; cursor: pointer; }
         .footer-links-list a:hover { color: var(--brass-light); }
         .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: #A89884; }
+/* === PREMIUM COMING SOON BADGE === */
+    .premium-coming-soon-badge {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,235,230,0.85));
+        color: var(--burgundy);
+        padding: 10px 24px;
+        border-radius: 50px;
+        z-index: 20;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15), inset 0 0 0 2px rgba(176,141,79,0.4);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: max-content;
+    }
+    
+    .premium-coming-soon-badge::before {
+        content: '✨';
+        font-size: 1.1rem;
+    }
 
+    /* === PREMIUM DISABLED BUTTON === */
+    .btn-disabled-fancy {
+        background: repeating-linear-gradient(
+            45deg,
+            #f9f9f9,
+            #f9f9f9 10px,
+            #eeeeee 10px,
+            #eeeeee 20px
+        ) !important;
+        color: #999 !important;
+        border: 1px solid #ddd !important;
+        cursor: not-allowed !important;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05) !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700 !important;
+    }
         /* Mobile Adjustments for Base Elements */
         @media(max-width: 900px) {
             nav { display: none; }
