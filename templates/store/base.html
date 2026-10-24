@@ -169,6 +169,25 @@
         letter-spacing: 1px;
         font-weight: 700 !important;
     }
+        /* === FULL IMAGE OVERLAY COMING SOON === */
+    .coming-soon-image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none; /* Ensures it doesn't block clicks underneath */
+    }
+    .coming-soon-image-overlay img.overlay-graphic {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Stretches the transparent image perfectly over the box */
+        background: transparent;
+    }
         /* Mobile Adjustments for Base Elements */
         @media(max-width: 900px) {
             nav { display: none; }
