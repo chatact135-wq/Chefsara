@@ -191,8 +191,8 @@
         </div>
         <div class="product-grid">
             {% for product in products %}
-            <!-- Fades card and blocks clicking if unpublished -->
-            <div class="product-card {% if not product.is_published %}opacity-70 grayscale-[50%] pointer-events-none{% endif %}" data-stock="{{ product.inventory_stock }}">
+            <!-- Fades card slightly if unpublished -->
+            <div class="product-card {% if not product.is_published %}opacity-70 pointer-events-none{% endif %}" data-stock="{{ product.inventory_stock }}">
                 {% if product.is_bestseller %}<span class="badge-bestseller">{% if request.GET.lang == 'ar' %}الأكثر مبيعاً{% else %}Best Seller{% endif %}</span>{% endif %}
                 
                 <div class="product-img-placeholder" onclick="location.href='{% url 'product_detail' product.slug %}?lang={{ request.GET.lang|default:"en" }}'">
@@ -202,10 +202,10 @@
                         <svg width="70" height="90" viewBox="0 0 100 120"><rect x="25" y="34" width="50" height="78" rx="8" fill="#7A2E2A"/></svg>
                     {% endif %}
                     
-                    <!-- PREMIUM Coming Soon Badge overlay -->
+                    <!-- NEW: Transparent Full-Image Overlay -->
                     {% if not product.is_published %}
-                    <div class="premium-coming-soon-badge">
-                        {% if request.GET.lang == 'ar' %}قريباً{% else %}Coming Soon{% endif %}
+                    <div class="coming-soon-image-overlay">
+                        <img src="{% static 'images/coming_soon_overlay.png' %}" alt="Coming Soon" class="overlay-graphic">
                     </div>
                     {% endif %}
                 </div>
@@ -230,7 +230,6 @@
                             <span class="qty-num">1</span>
                             <button type="button" class="qty-btn" onclick="increaseQty(this, {{ product.inventory_stock }})">+</button>
                         </div>
-                        <!-- PREMIUM disabled button style -->
                         <button type="button" class="add-to-order-btn {% if not product.is_published %}btn-disabled-fancy{% endif %}" 
                                 {% if not product.is_published %}disabled{% endif %}
                                 onclick="addToCart('{% if request.GET.lang == 'ar' and product.name_ar %}{{ product.name_ar|escapejs }}{% else %}{{ product.name|escapejs }}{% endif %}', {{ product.price }}, {{ product.inventory_stock }}, this)">
