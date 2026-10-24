@@ -62,6 +62,7 @@ class Product(models.Model):
     
     # --- NEW FEATURE: UAE ONLY CHECKBOX ---
     uae_only = models.BooleanField(default=False, help_text="Tick to restrict delivery of this item to the UAE only.")
+    is_published = models.BooleanField(default=True, verbose_name="Published", help_text="Uncheck to hide this product from the website")
     
     image_placeholder_tag = models.CharField(max_length=50, choices=IMAGE_CHOICES, default='khlii')
 
